@@ -1,0 +1,1 @@
+<div id="footer"style=""><p>&copy;COPYRIGHT <?php echo date("Y");?> | All rights Reserved | RADIANT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Designed By BIZIMANA Kundwa Didier Constance</p></div>

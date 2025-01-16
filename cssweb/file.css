@@ -1,0 +1,109 @@
+body{background-color:white;margin:1em auto;width:1100px;
+margin-top: 0px;min-height: 700px;font-family: segoe UI;}
+html{background-color: white;}
+#ban{border:0.5px solid #ddd;width: 1195px;height: 120px;}
+#lg{float: right;height: 10em;border: 1px solid #0eb6f8;float: right;
+width: 20em;height: 200px;margin-top: 2px;
+padding:10px;width:100%;
+border-radius:1px;
+box-shadow:0 0 1.5px grey;}
+#lg input[type="text"],
+#lg input[type="password"]{padding: 5px;margin: 3px;
+	border:1px solid #ddd;width: 325px;height: 45px;font-size: 20px;
+border-radius: 2px;
+}
+#lg input[type="submit"]{padding: 5px; width: 70;border-radius: 7px;
+}
+#tt{font-family:arial;font-size: 25px;color: black;
+width: 328px;height: 35px;border: 0px solid #ddd;
+box-shadow: 0px 0px 0px 0px #0eb6f8;font-weight: bold;}
+#lg input[type="submit"]{font-family:arial;font-size: 20px;
+background-color:#0eb6f8;color: white;border: 0px solid #ddd;
+font-weight: bold; }
+#upclaim {margin-top: 30px;}
+
+
+
+#fetclei{margin-top: 95px;font-family: arial;font-size: 15px;width: 300px;}
+#fetclei table{height:200px;}
+#fetclei a{text-decoration: none;color: black;}
+#as{background-color: #0eb6f8;color: white;font-family: century gothic;
+text-align: center;font-size: 20px;}
+#photo{height: 25em; border: ;}
+#fetemp{height:400px;}
+#fetemp table{margin-top: 93px;z-index: -4;font-family: arial; }
+#footer{background-color: #1198cc;float: left;margin-top:0px;width: 75em;
+	text-align:center; color: white;font-size: 16px;border-radius: 
+0px 0px 3px 3px;font-family: century gothic;float: left;height: 25px;}
+#footer p{margin-top: 2px;}
+#nac{
+	min-height:28em;
+
+	width: 370px; 
+	margin-left: 485px;
+	margin-top: 35px;
+	
+}
+#nac p{font-family:century gothic;
+font-size: 15px;}
+#login{
+	float: right;
+}
+#viewemp{
+	margin-top: 93px;
+}
+#feed{margin-top:90px;}
+#nax{
+	min-height:28em;
+	border: solid 0px black;
+	width: 650px; 
+	margin-left: 500px;
+	margin-top: 43px;
+	}
+#contact{font-size: 20px;font-family: century gothic;font-weight: bold;}
+#tv{font-family: arial;}
+#add{font-family: arial;}
+#up input[type='text']{width: 200px;}
+#up input[type='password']{width: 200px;}
+#up input[type='email']{width: 200px;}
+#pup {font-family: arial;font-size: 30px;}
+#add p{font-size: 25px;text-decoration: underline;}
+#aa{color: red;}
+#nav{
+	min-height:28em;
+	border: solid 0px black;
+	width: 650px; 
+	margin-left: 500px;
+	margin-top: 43px;
+	}
+#pind{font-color:red;}
+
+#nop{font-family: century gothic;
+font-size: 10pt;
+text-align: center;
+color: black;
+font-style: italic;
+font-weight: bold;}
+#info p{font-family: century gothic;}
+#clie{border: 1px solid #ddd;border-radius:2px;width: 600px;height: 400px;margin-right: 550px;margin-top: 70px;box-shadow:0 0 1px grey;}
+#clie p{font-family: century gothic;font-size: 20px;}
+#header{background-color:#afadad;padding:10px;border-radius:4px;font-family: century gothic;
+text-align: center;font-weight: bold;font-size: 20px;}
+
+
+#feed table input[type=submit]{padding:10px;border-radius:4px;
+border:1px solid #66c5f7;background:#10a4f0;font-family:arial;
+color:white;cursor:pointer;font-size: 16px;}
+#vv{font-weight: bold;text-decoration: none;color: orange;}
+#ay{background-color: #0eb6f8;color: white;font-family: century gothic;}
+#fat{margin-top: 50px;border: 0px solid black;height: 400px;width: 700px;
+font-family: arial;margin-left: 30px;}
+#adp{width: 600px;border: 0px solid orange;height: 400px;}
+#adp p{font-size: 25px;font-family: century gothic;margin-top: 85px}
+#emppa{border: 0px solid black;width: 300px;margin-top: 90px;}
+#emppa p{font-family: century gothic;font-size: 20px;}
+.ppt{padding: 4px; border:solid 1px gray;width: 210px;word-wrap:break-word;border-radius: 2px;}
+.type{}
+.label-ppt{font-weight: bold;}
+
+#addpro p{background-color:black; color: white;margin-top: 50px;width: 150px;margin-right: 70em;}

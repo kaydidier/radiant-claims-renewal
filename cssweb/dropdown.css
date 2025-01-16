@@ -1,0 +1,48 @@
+#navbar{
+	background-color: #28bef8;
+
+}
+#navbar ul{
+	margin: 0px;
+	padding: 0px;
+	background-color: #0fb7f8;
+	
+}
+#navbar ul li{
+	background-color: #06a6e4;
+	border:1px solid white;
+	height: 30px;
+	width: 10em;
+	line-height: 30px;
+	float: left;
+	text-align: center;
+	list-style: none;
+	display: block;
+
+	
+}
+#navbar ul li a{
+	color: white;
+	text-decoration: none;
+	display: block;
+	font-family: Berlin Sans FB;
+	
+	font-size: 18px;
+}
+
+#navbar ul li:hover{
+	
+	color: white;
+
+	
+}
+#navbar ul li ul li{
+	display: none;
+}
+#navbar ul li:hover ul li{
+	display: block;
+	color: white;
+	width: 7em;
+	text-align: center;
+	
+}
