@@ -1,21 +1,30 @@
-<? include("includes/connection.php");
+<? include "includes/connection.php";
 // session_start();
 ?>
 
 
 <main class="h-100 d-flex flex-column">
 
-	<? include("includes/header.php"); ?>
+	<? include "includes/header.php"; ?>
 
-	<div id="login" class="container">
-		<form method="POST">
-
-		</form>
+	<div id="login" class="container h-100 d-flex flex-column align-items-center justify-content-center">
+		<div class="col-12 col-lg-6 bg-light p-5 border rounded">
+			<p class="fw-bold fs-5">Continue to your account </p>
+			<form class="">
+				<div class="mb-3">
+					<label for="email" class="form-label">Email address</label>
+					<input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3">
+					<label for="password" class="form-label">Password</label>
+					<input type="password" class="form-control" id="password">
+				</div>
+				<button type="submit" class="btn btn-primary">Login</button>
+			</form>
+		</div>
 	</div>
 
 </main>
-
-<? include("includes/footer.php"); ?>
 
 
 <?php

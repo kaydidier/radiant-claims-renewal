@@ -1,11 +1,24 @@
-<footer class="mt-auto" id="contact">
-    <p class="text-center font-bold">Contact Us</p>
+<footer class="mt-auto">
+    <p class="text-center fw-bold fs-5">Contact Us</p>
+    
     <div id="footer" class="d-flex flex-column py-4">
-        <p>Phone number: +25078938498493884</p>
-        <p>Email: example@domain.com</p>
-        <p>LinkedIn: <span><a href="#">Link</a></span>
-        <p>Twitter: <span><a href="#">Link</a></span>
-        </p>
+        <div>
+            <p class="fw-lighter fs-6">
+                <i class="fas fa-phone me-2"></i>
+                +250 7893849849
+            </p>
+            <p class="fw-lighter fs-6">
+                <i class="fas fa-envelope me-2"></i>
+                example@domain.com
+            </p>
+            <p class="fw-lighter fs-6">
+                <i class="fab fa-linkedin me-2"></i>
+                <a href="https://www.linkedin.com/in/kundwadidier/" class="text-white text-decoration-none">kundwadidier</a>
+
+                <i class="fab fa-twitter me-2"></i>
+                <a href="https://www.linkedin.com/in/kundwadidier/" class="text-white text-decoration-none">kundwadidier</a>
+            </p>
+        </div>
     </div>
-    <p class="text-center fs-6 py-2">&copy;Copyright <?php echo date("Y"); ?> | All rights Reserved | RADIANT &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Designed By BIZIMANA Kundwa Didier Constance</p>
+    <p class="text-center fw-light pt-4 fs-6">&copy; <? echo date("Y"); ?> Designed By BIZIMANA Kundwa Didier Constance. All rights reserved. </p>
 </footer>
