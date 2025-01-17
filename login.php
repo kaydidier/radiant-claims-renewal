@@ -1,7 +1,4 @@
-<? include "includes/connection.php";
-// session_start();
-?>
-
+<? include "includes/connection.php"; ?>
 
 <main class="h-100 d-flex flex-column">
 
@@ -10,53 +7,62 @@
 	<div id="login" class="container h-100 d-flex flex-column align-items-center justify-content-center">
 		<div class="col-12 col-lg-6 bg-light p-5 border rounded">
 			<p class="fw-bold fs-5">Continue to your account </p>
-			<form class="">
+			<form class="" method="POST">
 				<div class="mb-3">
-					<label for="email" class="form-label">Email address</label>
-					<input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+					<label for="email" class="form-label">Email address / Username</label>
+					<input type="text" class="form-control" placeholder="Please enter your identification" id="email" name="email">
 				</div>
 				<div class="mb-3">
 					<label for="password" class="form-label">Password</label>
-					<input type="password" class="form-control" id="password">
+					<input type="password" class="form-control" placeholder="Please enter your password" id="password" name="password">
 				</div>
-				<button type="submit" class="btn btn-primary">Login</button>
+				<button type="submit" id="login" name="login" class="btn btn-primary">Login</button>
 			</form>
 		</div>
 	</div>
 
 </main>
 
-
 <?php
-// if (isset($_POST['login'])) {
-// 	$ab = $_POST['uname'];
-// 	$bc = $_POST['pass'];
-// 	$a = mysqli_real_escape_string($ab);
-// 	$b = mysqli_real_escape_string($bc);
-// 	$sql1 = mysqli_query("SELECT * FROM admin where username='$a'and password='$b'") or die(mysqli_error());
-// 	$sql2 = mysqli_query("SELECT * FROM employees  where username='$a' and password='$b'") or die(mysqli_error());
-// 	$sql3 = mysqli_query("SELECT * FROM clients where username='$a' and password='$b'") or die(mysqli_error());
-// 	//var_dump($row1);
+if (isset($_POST['login'])) {
 
-// 	if (mysqli_num_rows($sql1) > 0) {
-// 		$rowid = mysqli_fetch_array($sql1);
-// 		$_SESSION['adminid'] = $rowid['ad_id'];
-// 		header("location:adminpage.php");
-// 	} else {
-// 		if (mysqli_num_rows($sql2) > 0) {
-// 			$rowid = mysqli_fetch_array($sql2) or die(mysqli_error());
-// 			$_SESSION['employeeid'] = $rowid['emp_id'];
-// 			header("location:emppage.php");
-// 		} else {
-// 			if (mysqli_num_rows($sql3) > 0) {
-// 				$rowid = mysqli_fetch_array($sql3) or die(mysqli_error());
-// 				$_SESSION['clientid'] = $rowid['id_client'];
-// 				header("location:clientpage.php");
-// 			} else {
-// 				$msg = "<tr><td colspan='2'>enter your Username or<br>password which is correctly</td></tr>";
-// 				header("location:index.php");
-// 			}
-// 		}
-// 	}
-// }
-?>
+	$email = $mysqli->real_escape_string($_POST['email']);
+	$password = $mysqli->real_escape_string($_POST['password']);
+
+	$sql1 = $mysqli->query("SELECT * FROM admin where username='$email' and password='$password'") or die($mysqli->error);
+	$sql2 = $mysqli->query("SELECT * FROM employees  where username='$email' or email='$email'  and password='$password'") or die($mysqli->error);
+	$sql3 = $mysqli->query("SELECT * FROM clients where username='$email' or email='$email'  and password='$password'") or die($mysqli->error);
+
+	if ($sql1->num_rows > 0) {
+		$rowid = $sql1->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
+
+		$_SESSION['adminid'] = $rowid['ad_id'];
+		$sql1->free_result();
+
+		// header("Location: adminpage.php");
+		echo "<script>window.location.href = 'adminpage.php';</script>";
+		exit();
+	} elseif ($sql2->num_rows > 0) {
+		$rowid = $sql2->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
+
+		$_SESSION['employeeid'] = $rowid['emp_id'];
+		$sql2->free_result();
+		
+		// header("Location: emppage.php");
+		echo "<script>window.location.href = 'emppage.php';</script>";
+		exit();
+	} elseif ($sql3->num_rows > 0) {
+		$rowid = $sql3->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
+
+		$_SESSION['clientid'] = $rowid['id_client'];
+		$sql3->free_result();
+
+		// header("Location: clientpage.php");
+		echo "<script>window.location.href = 'clientpage.php';</script>";
+		exit();
+	} else {
+		$msg = "Invalid username or password.";
+		header("Location: index.php?error=" . urlencode($msg));
+		exit();
+	}
+}
