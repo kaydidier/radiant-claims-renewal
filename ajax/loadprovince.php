@@ -4,12 +4,12 @@
 	$html='<select name="district">';
 	$initialProvince=$_GET['province'];
 	//echo $initialProvince;
-	$district=mysql_query("SELECT * from district WHERE provinceId='$initialProvince'")or die(mysql_error());
+	$district=mysqli_query("SELECT * from district WHERE provinceId='$initialProvince'")or die(mysqli_error());
 	
 	$i=0;
-	$row=mysql_fetch_array($district);
+	$row=mysqli_fetch_array($district);
 	//var_dump($row);
-	while ($row=mysql_fetch_array($district)) {
+	while ($row=mysqli_fetch_array($district)) {
 		 
 			
 		

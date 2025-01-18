@@ -100,10 +100,10 @@ header("LOCATION:index.php");
 	<div id='res'>
 	<table>
 		<?php
-			$query=mysql_query("SELECT * FROM insured where id_client={$_SESSION['clientid']}") or die(mysql_error());
+			$query=mysqli_query("SELECT * FROM insured where id_client={$_SESSION['clientid']}") or die(mysqli_error());
 			$display=4;
 			$cols=0;
-			while ($row=mysql_fetch_array($query)) {
+			while ($row=mysqli_fetch_array($query)) {
 				if($cols==0){
 					?>
 					<tr>
@@ -117,9 +117,9 @@ header("LOCATION:index.php");
 
 						switch ($row['type']) {
 							case 'car':
-								$query2=mysql_query("SELECT cars.* FROM cars WHERE cars.car_id={$row['propertyId']}") or die(mysql_error());
+								$query2=mysqli_query("SELECT cars.* FROM cars WHERE cars.car_id={$row['propertyId']}") or die(mysqli_error());
 
-								while ($row2=mysql_fetch_array($query2)) {
+								while ($row2=mysqli_fetch_array($query2)) {
 									?>
 									
 									<div class="img">
@@ -138,9 +138,9 @@ header("LOCATION:index.php");
 								break;
 							
 							case 'house':
-								$query2=mysql_query("SELECT houses.* FROM houses WHERE houses.house_id={$row['propertyId']} ORDER BY houses.house_id ASC") or die(mysql_error());
+								$query2=mysqli_query("SELECT houses.* FROM houses WHERE houses.house_id={$row['propertyId']} ORDER BY houses.house_id ASC") or die(mysqli_error());
 
-								while ($row2=mysql_fetch_array($query2)) {
+								while ($row2=mysqli_fetch_array($query2)) {
 									$i=$row['insured_id'];
 									?>
 									<div class="img">
@@ -226,11 +226,11 @@ $i=$_POST['pptid'];
 $file=time().$_FILES['attach']['name'];
 $sdate=$_POST['sdate'];
 $edate=$_POST['edate'];
-$existing=mysql_query("SELECT * from insured_details WHERE insured_id='$i' and status='waiting'");
-if (mysql_num_rows($existing)<=0) {
+$existing=mysqli_query("SELECT * from insured_details WHERE insured_id='$i' and status='waiting'");
+if (mysqli_num_rows($existing)<=0) {
 	
 $ins=" INSERT INTO insured_details VALUES(null,'$i','$file','$sdate','$edate','waiting')";
-if (mysql_query($ins) or die(mysql_error())) {
+if (mysqli_query($ins) or die(mysqli_error())) {
 move_uploaded_file($_FILES['attach']['tmp_name'], "slips/".$file);
 		echo "<script type='text/javascript'>alert('Information Uploaded');</script>";
 	}

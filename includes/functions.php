@@ -1,8 +1,6 @@
 <?php
 function convert($indate)
 {
-
-
 	$seconds = strtotime($indate);
 
 	$nowsec = strtotime(date("Y-m-d"));
@@ -44,6 +42,7 @@ function convert($indate)
 			}
 		}
 	}
+
 	switch ($flag) {
 		case 'seconds':
 			if ($diff < 0) {
@@ -69,6 +68,7 @@ function convert($indate)
 			break;
 	}
 }
+
 function getInsuranceStatus($startDate, $endDate)
 {
 

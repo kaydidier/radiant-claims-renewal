@@ -39,9 +39,9 @@ mysql_select_db("vis");
 <td colspan="2">Action</td>
 <?php
 $sql="SELECT * FROM company";	
-$exec=mysql_query($sql)or die(mysql_error());
+$exec=mysqli_query($sql)or die(mysqli_error());
 $a=1;
-while($row=mysql_fetch_array($exec)){
+while($row=mysqli_fetch_array($exec)){
 
 	?>
 	<tr>

@@ -1,4 +1,4 @@
-<? include "includes/header.php"; ?>
+<? require "includes/header.view.php"; ?>
 
 <main class="h-100 d-flex flex-column">
 
@@ -17,7 +17,7 @@
 				<p class="fs-4">We help with insurance claims and renewals, making everything simple and stress-free</p>
 
 				<div class="py-4">
-					<a href="./login.php" class="text-decoration-none text-white">
+					<a href="./login.view.php" class="text-decoration-none text-white">
 						<button type="button" class="btn btn-primary">
 							Get started
 						</button>
@@ -65,7 +65,7 @@
 		</section>
 
 		<section id="contact">
-			<? include "includes/footer.php" ?>
+			<? require "includes/footer.view.php" ?>
 		</section>
 	</div>
 </main>

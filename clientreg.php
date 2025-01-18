@@ -1,37 +1,39 @@
 <?php
-mysql_connect("localhost","root","");
-mysql_select_db("radiant");
-session_start();
+require "includes/connection.php";
+// session_start();
 if (!$_SESSION['employeeid']) {
 header("LOCATION:index.php");
 }
 
-
+// Register Client
 if (isset($_POST['save'])) {
-	//var_dump($_POST); die;
-	$a=mysql_real_escape_string($_POST['fname']);
-	$b=mysql_real_escape_string($_POST['lname']);
-	$c=mysql_real_escape_string($_POST['uname']);
-	$d=mysql_real_escape_string($_POST['pass']);
-	$e=mysql_real_escape_string($_POST['email']);
-	$v=mysql_real_escape_string($_POST['sexa']);
-	$f=mysql_real_escape_string($_POST['dob']);
-	$g=mysql_real_escape_string($_POST['sector']);
-	$h=mysql_real_escape_string($_POST['district']);
-	$i=mysql_real_escape_string($_POST['province']);
-	$j=mysql_real_escape_string($_POST['phone']);
-	$k=mysql_real_escape_string($_POST['idno']);
+
+	$a=mysqli_real_escape_string($mysqli, $_POST['fname']);
+	$b=mysqli_real_escape_string($mysqli, $_POST['lname']);
+	$c=mysqli_real_escape_string($mysqli, $_POST['uname']);
+	$d=mysqli_real_escape_string($mysqli, $_POST['pass']);
+	$e=mysqli_real_escape_string($mysqli, $_POST['email']);
+	$v=mysqli_real_escape_string($mysqli, $_POST['sexa']);
+	$f=mysqli_real_escape_string($mysqli, $_POST['dob']);
+	$g=mysqli_real_escape_string($mysqli, $_POST['sector']);
+	$h=mysqli_real_escape_string($mysqli, $_POST['district']);
+	$i=mysqli_real_escape_string($mysqli, $_POST['province']);
+	$j=mysqli_real_escape_string($mysqli, $_POST['phone']);
+	$k=mysqli_real_escape_string($mysqli, $_POST['idno']);
+
 	$sql="INSERT INTO clients VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$v', '$g', '$h', '$i','$j','$k',{$_SESSION['employeeid']})";
 	$sq="SELECT * FROM clients WHERE email='$e' or phone='$j' or ID_no='$k'";
-	$query=mysql_query($sq)or die(mysql_error());
+
+	$query=mysqli_query($mysqli, $sq)or die(mysqli_error($mysqli ));
 	if(empty($a) or empty($b) or empty($c) or empty($d) or empty($e) or empty($v)
 	or empty($f) or empty($g) or empty($h) or empty($i) or empty($j) or empty($k)){
 		echo "<script type='text/javascript'>alert('empty fields');</script>";
 	}
 
-	else if (mysql_num_rows($query)>0){
-		$rowquery=mysql_fetch_array($query);
-			if ($rowquery['email']==$e||$rowquery['phone']==$j) {
+	else if (mysqli_num_rows($query)>0){
+		$rowquery=mysqli_fetch_array($query);
+
+			if ($rowquery['email']== $e || $rowquery['phone']==$j) {
 				
 			echo "<script type='text/javascript'>alert('Information Saved Before');</script>";
 		}
@@ -43,11 +45,11 @@ if (isset($_POST['save'])) {
 	if($f > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60) ) )) {
 		echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
 	} else {
-		$insert=mysql_query($sql)or die(mysql_error());
+		$insert=mysqli_query($mysqli, $sql)or die(mysqli_error($mysqli));
 		if ($insert) {
-			$_SESSION['clientregistration']=mysql_insert_id();
+			$_SESSION['clientregistration' ]= mysqli_insert_id($mysqli);
 			echo "<script type='text/javascript'>alert('Successfully! Continue Give Client Insurance');
-			window.location='initsession.php?clid=".mysql_insert_id()."';
+			window.location='initsession.php?clid=".mysqli_insert_id($mysqli)."';
 			</script>";
 			?>
 			<script type="text/javascript">
@@ -64,23 +66,29 @@ if (isset($_POST['save'])) {
 		}
 	}
 }
+
+// Register Moto
 if (isset($_POST['motor']) and isset($_SESSION['clientregistration'])) {
-	$plaque=mysql_real_escape_string($_POST['plaque']);
-	$model=mysql_real_escape_string($_POST['model']);
-	$description=mysql_real_escape_string($_POST['description']);
+	$plaque=mysqli_real_escape_string($mysqli, $_POST['plaque']);
+	$model=mysqli_real_escape_string($mysqli, $_POST['model']);
+	$description=mysqli_real_escape_string($mysqli, $_POST['description']);
 	$photo=time().$_FILES['photo']['name'];
 	
-	$insId=mysql_real_escape_string($_POST['insid']);
-	$price=mysql_real_escape_string($_POST['price']);
+	$insId=mysqli_real_escape_string($mysqli, $_POST['insid']);
+	$price=mysqli_real_escape_string($mysqli, $_POST['price']);
 	$sdate=$_POST['startdate'];
 	$edate=$_POST['enddate'];
-	if (mysql_query("INSERT INTO cars VALUES(null,'$plaque','$model','$description','$photo',{$_SESSION['clientregistration']})")or die("here ".mysql_error())) {
+
+	if (mysqli_query($mysqli, "INSERT INTO cars VALUES(null,'$plaque','$model','$description','$photo',{$_SESSION['clientregistration']})")or die("here ".mysqli_error($mysqli))) {
+
 		move_uploaded_file($_FILES['photo']['tmp_name'],"./images/cars\ ".$photo);
-		$propertyid=mysql_insert_id();
-	$insertdata=mysql_query("INSERT INTO insured VALUES(null,'$sdate','$edate','$price','$insId',{$_SESSION['clientregistration']},'$propertyid','car')") or die("here 2:".mysql_error());
+		$propertyid = mysqli_insert_id($mysqli);
+		
+	$insertdata=mysqli_query($mysqli, "INSERT INTO insured VALUES(null,'$sdate','$edate','$price','$insId',{$_SESSION['clientregistration']},'$propertyid','car')") or die("here 2:".mysqli_error($mysqli));
+
 	if ($insertdata) {
 		unset($_SESSION['clientregistration']);
-		header("location:clientprint.php?ppt=".mysql_insert_id());
+		header("location:clientprint.php?ppt=".mysqli_insert_id($mysqli));
 	?>
 	<script type="text/javascript">
 	alert("insurance added");
@@ -90,21 +98,24 @@ if (isset($_POST['motor']) and isset($_SESSION['clientregistration'])) {
 	}
 
 }
+
+// Register House property
 if (isset($_POST['house']) and isset($_SESSION['clientregistration'])) {
-	$plotno=mysql_real_escape_string($_POST['plotno']);
-	$description=mysql_real_escape_string($_POST['description']);
+	$plotno=mysqli_real_escape_string($mysqli, $_POST['plotno']);
+	$description=mysqli_real_escape_string($mysqli, $_POST['description']);
 	$photo=time().$_FILES['photo']['name'];
-	$sdate=mysql_real_escape_string($_POST['startdate']);
-	$edate=mysql_real_escape_string($_POST['enddate']);
-	$insId=mysql_real_escape_string($_POST['insid']);
-	$price=mysql_real_escape_string($_POST['price']);
-		if (mysql_query("INSERT INTO houses VALUES(null,'$plotno',{$_SESSION['clientregistration']},'$description','$photo')")) {
+	$sdate=mysqli_real_escape_string($mysqli, $_POST['startdate']);
+	$edate=mysqli_real_escape_string($mysqli, $_POST['enddate']);
+	$insId=mysqli_real_escape_string($mysqli, $_POST['insid']);
+	$price=mysqli_real_escape_string($mysqli, $_POST['price']);
+	
+		if (mysqli_query($mysqli, "INSERT INTO houses VALUES(null,'$plotno',{$_SESSION['clientregistration']},'$description','$photo')")) {
 		move_uploaded_file($_FILES['photo']['tmp_name'],"./images/houses\ ".$photo);
-		$propertyid=mysql_insert_id();
-	$insertdata=mysql_query("INSERT INTO insured VALUES(null,'$sdate','$edate','$price','$insId',{$_SESSION['clientregistration']},'$propertyid','house')") or die(mysql_error());
+		$propertyid=mysqli_insert_id($mysqli);
+	$insertdata=mysqli_query($mysqli, "INSERT INTO insured VALUES(null,'$sdate','$edate','$price','$insId',{$_SESSION['clientregistration']},'$propertyid','house')") or die(mysqli_error($mysqli));
 	if ($insertdata) {
 		unset($_SESSION['clientregistration']);
-		header("location:clientprint.php?ppt=".mysql_insert_id());
+		header("location:clientprint.php?ppt=".mysqli_insert_id($mysqli));
 		
 	?>
 	<script type="text/javascript">
@@ -178,7 +189,8 @@ $('select[name="type"]').change(function(){
 
 <br>
 
-<?php include("includes/header.php");
+<?php 
+// include("includes/header.view.php");
 ?>
 <div id="navbar">
 <ul>
@@ -195,6 +207,7 @@ $('select[name="type"]').change(function(){
 <li><a href="logout.php" id="show">Logout</a></li>
 </ul>
 </div>
+
 <?php
 	if (isset($_GET['clid'])) {
 
@@ -218,11 +231,11 @@ $('select[name="type"]').change(function(){
 					
 			<?php
 				$i=1;
-				$insurances=mysql_query("SELECT * FROM insurance");
-				while ($row=mysql_fetch_array($insurances)) {
+				$insurances=mysqli_query($mysqli, "SELECT * FROM insurance");
+				while ($row=mysqli_fetch_array($insurances)) {
 					?>
 
-					<option value="<?php $a=split(" ",$row['insurance_name']); echo $a[0];?>"><?php echo $row['insurance_name'] ?></option>
+					<option value="<?php $a=explode(" ",$row['insurance_name']); echo $a[0];?>"><?php echo $row['insurance_name'] ?></option>
 					<?php
 
 				}
@@ -237,8 +250,8 @@ $('select[name="type"]').change(function(){
 				<form method="POST" action="" enctype="multipart/form-data">
 					<table id="motor">
 						<tr>
-						<?php $insurances=mysql_query("SELECT * FROM insurance where insurance_name='Motor insurance'");  
-							$insData=mysql_fetch_array($insurances);
+						<?php $insurances=mysqli_query($mysqli, "SELECT * FROM insurance where insurance_name='Motor insurance'");  
+							$insData=mysqli_fetch_array($insurances);
 						?>
 						<input type="hidden" name="insid" value="<?php echo $insData['insurance_id']; ?>">
 						<tr>
@@ -272,8 +285,8 @@ $('select[name="type"]').change(function(){
 				<div class="house">
 				<form method="POST" action="" enctype="multipart/form-data">
 					<table id="fire">
-						<?php $insurances=mysql_query("SELECT * FROM insurance where insurance_name='Motor insurance'");  
-							$insData=mysql_fetch_array($insurances);
+						<?php $insurances=mysqli_query($mysqli, "SELECT * FROM insurance where insurance_name='Motor insurance'");  
+							$insData=mysqli_fetch_array($insurances);
 						?>
 						<input type="hidden" name="insid" value="<?php echo $insData['insurance_id']; ?>">
 						<tr>
@@ -340,10 +353,10 @@ $('select[name="type"]').change(function(){
 <tr><td>province:</td>
 <td><select name="province">
 <?php
-	$province=mysql_query("SELECT * from province");
+	$province=mysqli_query("SELECT * from province");
 	
 	$i=0;
-	while ($row=mysql_fetch_array($province)) {
+	while ($row=mysqli_fetch_array($province)) {
 		 {
 			$i++;
 			if ($i==1) {
@@ -364,10 +377,10 @@ $('select[name="type"]').change(function(){
 <div id="districts">
 <select name="district">
 <?php
-	$district=mysql_query("SELECT district.* from district,province WHERE province.provinceId=district.provinceId and district.provinceId='$initialProvince'");
+	$district=mysqli_query("SELECT district.* from district,province WHERE province.provinceId=district.provinceId and district.provinceId='$initialProvince'");
 	
 	$i=0;
-	while ($row=mysql_fetch_array($district)) {
+	while ($row=mysqli_fetch_array($district)) {
 		 
 			
 		?>

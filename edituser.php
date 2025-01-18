@@ -30,8 +30,8 @@ echo $_SESSION['edit'];
 <?php include("includes/header.php"); ?>
 
 <?php
-$sql=mysql_query("SELECT * FROM employees WHERE emp_id={$_SESSION['employeeid']}") or die(mysql_error());
-$rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
+$sql=mysqli_query("SELECT * FROM employees WHERE emp_id={$_SESSION['employeeid']}") or die(mysqli_error());
+$rowname=mysqli_fetch_array($sql,MYSQL_ASSOC);
 ?>
 <div id="navbar">
 <ul>
@@ -57,18 +57,18 @@ $rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
 		if (isset($_SESSION['edit'])) {
 			$idcl=$_SESSION['edit'];
 		}else{$idcl=$_GET['userid'];}
-			$query=mysql_query("SELECT * FROM insured where id_client='$idcl'") or die(mysql_error());
+			$query=mysqli_query("SELECT * FROM insured where id_client='$idcl'") or die(mysqli_error());
 			
-			while ($row=mysql_fetch_array($query)) {
+			while ($row=mysqli_fetch_array($query)) {
 				?>
 				<div><?php echo $row['type']; ?></div>
 				<?php
 
 						switch ($row['type']) {
 							case 'car':
-								$query2=mysql_query("SELECT cars.* FROM cars WHERE cars.car_id={$row['propertyId']}") or die(mysql_error());
+								$query2=mysqli_query("SELECT cars.* FROM cars WHERE cars.car_id={$row['propertyId']}") or die(mysqli_error());
 
-								while ($row2=mysql_fetch_array($query2)) {
+								while ($row2=mysqli_fetch_array($query2)) {
 									?>
 									<div class="insured-ppt">
 									<div>
@@ -86,9 +86,9 @@ $rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
 								break;
 							
 							case 'house':
-								$query2=mysql_query("SELECT houses.* FROM houses WHERE houses.house_id={$row['propertyId']}") or die(mysql_error());
+								$query2=mysqli_query("SELECT houses.* FROM houses WHERE houses.house_id={$row['propertyId']}") or die(mysqli_error());
 
-								while ($row2=mysql_fetch_array($query2)) {
+								while ($row2=mysqli_fetch_array($query2)) {
 									?>
 									<div>
 										<img src="./images/houses/ <?php echo $row2['photo'];?>" height="200" width="200">

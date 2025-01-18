@@ -66,7 +66,7 @@ mysql_select_db("vis");
 if (isset($_POST['save'])) {
 $sql="INSERT INTO company VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f', '$g', '$h', '$i')";
 $sq="SELECT * FROM company WHERE email='$i' AND phonenumber='$g' AND company_slogan='$c'";
-$e=mysql_query($sq);
+$e=mysqli_query($sq);
 if(empty($a) or empty($b) or empty($c) or empty($d) or empty($e)
 or empty($f) or empty($g) or empty($h) or empty($i)){
 echo "<script type='text/javascript'>alert('empty');</script>";

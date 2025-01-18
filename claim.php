@@ -73,8 +73,8 @@ color:white;cursor:pointer;font-size: 16px;}
 <tr><td>Insurance-type</td></tr><tr>
 <td><select name="ptins">
 <?php
-	$insQuery=mysql_query("SELECT * FROM insurance");
-	while ($insQueryRow=mysql_fetch_array($insQuery)) {
+	$insQuery=mysqli_query("SELECT * FROM insurance");
+	while ($insQueryRow=mysqli_fetch_array($insQuery)) {
 		?>
 		<option value="<?php echo $insQueryRow['insurance_id']; ?>" <?php 
 		$insuranceType=split(" ",$insQueryRow['insurance_name']);
@@ -94,14 +94,14 @@ color:white;cursor:pointer;font-size: 16px;}
 <tr><td>Select Your Property Property</td></tr><tr>
 <td>
 <?php
-	$options=mysql_query("SELECT * FROM houses where houses.id_client={$_SESSION['clientid']}") or die(mysql_error());
-	//$optionsdata=mysql_fetch_array($options);
+	$options=mysqli_query("SELECT * FROM houses where houses.id_client={$_SESSION['clientid']}") or die(mysqli_error());
+	//$optionsdata=mysqli_fetch_array($options);
 	//var_dump($optionsdata);
 ?>
 <div class="ppt-type">
 <select name="pt">
 <?php
-	while ($optionsdata=mysql_fetch_array($options)) {
+	while ($optionsdata=mysqli_fetch_array($options)) {
 		?>
 		<option value=<?php echo $optionsdata['house_id']; ?>><?php echo $optionsdata['plot_number']; ?></option>
 		<?php
@@ -120,12 +120,12 @@ color:white;cursor:pointer;font-size: 16px;}
 <?php include("includes/footer.php");?>
 <?php
 if (isset($_POST['sav'])) {
-	$msg=mysql_real_escape_string($_POST['msg']);
+	$msg=mysqli_real_escape_string($_POST['msg']);
 	$file=$_FILES['attach']['name'];
 	$type=$_POST['pt'];
 	$time=date("d-m-Y H:i:s");
 	$ins="INSERT INTO claim VALUES('','$time','{$_SESSION['clientid']}','$type','$msg','$file','unread')";
-	if (mysql_query($ins) or die(mysql_error())) {
+	if (mysqli_query($ins) or die(mysqli_error())) {
 	move_uploaded_file($_FILES['attach']['tmp_name'], "files/".$file);
 		echo "<script type='text/javascript'>alert('Information Uploaded');</script>";
 	}

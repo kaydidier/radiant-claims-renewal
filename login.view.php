@@ -1,8 +1,8 @@
-<? include "includes/connection.php"; ?>
+<? require "includes/connection.php"; ?>
 
 <main class="h-100 d-flex flex-column">
 
-	<? include "includes/header.php"; ?>
+	<? require "includes/header.view.php"; ?>
 
 	<div id="login" class="container h-100 d-flex flex-column align-items-center justify-content-center">
 		<div class="col-12 col-lg-6 bg-light p-5 border rounded">
