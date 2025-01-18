@@ -10,10 +10,10 @@
 
         <title>Radiant Insurance Claimns and Renewal System</title>
 
-        <script src="js/jquery.js"></script>
-        <script src="js/jquery-ui.js"></script>
+        <script src="../js/jquery.js"></script>
+        <script src="../js/jquery-ui.js"></script>
 
-        <link rel="stylesheet" href="css/jquery-ui.css">
+        <link rel="stylesheet" href="../css/jquery-ui.css">
 
         <link rel="shortcut icon" href="../insurance/logo.png">
         <link rel="stylesheet" type="text/css" href="../cssweb/file.css">

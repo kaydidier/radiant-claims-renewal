@@ -6,4 +6,3 @@
  {
    echo "session not set";
  }
-?>
