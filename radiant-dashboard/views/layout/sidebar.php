@@ -28,28 +28,28 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="index.php">
+        <a class="nav-link" href="clients.php">
             <i class="fas fa-fw fa-address-book"></i>
             <span>Clients</span>
         </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="index.php">
+        <a class="nav-link" href="claims.php">
             <i class="fas fa-fw fa-building"></i>
             <span>Claims</span>
         </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="index.php">
+        <a class="nav-link" href="insurances.php">
             <i class="fas fa-fw fa-layer-group"></i>
             <span>Renewals</span>
         </a>
     </li>
 
     <li class="nav-item">
-        <a class="nav-link" href="index.php">
+        <a class="nav-link" href="renewals.php">
             <i class="fas fa-fw fa-chess"></i>
             <span>Insurance</span>
         </a>
