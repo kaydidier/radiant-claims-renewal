@@ -16,8 +16,8 @@ color: white;font-family: century gothic;font-size:17px;}
 $kv=$_GET['id'];
 
 $sql="SELECT * from clients where id_client='$kv'";
-$exec=mysql_query($sql)or die(mysql_error());
-$row=mysql_fetch_array($exec);
+$exec=mysqli_query($sql)or die(mysqli_error());
+$row=mysqli_fetch_array($exec);
 //var_dump($row);
 
 

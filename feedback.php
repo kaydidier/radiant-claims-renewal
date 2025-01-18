@@ -49,10 +49,10 @@ header("LOCATION:index.php");
 $id=$_GET['id'];
 $now=date("Y-m-d");
 
-@$a=mysql_real_escape_string($_POST['msg']);
+@$a=mysqli_real_escape_string($_POST['msg']);
 if(isset($_POST['snd'])){
 $send1="INSERT INTO feedback values('null','$a','$now','$client')";
-$execmsg=mysql_query($send1)or die(mysql_error());
+$execmsg=mysqli_query($send1)or die(mysqli_error());
 if($execmsg){
 	echo "<script type='text/javascript'>alert('sent');</script>";
 }
@@ -63,5 +63,5 @@ else{
 ?>
 <?php 
 
-mysql_query(" UPDATE claim set status='read' where claim_id='$id'")or die(mysql_error());
+mysqli_query(" UPDATE claim set status='read' where claim_id='$id'")or die(mysqli_error());
 ?>

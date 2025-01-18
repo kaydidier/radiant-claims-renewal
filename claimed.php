@@ -38,11 +38,11 @@ $id=$_SESSION['employeeid'];
 $sl="SELECT claim.*,clients.emp_id,clients.firstname as fnamee,clients.lastname as lnamee,clients.id_client,employees.firstname,
 employees.lastname FROM claim,clients,employees where claim.id_client=clients.id_client
 and clients.emp_id=employees.emp_id and employees.emp_id='$id' and status='unread' order by claim_time desc";
-$query=mysql_query($sl)or die(mysql_error());
-if(mysql_num_rows($query)>0){
+$query=mysqli_query($sl)or die(mysqli_error());
+if(mysqli_num_rows($query)>0){
 
 
-while ($row=mysql_fetch_array($query)) {
+while ($row=mysqli_fetch_array($query)) {
 
 	?>
 	<div id='head'>Name:<?php echo$row['fnamee']." ".$row['lnamee'];?></div>
@@ -71,11 +71,11 @@ echo "<br>";
 $sl="SELECT claim.*,clients.emp_id,clients.firstname as fname,clients.lastname as lname,clients.id_client,employees.firstname,
 employees.lastname FROM claim,clients,employees where claim.id_client=clients.id_client
 and clients.emp_id=employees.emp_id and employees.emp_id='$id' and status='read'";
-$query=mysql_query($sl)or die(mysql_error());
-if(mysql_num_rows($query)>0){
+$query=mysqli_query($sl)or die(mysqli_error());
+if(mysqli_num_rows($query)>0){
 
 
-while ($row=mysql_fetch_array($query)) {
+while ($row=mysqli_fetch_array($query)) {
 
 	?>
 	<div id='head'>Client's Name:<?php echo$row['fname']." ".$row['lname'];?></div>

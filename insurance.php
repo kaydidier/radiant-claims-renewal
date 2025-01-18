@@ -10,7 +10,7 @@ header("LOCATION:index.php");
 	//header("location:login.php");
 	//}
 if(@$_GET['action']=='delete'){
-	if (mysql_query("DELETE FROM insurance WHERE insurance_id={$_GET['id']}")) {
+	if (mysqli_query("DELETE FROM insurance WHERE insurance_id={$_GET['id']}")) {
 		?>
 		<script type="text/javascript">
 		alert("insurance Successfully deleted");
@@ -22,7 +22,7 @@ if(isset($_POST['update'])){
 	$insname=$_POST['ins'];
 	$insID=$_GET['id'];
 
-	if (mysql_query("UPDATE insurance set insurance_name='$insname' WHERE insurance_id='$insID'")or die(mysql_error())) {
+	if (mysqli_query("UPDATE insurance set insurance_name='$insname' WHERE insurance_id='$insID'")or die(mysqli_error())) {
 		?>
 		<script type="text/javascript">
 		alert("insurance Successfully updated");
@@ -47,8 +47,8 @@ $(document).ready(function(){
 <?php include("includes/header.php");?>
 
 <?php
-$sql=mysql_query("SELECT * FROM admin WHERE ad_id={$_SESSION['adminid']}") or die(mysql_error());
-$rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
+$sql=mysqli_query("SELECT * FROM admin WHERE ad_id={$_SESSION['adminid']}") or die(mysqli_error());
+$rowname=mysqli_fetch_array($sql,MYSQL_ASSOC);
 ?>
 <div id="navbar">
 <ul>
@@ -72,9 +72,9 @@ $rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
 <td id="as" colspan="2">Action</td>
 <?php
 $sql="select *from insurance";	
-$exec=mysql_query($sql);
+$exec=mysqli_query($sql);
 $a=1;
-while($row=mysql_fetch_array($exec)){
+while($row=mysqli_fetch_array($exec)){
 	?>
 	<tr>
 <td><?php echo $a;?></td> 
@@ -90,8 +90,8 @@ while($row=mysql_fetch_array($exec)){
 if (@$_GET['action']=='update') {
 	
 	$sql="select *from insurance where insurance_id={$_GET['id']}";	
-	$exec=mysql_query($sql);
-	$rows=mysql_fetch_array($exec);
+	$exec=mysqli_query($sql);
+	$rows=mysqli_fetch_array($exec);
 }
 ?>
 <form method="POST" <?php if (isset($_GET['update'])){
@@ -135,12 +135,12 @@ font-weight: bold;}
 if(isset($_POST['send'])){
 	$sql="INSERT into insurance values(null,'$a')";
 $sq="SELECT * FROM insurance WHERE insurance_name='$a'";
-$query=mysql_query($sq)or die(mysql_error());
+$query=mysqli_query($sq)or die(mysqli_error());
 if(empty($a)) {
 echo "<script type='text/javascript'>alert('empty fields');</script>";
 }
-else if (mysql_num_rows($query)>0){
-	$rowquery=mysql_fetch_array($query);
+else if (mysqli_num_rows($query)>0){
+	$rowquery=mysqli_fetch_array($query);
 		if ($rowquery['insurance_name']) {
 			
 		echo "<script type='text/javascript'>alert('duplication data');</script>";
@@ -149,7 +149,7 @@ else if (mysql_num_rows($query)>0){
 
 }
 else{
-$insert=mysql_query($sql)or die(mysql_error());
+$insert=mysqli_query($sql)or die(mysqli_error());
 if ($insert) {
 	echo "<script type='text/javascript'>alert('Insurance Added Successfully');</script>";
 }else{

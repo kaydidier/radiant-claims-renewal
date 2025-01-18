@@ -10,8 +10,8 @@ include("includes/connection.php");
 $kv=$_GET['id'];
 
 $sql="SELECT * from employees where emp_id='$kv'";
-$exec=mysql_query($sql)or die(mysql_error());
-$row=mysql_fetch_array($exec);
+$exec=mysqli_query($sql)or die(mysqli_error());
+$row=mysqli_fetch_array($exec);
 //var_dump($row);
 
 
@@ -33,10 +33,10 @@ value="<?php echo $row['email'];?>"></td></tr>
 <tr><td>province:</td>
 <td><select name="province" >
 <?php
-	$province=mysql_query("SELECT * from province");
+	$province=mysqli_query("SELECT * from province");
 	
 	$i=0;
-	while ($row=mysql_fetch_array($province)) {
+	while ($row=mysqli_fetch_array($province)) {
 		 {
 			$i++;
 			if ($i==1) {
@@ -57,10 +57,10 @@ value="<?php echo $row['email'];?>"></td></tr>
 <div id="districts">
 <select name="district">
 <?php
-	$district=mysql_query("SELECT district.* from district,province WHERE province.provinceId=district.provinceId and district.provinceId='$initialProvince'");
+	$district=mysqli_query("SELECT district.* from district,province WHERE province.provinceId=district.provinceId and district.provinceId='$initialProvince'");
 	
 	$i=0;
-	while ($row=mysql_fetch_array($district)) {
+	while ($row=mysqli_fetch_array($district)) {
 		 
 			
 		?>

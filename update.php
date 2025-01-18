@@ -10,8 +10,8 @@ include("includes/connection.php");
 $kv=$_GET['id'];
 
 $sql="SELECT * from employees where emp_id='$kv'";
-$exec=mysql_query($sql)or die(mysql_error());
-$row=mysql_fetch_array($exec);
+$exec=mysqli_query($sql)or die(mysqli_error());
+$row=mysqli_fetch_array($exec);
 //var_dump($row);
 
 

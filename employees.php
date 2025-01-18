@@ -80,9 +80,9 @@ header("LOCATION:index.php");
 </tr>
 <?php
 $sql="SELECT * from employees";	
-$exec=mysql_query($sql)or die(mysql_error());
+$exec=mysqli_query($sql)or die(mysqli_error());
 $a=1;
-while($row=mysql_fetch_array($exec)){
+while($row=mysqli_fetch_array($exec)){
 
 	?>
 	<tr id='col<?=$row['emp_id']?>'>

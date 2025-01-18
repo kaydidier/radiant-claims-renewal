@@ -52,9 +52,9 @@ header("LOCATION:index.php");
 <td id="as">IdNo</td>
 <?php
 $sql="select *from clients";	
-$exec=mysql_query($sql);
+$exec=mysqli_query($sql);
 $a=1;
-while($row=mysql_fetch_array($exec)){
+while($row=mysqli_fetch_array($exec)){
 	?>
 	<tr>
 <td><?php echo $a;?></td> 

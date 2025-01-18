@@ -10,7 +10,7 @@ $f=$_POST['pass'];
 $g=$_POST['email'];
 $h=$_POST['phone'];
 $sql="INSERT INTO employees VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f', '$g', '$h')";
-$ec=mysql_query($sql)or die(mysql_error());
+$ec=mysqli_query($sql)or die(mysqli_error());
 if($ec){
 	echo "data is inserted";	
 }

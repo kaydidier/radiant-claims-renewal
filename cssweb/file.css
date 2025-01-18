@@ -1,22 +1,29 @@
 :root {
-	--bs-primary: #0F95BD;
+	--bs-primary: #0F75BD;
 	--bs-body-bg: #0F75BD;
 	--bs-body-color: #FFFFFF;
 }
 
+* {
+	font-family: Poppins, sans-serif;
+	box-sizing: border-box;
+}
+
 .btn-primary {
-	background-color: #0F75BD;
-	border-color: #0F75BD;
+	width: fit-content;
+	background-color: #0F75BD !important;
+	border: #0F75BD !important;
 }
 
 body {
 	background-color: #FFFFFF;
-	margin: 1em auto;
 	width: 100%;
 	margin-top: 0px;
 	min-height: 100%;
-	font-family: Poppins, sans-serif;
+	padding: 0;
 	margin: 0;
+	font-size: 14px;
+	word-spacing: 0.1rem;
 }
 
 
@@ -129,13 +136,7 @@ body {
 	background-color: #0F75BD;
 	width: 100%;
 	color: white;
-	font-size: 16px;
 	height: fit-content;
-	font-family: Poppins, sans-serif;
-}
-
-#footer p {
-	font-family: Poppins, sans-serif;
 }
 
 #viewemp {

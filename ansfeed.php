@@ -43,10 +43,10 @@ header("LOCATION:index.php");
 
 <td id="ay">Feedback</td>
 <?php
-$sel=mysql_query("SELECT feedback.*,clients.*,employees.*,clients.firstname,clients.lastname from employees,clients,feedback where clients.id_client=feedback.id_client and clients.emp_id=employees.emp_id and employees.emp_id={$_SESSION['employeeid']}");
+$sel=mysqli_query("SELECT feedback.*,clients.*,employees.*,clients.firstname,clients.lastname from employees,clients,feedback where clients.id_client=feedback.id_client and clients.emp_id=employees.emp_id and employees.emp_id={$_SESSION['employeeid']}");
 $a=1;
 
-while($row=mysql_fetch_array($sel)){
+while($row=mysqli_fetch_array($sel)){
 	?>
 	<tr>
 <td><?php echo $a;?></td> 

@@ -11,7 +11,7 @@ $h=$_POST['phone'];
 	$sql="UPDATE employees set firstname='$a',lastname='$b',
 	username='$e',password='$f',
 	email='$g',phonenumber='$h' where emp_id='$id'";
-	$exec=mysql_query($sql) or die(mysql_error());
+	$exec=mysqli_query($sql) or die(mysqli_error());
 	if($exec){
 header("location:employees.php");
 }

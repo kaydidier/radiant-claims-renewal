@@ -8,7 +8,7 @@ if ($type=='block') {
 }else{
 	$t='false';
 }
-$query=mysql_query("UPDATE company set blocked='$t' where c_id='$id'");
+$query=mysqli_query("UPDATE company set blocked='$t' where c_id='$id'");
 if ($query) {
 	header("location:company.php");
 }

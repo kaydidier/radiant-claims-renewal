@@ -40,9 +40,9 @@ header("LOCATION:index.php");
 <td id="ay">Feedback</td>
 <td id="ay">Date</td>
 <?php
-$sel=mysql_query("SELECT distinct feedback.date,feedback.feedmsg from feedback where feedback.id_client={$_SESSION['clientid']}");
+$sel=mysqli_query("SELECT distinct feedback.date,feedback.feedmsg from feedback where feedback.id_client={$_SESSION['clientid']}");
 $a=1;
-while($row=mysql_fetch_array($sel)){
+while($row=mysqli_fetch_array($sel)){
 	?>
 	<tr>
 <td><?php echo $a;?></td> 

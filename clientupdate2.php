@@ -13,7 +13,7 @@ $g=$_POST['idno'];
 	$sql="UPDATE clients set firstname='$a',lastname='$b',
 	username='$c',email='$d',sector='$e',
 	,phonenumber='$f', ID_no='$g' where id_client='$id'";
-	$exec=mysql_query($sql) or die(mysql_error());
+	$exec=mysqli_query($sql) or die(mysqli_error());
 	if($exec){
 header("location:empclient.php");
 }

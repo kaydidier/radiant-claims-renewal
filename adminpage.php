@@ -27,8 +27,8 @@ $(document).ready(function(){
 <?php include("includes/header.php");?>
 <form method="POST" action="">
 <?php
-$sql=mysql_query("SELECT * FROM admin WHERE ad_id={$_SESSION['adminid']}") or die(mysql_error());
-$rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
+$sql=mysqli_query("SELECT * FROM admin WHERE ad_id={$_SESSION['adminid']}") or die(mysqli_error());
+$rowname=mysqli_fetch_array($sql,MYSQL_ASSOC);
 ?>
 <div id="navbar">
 <ul>

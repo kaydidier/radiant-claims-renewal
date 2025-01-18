@@ -75,8 +75,8 @@ color:white;cursor:pointer;font-size: 16px;}
 
 
 <?php
-$sql=mysql_query("SELECT * FROM clients WHERE id_client={$_SESSION['clientid']}") or die(mysql_error());
-$rowname=mysql_fetch_array($sql,MYSQL_ASSOC);
+$sql=mysqli_query("SELECT * FROM clients WHERE id_client={$_SESSION['clientid']}") or die(mysqli_error());
+$rowname=mysqli_fetch_array($sql,MYSQL_ASSOC);
 ?>
 <center>
 <div id="clie">
@@ -116,15 +116,15 @@ whose Branch-manager(Employee)send to you and after we Repair your Property
 if(isset($_POST['change'])){
 $a=$_POST['cpass'];
 $sql="SELECT * FROM clients where password='$a' and id_client={$_SESSION['clientid']}";
-$exer=mysql_query($sql);
+$exer=mysqli_query($sql);
 
 //var_dump($exer);
-if(mysql_num_rows($exer)>0){
+if(mysqli_num_rows($exer)>0){
 	$pass1=$_POST['npass'];
 	$pass2=$_POST['repass'];
 	if($pass1==$pass2){
-		$update=mysql_query($sql = "UPDATE  clients set password='$pass2'
-		where id_client={$_SESSION['clientid']}") or die(mysql_error());
+		$update=mysqli_query($sql = "UPDATE  clients set password='$pass2'
+		where id_client={$_SESSION['clientid']}") or die(mysqli_error());
 //echo $sql;
 	echo "<script type='text/javascript'>alert('password changed succesfully');</script>";
 				

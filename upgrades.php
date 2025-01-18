@@ -8,12 +8,12 @@ header("LOCATION:index.php");
 }
 switch (@$_GET['action']) {
 	case 'upgrade':
-		$queryDetail=mysql_query("SELECT * FROM insured_details where DetailID={$_GET['up']}");
-		$queryDetailRow=mysql_fetch_array($queryDetail);
+		$queryDetail=mysqli_query("SELECT * FROM insured_details where DetailID={$_GET['up']}");
+		$queryDetailRow=mysqli_fetch_array($queryDetail);
 		
-		$upgradeInsured=mysql_query("UPDATE insured set start_date='{$queryDetailRow['start_date']}',end_date='{$queryDetailRow['end_date']}' WHERE insured_id={$_GET['insured']}" ) or die(mysql_error());
+		$upgradeInsured=mysqli_query("UPDATE insured set start_date='{$queryDetailRow['start_date']}',end_date='{$queryDetailRow['end_date']}' WHERE insured_id={$_GET['insured']}" ) or die(mysqli_error());
 		if ($upgradeInsured) {
-			mysql_query("UPDATE insured_details set status='approved' where DetailID={$_GET['up']}");
+			mysqli_query("UPDATE insured_details set status='approved' where DetailID={$_GET['up']}");
 			?>
 			<script type="text/javascript">
 			alert("Approved!");
@@ -58,7 +58,7 @@ switch (@$_GET['action']) {
 <div style="float:left;width:100%;border:0px solid red;margin-top:60px;">
 	<div id="tra">Requested upgrades which you must Solve</div>
 	<?php
-		$query=mysql_query("SELECT *,clients.username as cluname,clients.phone as clphone,clients.email as clemail FROM insured,province,district,insured_details,clients,insurance,employees where  clients.id_client=insured.id_client and district.districtId=clients.district and province.provinceId=clients.province and insurance.insurance_id=insured.insurance_id and insured_details.insured_id=insured.insured_id and clients.emp_id=employees.emp_id and employees.emp_id={$_SESSION['employeeid']} and insured_details.status='waiting'");
+		$query=mysqli_query("SELECT *,clients.username as cluname,clients.phone as clphone,clients.email as clemail FROM insured,province,district,insured_details,clients,insurance,employees where  clients.id_client=insured.id_client and district.districtId=clients.district and province.provinceId=clients.province and insurance.insurance_id=insured.insurance_id and insured_details.insured_id=insured.insured_id and clients.emp_id=employees.emp_id and employees.emp_id={$_SESSION['employeeid']} and insured_details.status='waiting'");
 		
 
 
@@ -67,7 +67,7 @@ switch (@$_GET['action']) {
 	<?php
 	$display=4;
 	$cols=0;
-		while ($queryData=mysql_fetch_array($query)) {
+		while ($queryData=mysqli_fetch_array($query)) {
 		
 		if($cols==0){
 			?>
@@ -83,8 +83,8 @@ switch (@$_GET['action']) {
 				<?php
 					switch ($queryData['type']) { 
 						case 'house':
-							$queryProperty=mysql_query("SELECT * FROM houses,insured WHERE insured.propertyId=houses.house_id") or die(mysql_error());
-							$queryPropertyData=mysql_fetch_array($queryProperty);
+							$queryProperty=mysqli_query("SELECT * FROM houses,insured WHERE insured.propertyId=houses.house_id") or die(mysqli_error());
+							$queryPropertyData=mysqli_fetch_array($queryProperty);
 							?>
 							<img src="images/houses/ <?php echo $queryPropertyData['photo'];?>" width="200" height="200"></td>
 							<tr>
@@ -94,8 +94,8 @@ switch (@$_GET['action']) {
 							break;
 						
 						case 'car':
-							$queryProperty=mysql_query("SELECT * FROM cars,insured WHERE insured.propertyId=cars.car_id");
-							$queryPropertyData=mysql_fetch_array($queryProperty);
+							$queryProperty=mysqli_query("SELECT * FROM cars,insured WHERE insured.propertyId=cars.car_id");
+							$queryPropertyData=mysqli_fetch_array($queryProperty);
 							?>
 							<img src="images/cars/ <?php echo $queryPropertyData['photo'];?>" width="200" height="200">
 							<?php

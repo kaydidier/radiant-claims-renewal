@@ -73,8 +73,8 @@ $("#dat").datepicker({
 
 <?php
 
-	//$sql=mysql_query("SELECT * FROM admin");
-	//while($row=mysql_fetch_array($sql))
+	//$sql=mysqli_query("SELECT * FROM admin");
+	//while($row=mysqli_fetch_array($sql))
 	//{
 		
 		//$a=$row['ad_id']."."." ".$row['firstname']." ".$row['lastname'];
@@ -106,25 +106,25 @@ color: white;font-family: century gothic;font-size:17px;}
 <?php
 mysql_connect("localhost","root","");
 mysql_select_db("radiant");
-@$a=mysql_real_escape_string($_POST['fname']);
-@$b=mysql_real_escape_string($_POST['lname']);
-@$c=mysql_real_escape_string($_POST['dob']);
-@$d=mysql_real_escape_string($_POST['sex']);
-@$e=mysql_real_escape_string($_POST['uname']);
-@$f=mysql_real_escape_string($_POST['pass']);
-@$g=mysql_real_escape_string($_POST['email']);
-@$h=mysql_real_escape_string($_POST['phone']);
+@$a=mysqli_real_escape_string($_POST['fname']);
+@$b=mysqli_real_escape_string($_POST['lname']);
+@$c=mysqli_real_escape_string($_POST['dob']);
+@$d=mysqli_real_escape_string($_POST['sex']);
+@$e=mysqli_real_escape_string($_POST['uname']);
+@$f=mysqli_real_escape_string($_POST['pass']);
+@$g=mysqli_real_escape_string($_POST['email']);
+@$h=mysqli_real_escape_string($_POST['phone']);
 if (isset($_POST['save'])) {
 	
 
 $sql="INSERT INTO employees VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f', '$g', '$h')";
 $sq="SELECT * FROM employees WHERE email='$g' or phonenumber='$h' or username='$e'";
-$query=mysql_query($sq)or die(mysql_error());
+$query=mysqli_query($sq)or die(mysqli_error());
 if(empty($a)  or empty($b) or empty($c) or empty($d) or empty($e) or empty($f) or empty($g) or empty($h)){
 	echo "<script type='text/javascript'>alert('empty fields');</script>";
 	}
-else if (mysql_num_rows($query)>0){
-	$rowquery=mysql_fetch_array($query);
+else if (mysqli_num_rows($query)>0){
+	$rowquery=mysqli_fetch_array($query);
 		if ($rowquery['email']==$g||$rowquery['phone']==$h) {
 			
 		echo "<script type='text/javascript'>alert('duplication data');</script>";
@@ -133,7 +133,7 @@ else if (mysql_num_rows($query)>0){
 
 }
 else{
-$insert=mysql_query($sql)or die(mysql_error());
+$insert=mysqli_query($sql)or die(mysqli_error());
 if ($insert) {
 	echo "<script type='text/javascript'>alert('Branch-manager Added Successfully');</script>";
 }else{

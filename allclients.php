@@ -46,9 +46,9 @@ a{text-decoration: none;color: black;font-size: 20px;}
 <?php
 
 $employee="SELECT * FROM Employees";
-$ema=mysql_query($employee);
+$ema=mysqli_query($employee);
 $x=1;
-while ($emp=mysql_fetch_array($ema)) {
+while ($emp=mysqli_fetch_array($ema)) {
 	?>
 
 <td><a href="allclients.php?sortby=employee&emp_id=<?php echo $emp['emp_id']; ?>"><?php echo $emp['firstname']." ".$emp['lastname'];?></a></td><br>	
@@ -72,8 +72,8 @@ switch (@$_GET['sortby']) {
 			
 			break;
 	}	
-$exec=mysql_query($sql)or die(mysql_error());
-if (mysql_num_rows($exec)>0) {
+$exec=mysqli_query($sql)or die(mysqli_error());
+if (mysqli_num_rows($exec)>0) {
 	?>
 	<center><h4>Clients</h4></center>
 <table>
@@ -97,7 +97,7 @@ if (mysql_num_rows($exec)>0) {
 
 
 	$a=1;
-while($row=mysql_fetch_array($exec)){
+while($row=mysqli_fetch_array($exec)){
 	?>
 	<tr>
 <td><?php echo $a;?></td> 

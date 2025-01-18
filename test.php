@@ -21,7 +21,7 @@ mysql_select_db("radiant");
 
 if (isset($_POST['save'])) {
 	$sql="INSERT INTO phototest VALUES ('$b')";
-	$exec=mysql_query($sql);
+	$exec=mysqli_query($sql);
 	if($exec){
 	move_uploaded_file($_FILES['uploadphoto']['tmp_name'],"./logos\ ".$_FILES['uploadphoto']['name']);
 	echo "<script type='text/javascript'>alert('data is inserted');</script>";
