@@ -49,7 +49,7 @@ color:white;cursor:pointer;font-size: 16px;}
 #change table input[type=submit]:hover{
 	transition:all 0.6s ease;}
 </style>
-<?php include("includes/header.php");
+<?php include("includes/header.view.php");
 ?>
 <div id="navbar">
 <ul>
@@ -75,8 +75,8 @@ color:white;cursor:pointer;font-size: 16px;}
 
 
 <?php
-$sql=mysqli_query("SELECT * FROM clients WHERE id_client={$_SESSION['clientid']}") or die(mysqli_error());
-$rowname=mysqli_fetch_array($sql,MYSQL_ASSOC);
+$sql=mysqli_query($mysqli, "SELECT * FROM clients WHERE id_client={$_SESSION['clientid']}") or die(mysqli_error($mysqli));
+$rowname=mysqli_fetch_array($sql);
 ?>
 <center>
 <div id="clie">
@@ -108,7 +108,7 @@ whose Branch-manager(Employee)send to you and after we Repair your Property
 
 </center>
 </form>
-<?php include("includes/footer.php");?>
+<?php include("includes/footer.view.php");?>
 </body>
 
 </html>
@@ -116,15 +116,15 @@ whose Branch-manager(Employee)send to you and after we Repair your Property
 if(isset($_POST['change'])){
 $a=$_POST['cpass'];
 $sql="SELECT * FROM clients where password='$a' and id_client={$_SESSION['clientid']}";
-$exer=mysqli_query($sql);
+$exer=mysqli_query($mysqli, $sql);
 
 //var_dump($exer);
 if(mysqli_num_rows($exer)>0){
 	$pass1=$_POST['npass'];
 	$pass2=$_POST['repass'];
 	if($pass1==$pass2){
-		$update=mysqli_query($sql = "UPDATE  clients set password='$pass2'
-		where id_client={$_SESSION['clientid']}") or die(mysqli_error());
+		$update=mysqli_query($mysqli, "UPDATE  clients set password='$pass2'
+		where id_client={$_SESSION['clientid']}") or die(mysqli_error($mysqli));
 //echo $sql;
 	echo "<script type='text/javascript'>alert('password changed succesfully');</script>";
 				

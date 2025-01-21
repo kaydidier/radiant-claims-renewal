@@ -1,7 +1,5 @@
 <?php
-mysql_connect("localhost","root","");
-mysql_select_db("radiant");
-session_start();
+include "includes/connection.php";
 if (!$_SESSION['adminid']) {
 header("LOCATION:index.php");
 }
@@ -18,7 +16,7 @@ header("LOCATION:index.php");
 
 </head>
 <body>
-<?php include("includes/header.php");
+<?php include("includes/header.view.php");
 ?>
 
 <div id="navbar">
@@ -52,7 +50,7 @@ header("LOCATION:index.php");
 <td id="as">IdNo</td>
 <?php
 $sql="select *from clients";	
-$exec=mysqli_query($sql);
+$exec=mysqli_query($mysqli, $sql);
 $a=1;
 while($row=mysqli_fetch_array($exec)){
 	?>
@@ -79,4 +77,4 @@ while($row=mysqli_fetch_array($exec)){
 </div>
 </body>
 </html>
-<?php include("includes/footer.php");?>
+<?php include("includes/footer.view.php");?>

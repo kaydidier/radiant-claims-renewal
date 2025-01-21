@@ -1,7 +1,7 @@
 <?php
 require "includes/connection.php";
 
-if (!$_SESSION['employeeid']) {
+if (!isset($_SESSION['employeeid'])) {
 	header("LOCATION:index.php");
 }
 ?>
@@ -29,8 +29,6 @@ if (!$_SESSION['employeeid']) {
 
     </head>
 <body>
-
-	<? include "./includes/views/sidenav.view.php" ?>
 	
 	<form method="POST">
 		<?
