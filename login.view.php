@@ -49,6 +49,7 @@ if (isset($_POST['login'])) {
 		$sql2->free_result();
 		
 		// header("Location: emppage.php");
+		// echo "<script>window.location.href = 'emppage.php';</script>";
 		echo "<script>window.location.href = 'radiant-dashboard/views/index.view.php';</script>";
 		exit();
 	} elseif ($sql3->num_rows > 0) {

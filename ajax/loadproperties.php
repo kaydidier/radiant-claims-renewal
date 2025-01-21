@@ -4,12 +4,12 @@ include("../includes/connection.php");
 	$insId=$_GET['insId'];
 	//$optionsdata=mysqli_fetch_array($options);
 	//var_dump($optionsdata);
-	$ins=mysqli_query("SELECT * FROM insurance where insurance_id='$insId'");
+	$ins=mysqli_query($mysqli, "SELECT * FROM insurance where insurance_id='$insId'");
 	$insData=mysqli_fetch_array($ins);
 	//var_dump($insData);
-	 $insuranceType=split(" ",$insData['insurance_name']);
+	 $insuranceType = explode(" ",$insData['insurance_name']);
 		if (strtolower($insuranceType[0])=='fire'){
-				$pptQuery=mysqli_query("SELECT * FROM houses where id_client={$_SESSION['clientid']}");
+				$pptQuery=mysqli_query($mysqli, "SELECT * FROM houses where id_client={$_SESSION['clientid']}");
 				//$pptQueryRow=mysqli_fetch_array($pptQuery);
 				?>
 
@@ -25,7 +25,7 @@ include("../includes/connection.php");
 				<?php
 
 		}elseif (strtolower($insuranceType[0])=='motor'){
-				$pptQuery=mysqli_query("SELECT * FROM cars where id_client={$_SESSION['clientid']}");
+				$pptQuery=mysqli_query($mysqli, "SELECT * FROM cars where id_client={$_SESSION['clientid']}");
 				//$pptQueryRow=mysqli_fetch_array($pptQuery);
 				//var_dump($pptQueryRow);
 				?>

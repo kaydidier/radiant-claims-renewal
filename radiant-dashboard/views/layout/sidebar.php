@@ -44,50 +44,19 @@
     <li class="nav-item">
         <a class="nav-link" href="insurances.php">
             <i class="fas fa-fw fa-layer-group"></i>
-            <span>Renewals</span>
+            <span>Insurances</span>
         </a>
     </li>
 
     <li class="nav-item">
         <a class="nav-link" href="renewals.php">
             <i class="fas fa-fw fa-chess"></i>
-            <span>Insurance</span>
+            <span>Renewals</span>
         </a>
     </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        Security
-    </div>
-
-    <!-- Nav Item - Pages Collapse Menu -->
-
-
-    <!--    <li class="nav-item">-->
-    <!--        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"-->
-    <!--           aria-expanded="true" aria-controls="collapseTwo">-->
-    <!--            <i class="fas fa-fw fa-cog"></i>-->
-    <!--            <span>Components</span>-->
-    <!--        </a>-->
-    <!--        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">-->
-    <!--            <div class="bg-white py-2 collapse-inner rounded">-->
-    <!--                <h6 class="collapse-header">Custom Components:</h6>-->
-    <!--                <a class="collapse-item" href="../buttons.html">Buttons</a>-->
-    <!--                <a class="collapse-item" href="../cards.html">Cards</a>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </li>-->
-
-
-    <li class="nav-item">
-        <a class="nav-link" href="../../logout.php">
-            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-            <span>Logout</span>
-        </a>
-    </li>
 
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">
