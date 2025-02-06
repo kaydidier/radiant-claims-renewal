@@ -1,8 +1,8 @@
-<? require "includes/connection.php"; ?>
+<?php require "includes/connection.php"; ?>
 
 <main class="h-100 d-flex flex-column">
 
-	<? require "includes/header.view.php"; ?>
+	<?php require "includes/header.view.php"; ?>
 
 	<div id="login" class="container h-100 d-flex flex-column align-items-center justify-content-center">
 		<div class="col-12 col-lg-6 bg-light p-5 border rounded">
@@ -16,7 +16,7 @@
 					<label for="password" class="form-label">Password</label>
 					<input type="password" class="form-control" placeholder="Please enter your password" id="password" name="password">
 				</div>
-				<button type="submit" id="login" name="login" class="btn btn-primary">Login</button>
+				<button type="submit" id="login" name="login" class="btn btn-lg btn-primary">Login</button>
 			</form>
 		</div>
 	</div>

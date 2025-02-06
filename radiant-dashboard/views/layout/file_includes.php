@@ -23,10 +23,67 @@
     </div>
 </div>
 
+<!-- Add claim Modal-->
+<div class="modal fade" id="addClaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <?php
+    $insurances = mysqli_query($mysqli, "SELECT * FROM insurance");
+    ?>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Creat new claim</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Claim description</label>
+                        <textarea class="form-control" id="description" rows="3"></textarea>
+                    </div>
+
+                    <div class="mb-3 d-flex flex-column">
+                        <label for="claimFile" class="form-label">Claim / Accident file</label>
+                        <input class="form-control" type="file" id="claimFile">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="insurance" class="form-label">Insurance</label>
+                        <select class="form-control" id="insurancee" name="insurance" onchange="togglePlateNumber()">
+                            <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
+                                <option value="<?php echo $insuranceRow['insurance_id']; ?>">
+                                    <?php echo $insuranceRow['insurance_name']; ?>
+                                </option>
+                            <?php } ?>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="property" class="form-label">Select you property</label>
+                        <select class="form-control" id="property" name="property">
+                            <option value="default property">
+                                Select your property
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary" type="submit" name="sendClaim">Send Claim</button>
+                        <!-- <input type="submit" value="submit" name="saveInsurance"> -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Add Insurance Modal-->
 <div class="modal fade" id="addInsurance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <?php
-
 
     if (isset($_POST['saveInsurance'])) {
         $insuranceName = $mysqli->real_escape_string($_POST['InsuranceName']);
@@ -79,6 +136,66 @@ $provinces = mysqli_query($mysqli, "SELECT * FROM province");
 
 $i = 0;
 
+// Register Client
+if (isset($_POST['save_client'])) {
+
+    echo "<script type='text/javascript'>alert('Saving client');</script>";
+
+    $a = $mysqli->real_escape_string($_POST['firstname']);
+    $b = $mysqli->real_escape_string($_POST['lastname']);
+    $d = $mysqli->real_escape_string($_POST['password']);
+    $e = $mysqli->real_escape_string($_POST['email']);
+    $f = $mysqli->real_escape_string($_POST['idno']);
+    $g = $mysqli->real_escape_string($_POST['sex']);
+    $f = $mysqli->real_escape_string($_POST['dob']);
+    $h = $mysqli->real_escape_string($_POST['district']);
+    $i = $mysqli->real_escape_string($_POST['province']);
+    $j = $mysqli->real_escape_string($_POST['phone']);
+    $k = $mysqli->real_escape_string($_POST['bankaccount']);
+    $l = $mysqli->real_escape_string($_POST['license']);
+    $m = $mysqli->real_escape_string($_POST['yellow']);
+    $n = $mysqli->real_escape_string($_POST['plate']);
+    $o = $mysqli->real_escape_string($_POST['income']);
+    $p = $mysqli->real_escape_string($_POST['contract']);
+    $empId = $_SESSION['employeeid'];
+
+    $sql = "INSERT INTO clients(id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, emp_id, insurance_id) 
+
+    VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$g', '$h', '$i', '$j','$k','$l', '$m', '$n', '$o', '$p','$empId', 1)";
+
+    $sq = "SELECT * FROM clients WHERE email='$e' or phone='$j' or ID_no='$f'";
+
+    $query = $mysqli->query($sq) or die($mysqli->error);
+
+    if (empty($a) or empty($b) or empty($c) or empty($d) or empty($e)  or empty($f) or empty($g) or empty($h) or empty($i) or empty($j) or empty($k) or empty($l or empty($m)) or empty($n) or empty($o) or empty($p)) {
+
+        echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
+    } else if ($f > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
+
+        echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
+    } else if (mysqli_num_rows($query) > 0) {
+        // $rowquery = $query->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
+
+        // if ($rowquery['email'] == $e || $rowquery['phone'] == $j) {
+
+        echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
+        // }
+    } else {
+        //check if date of birth is valid
+
+        $insert = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
+        if ($insert) {
+            $_SESSION['clientregistration'] = mysqli_insert_id($mysqli);
+            echo "<script type='text/javascript'>alert('Successfully! Continue Give Client Insurance');
+
+			window.location='initsession.php?clid=" . mysqli_insert_id($mysqli) . "';
+			</script>";
+        } else {
+            echo "<script type='text/javascript'>alert('Failed to creat client due to insert errors');</script>";
+        }
+    }
+}
+
 ?>
 
 <div class="modal fade" id="addClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -101,7 +218,8 @@ $i = 0;
                                     <option value="<?php echo $insuranceRow['insurance_id']; ?>">
                                         <?php echo $insuranceRow['insurance_name']; ?>
                                     </option>
-                                <?php } ?>
+                                <?php }
+                                $a++; ?>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -179,14 +297,12 @@ $i = 0;
                                 ?>
                             </select>
                         </div>
-                        <div class="mb-3">
-                            <label for="sector" class="form-label">Sector</label>
-                            <input type="text" class="form-control" id="sector" name="sector">
-                        </div>
+
                         <div class="mb-3">
                             <label for="bankaccount" class="form-label">Bank account</label>
                             <input type="text" class="form-control" id="bankaccount" name="bankaccount">
                         </div>
+
                         <div style="display: none;" id="motor">
                             <div class="mb-3">
                                 <label for="license" class="form-label">Driving license</label>
@@ -216,7 +332,7 @@ $i = 0;
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" name="save_client">Submit</button>
             </div>
         </div>
     </div>

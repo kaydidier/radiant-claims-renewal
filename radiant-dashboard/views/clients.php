@@ -36,14 +36,15 @@ include "../views/layout/header.php";
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <div class="row">
+                            <div class="row justify-content-end">
                                 <div class="col-md-2 col-sm-12">
-                                    <h6 class="m-0 font-weight-bold text-primary">All clients</h6>
+                                    <h6 class="m-0 text-primary">All clients</h6>
                                 </div>
-                                <div class="col-md-9"></div>
-                                <div class="col-md-1 justify-content-end">
-                                    <a href="#" class="btn btn-sm btn-outline-primary btn-user" data-toggle="modal" data-target="#addClient">
-                                        Add
+                                <div class="col-md-8 col-sm-12"></div>
+                                <div class="col-md-2 col-sm-12">
+                                    <a href="#" class="btn btn-md btn-outline-primary btn-user d-flex align-items-center" data-toggle="modal" data-target="#addClient">
+                                    <i class="fas fa-fw fa-plus-circle"></i>
+                                    <span class="ml-2">Add Client</span>
                                     </a>
                                 </div>
                             </div>

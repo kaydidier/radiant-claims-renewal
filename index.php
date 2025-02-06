@@ -1,4 +1,4 @@
-<? require "includes/header.view.php"; ?>
+<?php require "includes/header.view.php"; ?>
 
 <main class="h-100 d-flex flex-column">
 
@@ -18,7 +18,7 @@
 
 				<div class="py-4">
 					<a href="./login.view.php" class="text-decoration-none text-white">
-						<button type="button" class="btn btn-primary">
+						<button type="button" class="btn btn-lg btn-primary">
 							Get started
 						</button>
 					</a>
@@ -65,7 +65,7 @@
 		</section>
 
 		<section id="contact">
-			<? require "includes/footer.view.php" ?>
+			<?php require "includes/footer.view.php" ?>
 		</section>
 	</div>
 </main>
