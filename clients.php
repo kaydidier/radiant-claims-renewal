@@ -49,7 +49,7 @@ header("LOCATION:index.php");
 <td id="as">Phone</td>
 <td id="as">IdNo</td>
 <?php
-$sql="select *from clients";	
+$sql="SELECT * FROM clients";	
 $exec=mysqli_query($mysqli, $sql);
 $a=1;
 while($row=mysqli_fetch_array($exec)){

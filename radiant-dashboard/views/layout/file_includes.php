@@ -139,15 +139,14 @@ $i = 0;
 // Register Client
 if (isset($_POST['save_client'])) {
 
-    echo "<script type='text/javascript'>alert('Saving client');</script>";
-
+    $insurance = $mysqli->real_escape_string($_POST['insurance']);
     $a = $mysqli->real_escape_string($_POST['firstname']);
     $b = $mysqli->real_escape_string($_POST['lastname']);
-    $d = $mysqli->real_escape_string($_POST['password']);
-    $e = $mysqli->real_escape_string($_POST['email']);
-    $f = $mysqli->real_escape_string($_POST['idno']);
-    $g = $mysqli->real_escape_string($_POST['sex']);
-    $f = $mysqli->real_escape_string($_POST['dob']);
+    $c = $mysqli->real_escape_string($_POST['password']);
+    $d = $mysqli->real_escape_string($_POST['email']);
+    $e = $mysqli->real_escape_string($_POST['idno']);
+    $f = $mysqli->real_escape_string($_POST['gender']);
+    $g = $mysqli->real_escape_string($_POST['dob']);
     $h = $mysqli->real_escape_string($_POST['district']);
     $i = $mysqli->real_escape_string($_POST['province']);
     $j = $mysqli->real_escape_string($_POST['phone']);
@@ -167,12 +166,13 @@ if (isset($_POST['save_client'])) {
 
     $query = $mysqli->query($sq) or die($mysqli->error);
 
-    if (empty($a) or empty($b) or empty($c) or empty($d) or empty($e)  or empty($f) or empty($g) or empty($h) or empty($i) or empty($j) or empty($k) or empty($l or empty($m)) or empty($n) or empty($o) or empty($p)) {
+    if (empty($insurance) || empty($a) || empty($b) || empty($c) || empty($d) || empty($e) || empty($f) || empty($g) || empty($h) || empty($i) || empty($j) || empty($k) || empty($l) || empty($m) || empty($n) || empty($o) || empty($p)) {
 
         echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
-    } else if ($f > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
+    } else if ($g > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
 
         echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
+
     } else if (mysqli_num_rows($query) > 0) {
         // $rowquery = $query->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
 
@@ -181,17 +181,16 @@ if (isset($_POST['save_client'])) {
         echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
         // }
     } else {
-        //check if date of birth is valid
 
         $insert = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
         if ($insert) {
             $_SESSION['clientregistration'] = mysqli_insert_id($mysqli);
             echo "<script type='text/javascript'>alert('Successfully! Continue Give Client Insurance');
 
-			window.location='initsession.php?clid=" . mysqli_insert_id($mysqli) . "';
-			</script>";
+    		window.location='initsession.php?clid=" . mysqli_insert_id($mysqli) . "';
+    		</script>";
         } else {
-            echo "<script type='text/javascript'>alert('Failed to creat client due to insert errors');</script>";
+            echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
         }
     }
 }
@@ -209,130 +208,137 @@ if (isset($_POST['save_client'])) {
                 </button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="" enctype="multipart/form-data" class="row">
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="insurance" class="form-label">Insurance</label>
-                            <select class="form-control" id="insurance" name="insurance" onchange="togglePlateNumber()">
-                                <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
-                                    <option value="<?php echo $insuranceRow['insurance_id']; ?>">
-                                        <?php echo $insuranceRow['insurance_name']; ?>
-                                    </option>
-                                <?php }
-                                $a++; ?>
-                            </select>
+                <form method="POST" enctype="multipart/form-data" class="col">
+                    <div class="row">
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="firstname" class="form-label">Firstname</label>
+                                <input type="text" class="form-control" id="firstname" name="firstname">
+                            </div>
+                            <div class="mb-3">
+                                <label for="lastname" class="form-label">Lastname</label>
+                                <input type="text" class="form-control" id="lastname" name="lastname">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">Phone number</label>
+                                <input type="phone" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="mb-3">
+                                <label for="gender" class="form-label">Gender</label>
+                                <select class="form-control" id="gender" name="gender">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="idno" class="form-label">ID number</label>
+                                <input type="text" class="form-control" id="idno" name="idno">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dob" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="dob" name="dob" onchange="validateDOB()">
+                                <div class="invalid-feedback" id="dobFeedback">You must be over 18 years old.</div>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="firstname" class="form-label">Firstname</label>
-                            <input type="text" class="form-control" id="firstname" name="firstname">
-                        </div>
-                        <div class="mb-3">
-                            <label for="lastname" class="form-label">Lastname</label>
-                            <input type="text" class="form-control" id="lastname" name="lastname">
-                        </div>
-                        <div class="mb-3">
-                            <label for="gender" class="form-label">Gender</label>
-                            <select class="form-control" id="gender" name="gender">
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="idno" class="form-label">ID number</label>
-                            <input type="text" class="form-control" id="idno" name="idno">
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="email" name="email">
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password">
-                        </div>
-                        <div class="mb-3">
-                            <label for="dob" class="form-label">Date of Birth</label>
-                            <input type="date" class="form-control" id="dob" name="dob" onchange="validateDOB()">
-                            <div class="invalid-feedback" id="dobFeedback">You must be over 18 years old.</div>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="mb-3">
-                            <label for="province" class="form-label">Province</label>
-                            <select class="form-control" id="province" name="province">
-                                <?php
-                                $province = mysqli_query($mysqli, "SELECT * from province");
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="insurance" class="form-label">Insurance</label>
+                                <select class="form-control" id="insurance" name="insurance" onchange="togglePlateNumber()">
+                                    <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
+                                        <option value="<?php echo $insuranceRow['insurance_id']; ?>">
+                                            <?php echo $insuranceRow['insurance_name']; ?>
+                                        </option>
+                                    <?php }
+                                    $a++; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="province" class="form-label">Province</label>
+                                <select class="form-control" id="province" name="province">
+                                    <?php
+                                    $province = mysqli_query($mysqli, "SELECT * from province");
 
-                                $i = 0;
-                                while ($row = mysqli_fetch_array($province)) { {
-                                        $i++;
-                                        if ($i == 1) {
-                                            $initialProvince = $row['provinceId'];
+                                    $i = 0;
+                                    while ($row = mysqli_fetch_array($province)) { {
+                                            $i++;
+                                            if ($i == 1) {
+                                                $initialProvince = $row['provinceId'];
+                                            }
+
+                                    ?>
+                                            <option <?= @$_POST['province'] == $row['provinceId'] ? "selected" : "" ?> value="<?= $row['provinceId'] ?>"><?php echo $row['provinceName']; ?></option>
+                                    <?php
+
                                         }
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="district" class="form-label">District</label>
+                                <select class="form-control" id="district" name="district">
+                                    <option value="">Select Province First</option>
+                                    <?php
+                                    $district = mysqli_query($mysqli, "SELECT district.* from district,province WHERE province.provinceId=district.provinceId and district.provinceId='$initialProvince'");
 
-                                ?>
-                                        <option <?= @$_POST['province'] == $row['provinceId'] ? "selected" : "" ?> value="<?= $row['provinceId'] ?>"><?php echo $row['provinceName']; ?></option>
-                                <?php
+                                    $i = 0;
+                                    while ($row = mysqli_fetch_array($district)) {
+
+
+                                    ?>
+                                        <option <?= @$_POST['district'] == $row['districtId'] ? "selected" : "" ?> value="<?= $row['districtId'] ?>"> <?php echo $row['districtName']; ?></option>
+                                    <?php
 
                                     }
-                                }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="district" class="form-label">District</label>
-                            <select class="form-control" id="district" name="district">
-                                <option value="">Select Province First</option>
-                                <?php
-                                $district = mysqli_query($mysqli, "SELECT district.* from district,province WHERE province.provinceId=district.provinceId and district.provinceId='$initialProvince'");
-
-                                $i = 0;
-                                while ($row = mysqli_fetch_array($district)) {
-
-
-                                ?>
-                                    <option <?= @$_POST['district'] == $row['districtId'] ? "selected" : "" ?> value="<?= $row['districtId'] ?>"> <?php echo $row['districtName']; ?></option>
-                                <?php
-
-                                }
-                                ?>
-                            </select>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="bankaccount" class="form-label">Bank account</label>
-                            <input type="text" class="form-control" id="bankaccount" name="bankaccount">
-                        </div>
-
-                        <div style="display: none;" id="motor">
-                            <div class="mb-3">
-                                <label for="license" class="form-label">Driving license</label>
-                                <input type="text" class="form-control" id="license" name="license">
+                                    ?>
+                                </select>
                             </div>
-                            <div class="mb-3">
-                                <label for="plate" class="form-label">Plate Number</label>
-                                <input type="text" class="form-control" id="plate" name="plate">
-                            </div>
-                            <div class="mb-3">
-                                <label for="yellow" class="form-label">Yellow Paper</label>
-                                <input type="text" class="form-control" id="yellow" name="yellow">
-                            </div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="income" class="form-label">Proof of Income</label>
-                            <input type="text" class="form-control" id="income" name="income">
-                        </div>
+                            <div class="mb-3">
+                                <label for="bankaccount" class="form-label">Bank account</label>
+                                <input type="text" class="form-control" id="bankaccount" name="bankaccount">
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="contract" class="form-label">Contract</label>
-                            <input type="text" class="form-control" id="contract" name="contract">
+                            <div style="display: none;" id="motor">
+                                <div class="mb-3">
+                                    <label for="license" class="form-label">Driving license</label>
+                                    <input type="text" class="form-control" id="license" name="license">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="plate" class="form-label">Plate Number</label>
+                                    <input type="text" class="form-control" id="plate" name="plate">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="yellow" class="form-label">Yellow Paper</label>
+                                    <input type="text" class="form-control" id="yellow" name="yellow">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="income" class="form-label">Proof of Income</label>
+                                <input type="text" class="form-control" id="income" name="income">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="contract" class="form-label">Contract</label>
+                                <input type="text" class="form-control" id="contract" name="contract">
+                            </div>
                         </div>
                     </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-md btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                        <button type="submit" id="save_client" name="save_client" class="btn btn-md btn-primary">Create</button>
+                    </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary" name="save_client">Submit</button>
             </div>
         </div>
     </div>
@@ -343,6 +349,7 @@ if (isset($_POST['save_client'])) {
     function validateDOB() {
         const dobInput = document.getElementById('dob');
         const dobFeedback = document.getElementById('dobFeedback');
+        const submitBtn = document.getElementById('save_client');
         const dobValue = new Date(dobInput.value);
         const today = new Date();
         const age = today.getFullYear() - dobValue.getFullYear();
@@ -355,7 +362,9 @@ if (isset($_POST['save_client'])) {
         if (age < 18) {
             dobInput.classList.add('is-invalid');
             dobFeedback.style.display = 'block';
+            // submitBtn.disabled = true;
         } else {
+            // submitBtn.disabled = false;
             dobInput.classList.remove('is-invalid');
             dobFeedback.style.display = 'none';
         }
