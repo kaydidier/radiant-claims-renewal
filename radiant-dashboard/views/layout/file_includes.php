@@ -158,31 +158,26 @@ if (isset($_POST['save_client'])) {
     $p = $mysqli->real_escape_string($_POST['contract']);
     $empId = $_SESSION['employeeid'];
 
-    $sql = "INSERT INTO clients(id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, emp_id, insurance_id) 
+    $insertSql = "INSERT INTO clients(id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, username, emp_id, insurance_id) VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$g', '$h', '$i', '$j','$k','$l', '$m', '$n', '$o', '$p','$a', '$empId', $insurance)";
 
-    VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$g', '$h', '$i', '$j','$k','$l', '$m', '$n', '$o', '$p','$empId', 1)";
+    $query = $mysqli->query("SELECT * FROM clients WHERE email='$d' OR phone='$j' OR ID_no='$e' OR bank_account='$k' ") or die($mysqli->error);
 
-    $sq = "SELECT * FROM clients WHERE email='$e' or phone='$j' or ID_no='$f'";
+    if (mysqli_num_rows($query) > 0) {
 
-    $query = $mysqli->query($sq) or die($mysqli->error);
-
-    if (empty($insurance) || empty($a) || empty($b) || empty($c) || empty($d) || empty($e) || empty($f) || empty($g) || empty($h) || empty($i) || empty($j) || empty($k) || empty($l) || empty($m) || empty($n) || empty($o) || empty($p)) {
+        echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
+    } else if (empty($insurance) || empty($a) || empty($b) || empty($c) || empty($d) || empty($e) || empty($f) || empty($g) || empty($h) || empty($i) || empty($j) || empty($k) || empty($o) || empty($p)) {
 
         echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
+
     } else if ($g > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
 
         echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
-
-    } else if (mysqli_num_rows($query) > 0) {
-        // $rowquery = $query->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
-
-        // if ($rowquery['email'] == $e || $rowquery['phone'] == $j) {
-
-        echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
-        // }
     } else {
 
-        $insert = mysqli_query($mysqli, $sql) or die(mysqli_error($mysqli));
+        $insert = mysqli_query($mysqli, $insertSql) or die(mysqli_error($mysqli));
+
+        echo "<script type='text/javascript'>alert('Data should be inserted');</script>";
+
         if ($insert) {
             $_SESSION['clientregistration'] = mysqli_insert_id($mysqli);
             echo "<script type='text/javascript'>alert('Successfully! Continue Give Client Insurance');
@@ -197,8 +192,8 @@ if (isset($_POST['save_client'])) {
 
 ?>
 
-<div class="modal fade" id="addClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="addClient" tabindex="-1" role="dialog" aria-labelledby="clientModalLabel"
+    aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -304,7 +299,7 @@ if (isset($_POST['save_client'])) {
 
                             <div class="mb-3">
                                 <label for="bankaccount" class="form-label">Bank account</label>
-                                <input type="text" class="form-control" id="bankaccount" name="bankaccount">
+                                <input required type="text" class="form-control" id="bankaccount" name="bankaccount">
                             </div>
 
                             <div style="display: none;" id="motor">
@@ -324,12 +319,12 @@ if (isset($_POST['save_client'])) {
 
                             <div class="mb-3">
                                 <label for="income" class="form-label">Proof of Income</label>
-                                <input type="text" class="form-control" id="income" name="income">
+                                <input required type="text" class="form-control" id="income" name="income">
                             </div>
 
                             <div class="mb-3">
                                 <label for="contract" class="form-label">Contract</label>
-                                <input type="text" class="form-control" id="contract" name="contract">
+                                <input required type="text" class="form-control" id="contract" name="contract">
                             </div>
                         </div>
                     </div>

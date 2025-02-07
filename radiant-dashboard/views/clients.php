@@ -43,8 +43,8 @@ include "../views/layout/header.php";
                                 <div class="col-md-8 col-sm-12"></div>
                                 <div class="col-md-2 col-sm-12">
                                     <a href="#" class="btn btn-md btn-outline-primary btn-user d-flex align-items-center" data-toggle="modal" data-target="#addClient">
-                                    <i class="fas fa-fw fa-plus-circle"></i>
-                                    <span class="ml-2">Add Client</span>
+                                        <i class="fas fa-fw fa-plus-circle"></i>
+                                        <span class="ml-2">Add Client</span>
                                     </a>
                                 </div>
                             </div>
@@ -59,8 +59,8 @@ include "../views/layout/header.php";
                                             <th>Phone Number</th>
                                             <th>Email</th>
                                             <th>ID Number</th>
-                                            <th>Address</th>
-                                            <th>Username</th>
+                                            <!-- <th>Address</th> -->
+                                            <!-- <th>Username</th> -->
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
@@ -76,8 +76,8 @@ include "../views/layout/header.php";
                                                 <td><?php echo $row['phone']; ?></td>
                                                 <td><?php echo $row['email']; ?></td>
                                                 <td><?php echo $row['ID_no']; ?></td>
-                                                <td><?php echo ucfirst($row['sector']); ?></td>
-                                                <td><?php echo ucfirst($row['username']); ?></td>
+                                                <!-- <td><?php echo ucfirst($row['district']); ?></td> -->
+                                                <!-- <td><?php echo ucfirst($row['username']); ?></td> -->
                                                 <td>
                                                     <a href="#" class="btn btn-sm btn-warning btn-user">
                                                         Edit
