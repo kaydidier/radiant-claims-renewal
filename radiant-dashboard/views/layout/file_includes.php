@@ -137,53 +137,200 @@ $provinces = mysqli_query($mysqli, "SELECT * FROM province");
 $i = 0;
 
 // Register Client
+// if (isset($_POST['save_client'])) {
+
+//     $insurance = $mysqli->real_escape_string($_POST['insurance']);
+//     $empId = $_SESSION['employeeid'];
+//     $a = $mysqli->real_escape_string($_POST['firstname']);
+//     $b = $mysqli->real_escape_string($_POST['lastname']);
+//     $c = $mysqli->real_escape_string($_POST['password']);
+//     $d = $mysqli->real_escape_string($_POST['email']);
+//     $e = $mysqli->real_escape_string($_POST['idno']);
+//     $f = $mysqli->real_escape_string($_POST['gender']);
+//     $g = $mysqli->real_escape_string($_POST['dob']);
+//     $h = $mysqli->real_escape_string($_POST['district']);
+//     $i = $mysqli->real_escape_string($_POST['province']);
+//     $j = $mysqli->real_escape_string($_POST['phone']);
+//     $k = $mysqli->real_escape_string($_POST['bankaccount']);
+
+//     $m = $mysqli->real_escape_string($_POST['plate']);
+//     $q = $mysqli->real_escape_string($_POST['startDate']);
+//     $r = $mysqli->real_escape_string($_POST['endDate']);
+//     $today = new DateTime();
+
+//     // Fix directory paths - remove backslashes and trailing spaces
+//     $upload_dirs = [
+//         'licenses' => './files/licenses/',
+//         'yellows' => './files/yellows/',
+//         'incomeproofs' => './files/incomeproofs/',
+//         'contracts' => './files/contracts/'
+//     ];
+
+//     // Create directories if they don't exist
+//     foreach ($upload_dirs as $dir) {
+//         if (!is_dir($dir)) {
+//             mkdir($dir, 0755, true);
+//         }
+//     }
+
+//     // Sanitize filenames
+//     $l = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['license']['name']);
+//     $n = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['yellow']['name']);
+//     $o = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['income']['name']);
+//     $p = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['contract']['name']);
+
+//     // Attempt to move all files
+//     $result = true;
+//     $result = true;
+//     if (!empty($_FILES['license']['tmp_name'])) {
+//         $result = $result && move_uploaded_file(
+//             $_FILES['license']['tmp_name'],
+//             $upload_dirs['licenses'] . $l
+//         );
+//     }
+//     if (!empty($_FILES['yellow']['tmp_name'])) {
+//         $result = $result && move_uploaded_file(
+//             $_FILES['yellow']['tmp_name'],
+//             $upload_dirs['yellows'] . $n
+//         );
+//     }
+//     if (!empty($_FILES['income']['tmp_name'])) {
+//         $result = $result && move_uploaded_file(
+//             $_FILES['income']['tmp_name'],
+//             $upload_dirs['incomeproofs'] . $o
+//         );
+//     }
+//     if (!empty($_FILES['contract']['tmp_name'])) {
+//         $result = $result && move_uploaded_file(
+//             $_FILES['contract']['tmp_name'],
+//             $upload_dirs['contracts'] . $p
+//         );
+//     }
+
+//     $insertSql = "INSERT INTO clients(id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id) VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$g', '$h', '$i', '$j','$k','$l', '$m', '$n', '$o', '$p', '$q', '$r' ,'$a', '$empId', $insurance)";
+
+//     $query = $mysqli->query("SELECT * FROM clients WHERE email='$d' OR phone='$j' OR ID_no='$e' OR bank_account='$k' ") or die($mysqli->error);
+
+//     if (mysqli_num_rows($query) > 0) {
+
+//         echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
+//     } else if (empty($insurance) || empty($a) || empty($b) || empty($c) || empty($d) || empty($e) || empty($f) || empty($g) || empty($h) || empty($i) || empty($j) || empty($k) || empty($o) || empty($p) || empty($q) || empty($r)) {
+
+//         echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
+//     } else if ($q < $today || $r < $q) {
+
+//         echo "<script type='text/javascript'>alert('Start date can't be in past and End date should be greater than start date ');</script>";
+//     } else if ($g > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
+
+//         echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
+//     } else {
+
+//         // Move uploaded files 
+//         if ($result) {
+
+//             echo "The files " . htmlspecialchars($l) . "and" . htmlspecialchars($n) . " and " . htmlspecialchars($o) . "and" . htmlspecialchars($n) . " have been uploaded .";
+
+//             $insert = mysqli_query($mysqli, $insertSql) or die(mysqli_error($mysqli));
+
+//             if ($insert) {
+//                 $_SESSION['clientregistration'] = mysqli_insert_id($mysqli);
+//                 echo "<script type='text/javascript'>alert('Client have been successfully registerd and Insured!');
+
+//     		window.location='initsession.php?clid=" . mysqli_insert_id($mysqli) . "';
+//     		</script>";
+//             } else {
+//                 echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
+//             }
+//         } else {
+//             echo "<script type='text/javascript'>alert('Sorry, there was an error uploading your files');</script>";
+
+//         }
+//     }
+// }
+
 if (isset($_POST['save_client'])) {
-
+    // Sanitize and validate input data
     $insurance = $mysqli->real_escape_string($_POST['insurance']);
-    $a = $mysqli->real_escape_string($_POST['firstname']);
-    $b = $mysqli->real_escape_string($_POST['lastname']);
-    $c = $mysqli->real_escape_string($_POST['password']);
-    $d = $mysqli->real_escape_string($_POST['email']);
-    $e = $mysqli->real_escape_string($_POST['idno']);
-    $f = $mysqli->real_escape_string($_POST['gender']);
-    $g = $mysqli->real_escape_string($_POST['dob']);
-    $h = $mysqli->real_escape_string($_POST['district']);
-    $i = $mysqli->real_escape_string($_POST['province']);
-    $j = $mysqli->real_escape_string($_POST['phone']);
-    $k = $mysqli->real_escape_string($_POST['bankaccount']);
-    $l = $mysqli->real_escape_string($_POST['license']);
-    $m = $mysqli->real_escape_string($_POST['yellow']);
-    $n = $mysqli->real_escape_string($_POST['plate']);
-    $o = $mysqli->real_escape_string($_POST['income']);
-    $p = $mysqli->real_escape_string($_POST['contract']);
     $empId = $_SESSION['employeeid'];
+    $firstname = $mysqli->real_escape_string($_POST['firstname']);
+    $lastname = $mysqli->real_escape_string($_POST['lastname']);
+    $password = $mysqli->real_escape_string($_POST['password']);
+    $email = $mysqli->real_escape_string($_POST['email']);
+    $idno = $mysqli->real_escape_string($_POST['idno']);
+    $gender = $mysqli->real_escape_string($_POST['gender']);
+    $dob = $mysqli->real_escape_string($_POST['dob']);
+    $district = $mysqli->real_escape_string($_POST['district']);
+    $province = $mysqli->real_escape_string($_POST['province']);
+    $phone = $mysqli->real_escape_string($_POST['phone']);
+    $bankaccount = $mysqli->real_escape_string($_POST['bankaccount']);
+    $plate = $mysqli->real_escape_string($_POST['plate']);
+    $startDate = $mysqli->real_escape_string($_POST['startDate']);
+    $endDate = $mysqli->real_escape_string($_POST['endDate']);
+    $today = new DateTime();
 
-    $insertSql = "INSERT INTO clients(id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, username, emp_id, insurance_id) VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$g', '$h', '$i', '$j','$k','$l', '$m', '$n', '$o', '$p','$a', '$empId', $insurance)";
+    // Define upload directories
+    $upload_dirs = [
+        'licenses' => './../../files/licenses/',
+        'yellows' => './../../files/yellows/',
+        'incomeproofs' => './../../../files/incomeproofs/',
+        'contracts' => './../../files/contracts/'
+    ];
 
-    $query = $mysqli->query("SELECT * FROM clients WHERE email='$d' OR phone='$j' OR ID_no='$e' OR bank_account='$k' ") or die($mysqli->error);
+    // Create directories if they don't exist
+    foreach ($upload_dirs as $dir) {
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+    }
+
+    // Sanitize filenames
+    $licenseFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['license']['name']);
+    $yellowFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['yellow']['name']);
+    $incomeFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['income']['name']);
+    $contractFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['contract']['name']);
+
+    // Move uploaded files
+    $result = true;
+    $uploadedFiles = [];
+
+    if (!empty($_FILES['license']['tmp_name'])) {
+        $result = $result && move_uploaded_file($_FILES['license']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
+        $uploadedFiles[] = $licenseFile;
+    }
+    if (!empty($_FILES['yellow']['tmp_name'])) {
+        $result = $result && move_uploaded_file($_FILES['yellow']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
+        $uploadedFiles[] = $yellowFile;
+    }
+    if (!empty($_FILES['income']['tmp_name'])) {
+        $result = $result && move_uploaded_file($_FILES['income']['tmp_name'], $upload_dirs['incomeproofs'] . $incomeFile);
+        $uploadedFiles[] = $incomeFile;
+    }
+    if (!empty($_FILES['contract']['tmp_name'])) {
+        $result = $result && move_uploaded_file($_FILES['contract']['tmp_name'], $upload_dirs['contracts'] . $contractFile);
+        $uploadedFiles[] = $contractFile;
+    }
+
+    // Check for duplicate entries
+    $query = $mysqli->query("SELECT * FROM clients WHERE email='$email' OR phone='$phone' OR ID_no='$idno' OR bank_account='$bankaccount'") or die($mysqli->error);
 
     if (mysqli_num_rows($query) > 0) {
-
         echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
-    } else if (empty($insurance) || empty($a) || empty($b) || empty($c) || empty($d) || empty($e) || empty($f) || empty($g) || empty($h) || empty($i) || empty($j) || empty($k) || empty($o) || empty($p)) {
-
+    } elseif (empty($insurance) || empty($firstname) || empty($lastname) || empty($password) || empty($email) || empty($idno) || empty($gender) || empty($dob) || empty($district) || empty($province) || empty($phone) || empty($bankaccount) || empty($incomeFile) || empty($contractFile) || empty($startDate) || empty($endDate)) {
         echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
-
-    } else if ($g > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
-
-        echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
+    } elseif ($dob > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
+        echo "<script type='text/javascript'>alert('Only people above 18 years old are allowed to have vehicles');</script>";
     } else {
+        // Insert client data into the database
+        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id) 
+                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', $insurance)";
 
-        $insert = mysqli_query($mysqli, $insertSql) or die(mysqli_error($mysqli));
-
-        echo "<script type='text/javascript'>alert('Data should be inserted');</script>";
+        $insert = $mysqli->query($insertSql) or die($mysqli->error);
 
         if ($insert) {
-            $_SESSION['clientregistration'] = mysqli_insert_id($mysqli);
-            echo "<script type='text/javascript'>alert('Successfully! Continue Give Client Insurance');
-
-    		window.location='initsession.php?clid=" . mysqli_insert_id($mysqli) . "';
-    		</script>";
+            $_SESSION['clientregistration'] = $mysqli->insert_id;
+            echo "<script type='text/javascript'>alert('Client has been successfully registered and insured!');
+                  window.location='initsession.php?clid=" . $mysqli->insert_id . "';
+                  </script>";
         } else {
             echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
         }
@@ -238,23 +385,6 @@ if (isset($_POST['save_client'])) {
                                 <input type="date" class="form-control" id="dob" name="dob" onchange="validateDOB()">
                                 <div class="invalid-feedback" id="dobFeedback">You must be over 18 years old.</div>
                             </div>
-                        </div>
-                        <div class="col">
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Password</label>
-                                <input type="password" class="form-control" id="password" name="password">
-                            </div>
-                            <div class="mb-3">
-                                <label for="insurance" class="form-label">Insurance</label>
-                                <select class="form-control" id="insurance" name="insurance" onchange="togglePlateNumber()">
-                                    <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
-                                        <option value="<?php echo $insuranceRow['insurance_id']; ?>">
-                                            <?php echo $insuranceRow['insurance_name']; ?>
-                                        </option>
-                                    <?php }
-                                    $a++; ?>
-                                </select>
-                            </div>
                             <div class="mb-3">
                                 <label for="province" class="form-label">Province</label>
                                 <select class="form-control" id="province" name="province">
@@ -296,7 +426,33 @@ if (isset($_POST['save_client'])) {
                                     ?>
                                 </select>
                             </div>
-
+                        </div>
+                        <div class="col">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="insurance" class="form-label">Insurance</label>
+                                <select class="form-control" id="insurance" name="insurance" onchange="togglePlateNumber()">
+                                    <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
+                                        <option value="<?php echo $insuranceRow['insurance_id']; ?>">
+                                            <?php echo $insuranceRow['insurance_name']; ?>
+                                        </option>
+                                    <?php }
+                                    $a++; ?>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label">Issue Date</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" onchange="validateSDate()">
+                                <div class="invalid-feedback" id="sDateFeedback">Issue date can't be in the past.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">Expiration Date</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" onchange="validateEDate()">
+                                <div class="invalid-feedback" id="eDateFeedback">Expiration date can't be in the past.</div>
+                            </div>
                             <div class="mb-3">
                                 <label for="bankaccount" class="form-label">Bank account</label>
                                 <input required type="text" class="form-control" id="bankaccount" name="bankaccount">
@@ -305,7 +461,7 @@ if (isset($_POST['save_client'])) {
                             <div style="display: none;" id="motor">
                                 <div class="mb-3">
                                     <label for="license" class="form-label">Driving license</label>
-                                    <input type="text" class="form-control" id="license" name="license">
+                                    <input type="file" class="form-control" id="license" name="license">
                                 </div>
                                 <div class="mb-3">
                                     <label for="plate" class="form-label">Plate Number</label>
@@ -313,18 +469,18 @@ if (isset($_POST['save_client'])) {
                                 </div>
                                 <div class="mb-3">
                                     <label for="yellow" class="form-label">Yellow Paper</label>
-                                    <input type="text" class="form-control" id="yellow" name="yellow">
+                                    <input type="file" class="form-control" id="yellow" name="yellow">
                                 </div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="income" class="form-label">Proof of Income</label>
-                                <input required type="text" class="form-control" id="income" name="income">
+                                <input required type="file" class="form-control" id="income" name="income">
                             </div>
 
                             <div class="mb-3">
                                 <label for="contract" class="form-label">Contract</label>
-                                <input required type="text" class="form-control" id="contract" name="contract">
+                                <input required type="file" class="form-control" id="contract" name="contract">
                             </div>
                         </div>
                     </div>
@@ -340,6 +496,41 @@ if (isset($_POST['save_client'])) {
 </div>
 
 <script>
+    function validateSDate() {
+        const sDateInput = document.getElementById('startDate');
+        const sDateFeedback = document.getElementById('sDateFeedback');
+        const submitBtn = document.getElementById('save_client');
+        var today = new Date();
+        const sDateValue = new Date(sDateInput.value);
+        var monthDifference = sDateValue.getMonth() - today.getMonth() +
+            (12 * (sDateValue.getFullYear() - today.getFullYear()));
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < sDateValue.getDate())) {
+            sDateInput.classList.remove('is-invalid');
+            sDateFeedback.style.display = 'none';
+        } else {
+            sDateInput.classList.add('is-invalid');
+            sDateFeedback.style.display = 'block';
+        }
+    }
+
+    function validateEDate() {
+        const eDateInput = document.getElementById('endDate');
+        const eDateFeedback = document.getElementById('eDateFeedback');
+        const submitBtn = document.getElementById('save_client');
+        const eDateValue = new Date(eDateInput.value);
+        var today = new Date();
+        var monthDifference = eDateValue.getMonth() - today.getMonth() +
+            (12 * (eDateValue.getFullYear() - today.getFullYear()));
+
+        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < eDateValue.getDate())) {
+            eDateInput.classList.remove('is-invalid');
+            eDateFeedback.style.display = 'none';
+        } else {
+            eDateInput.classList.add('is-invalid');
+            eDateFeedback.style.display = 'block';
+        }
+    }
     // Validating date of birth when registering a client 
     function validateDOB() {
         const dobInput = document.getElementById('dob');

@@ -76,14 +76,12 @@ include "../views/layout/header.php";
                                                 <td><?php echo $row['phone']; ?></td>
                                                 <td><?php echo $row['email']; ?></td>
                                                 <td><?php echo $row['ID_no']; ?></td>
-                                                <!-- <td><?php echo ucfirst($row['district']); ?></td> -->
-                                                <!-- <td><?php echo ucfirst($row['username']); ?></td> -->
                                                 <td>
-                                                    <a href="#" class="btn btn-sm btn-warning btn-user">
+                                                    <a href="#" class="btn btn-sm btn-warning btn-user" data-toggle="modal" data-target="#EditClient">
                                                         Edit
                                                     </a>
-                                                    <a href="#" class="btn btn-sm btn-danger btn-user">
-                                                        Remove
+                                                    <a href="#" class="btn btn-sm btn-danger btn-user" data-toggle="modal" data-target="#deleteClient">
+                                                        Delete
                                                     </a>
                                                 </td>
                                             </tr>
