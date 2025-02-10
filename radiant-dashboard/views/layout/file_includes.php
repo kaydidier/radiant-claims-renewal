@@ -270,10 +270,10 @@ if (isset($_POST['save_client'])) {
 
     // Define upload directories
     $upload_dirs = [
-        'licenses' => './../../files/licenses/',
-        'yellows' => './../../files/yellows/',
-        'incomeproofs' => './../../../files/incomeproofs/',
-        'contracts' => './../../files/contracts/'
+        'licenses' => './../../files/licenses/' . $firstname . '/',
+        'yellows' => './../../files/yellows/' . $firstname . '/',
+        'incomeproofs' => './../../files/incomeproofs/' . $firstname . '/',
+        'contracts' => './../../files/contracts/' . $firstname . '/'
     ];
 
     // Create directories if they don't exist
