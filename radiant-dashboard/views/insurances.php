@@ -63,8 +63,8 @@ include "../views/layout/header.php";
                                         while ($row = mysqli_fetch_array($allInsurances)) {
                                         ?>
                                             <tr>
-                                                <td><?php echo $a; ?></td>
-                                                <td><?php echo ucfirst($row['insurance_name']); ?></td>
+                                                <td><?php echo $row['insurance_id']; ?></td>
+                                                <td><?php echo ucwords($row['insurance_name']); ?></td>
                                                 <td>
                                                     <a href="#" class="btn btn-sm btn-warning btn-user">
                                                         Edit

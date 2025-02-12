@@ -23,6 +23,26 @@
     </div>
 </div>
 
+<!-- Delete Client Modal-->
+<div class="modal fade" id="deleteClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this client?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Confirm" below if you are ready to perform action.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="../../delete.php">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Add claim Modal-->
 <div class="modal fade" id="addClaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -82,27 +102,20 @@
 </div>
 
 <!-- Add Insurance Modal-->
+<?php
+
+if (isset($_POST['saveInsurance'])) {
+    $insuranceName = $mysqli->real_escape_string(strtolower($_POST['InsuranceName']));
+
+    $existingInsurance = $mysqli->query("SELECT * FROM insurance WHERE insurance_name='$insuranceName'");
+
+    $saveInsuranceQuery = $mysqli->query("INSERT INTO insurance VALUES (NULL, '$insuranceName')");
+
+    echo "<script type='text/javascript'>alert('New insurance created successfully');</script>";
+}
+
+?>
 <div class="modal fade" id="addInsurance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <?php
-
-    if (isset($_POST['saveInsurance'])) {
-        $insuranceName = $mysqli->real_escape_string($_POST['InsuranceName']);
-
-        $saveInsuranceQuery = $mysqli->mysqli_query("INSERT INTO insurance VALUES (NULL, '$insuranceName')");
-
-        echo "<div class='toast' role='alert' aria-live='assertive' aria-atomic='true'>
-                <div class='toast-header'>
-                    <strong class='me-auto'>Bootstrap</strong>
-                    <small>11 mins ago</small>
-                    <button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='Close'></button>
-                </div>
-                <div class='toast-body'>
-                    Hello, world! This is a toast message.
-                </div>
-            </div>";
-    }
-
-    ?>
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -120,7 +133,6 @@
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                         <button class="btn btn-primary" type="submit" name="saveInsurance">Submit</button>
-                        <!-- <input type="submit" value="submit" name="saveInsurance"> -->
                     </div>
                 </form>
             </div>
@@ -135,118 +147,6 @@ $insurances = mysqli_query($mysqli, "SELECT * FROM insurance");
 $provinces = mysqli_query($mysqli, "SELECT * FROM province");
 
 $i = 0;
-
-// Register Client
-// if (isset($_POST['save_client'])) {
-
-//     $insurance = $mysqli->real_escape_string($_POST['insurance']);
-//     $empId = $_SESSION['employeeid'];
-//     $a = $mysqli->real_escape_string($_POST['firstname']);
-//     $b = $mysqli->real_escape_string($_POST['lastname']);
-//     $c = $mysqli->real_escape_string($_POST['password']);
-//     $d = $mysqli->real_escape_string($_POST['email']);
-//     $e = $mysqli->real_escape_string($_POST['idno']);
-//     $f = $mysqli->real_escape_string($_POST['gender']);
-//     $g = $mysqli->real_escape_string($_POST['dob']);
-//     $h = $mysqli->real_escape_string($_POST['district']);
-//     $i = $mysqli->real_escape_string($_POST['province']);
-//     $j = $mysqli->real_escape_string($_POST['phone']);
-//     $k = $mysqli->real_escape_string($_POST['bankaccount']);
-
-//     $m = $mysqli->real_escape_string($_POST['plate']);
-//     $q = $mysqli->real_escape_string($_POST['startDate']);
-//     $r = $mysqli->real_escape_string($_POST['endDate']);
-//     $today = new DateTime();
-
-//     // Fix directory paths - remove backslashes and trailing spaces
-//     $upload_dirs = [
-//         'licenses' => './files/licenses/',
-//         'yellows' => './files/yellows/',
-//         'incomeproofs' => './files/incomeproofs/',
-//         'contracts' => './files/contracts/'
-//     ];
-
-//     // Create directories if they don't exist
-//     foreach ($upload_dirs as $dir) {
-//         if (!is_dir($dir)) {
-//             mkdir($dir, 0755, true);
-//         }
-//     }
-
-//     // Sanitize filenames
-//     $l = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['license']['name']);
-//     $n = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['yellow']['name']);
-//     $o = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['income']['name']);
-//     $p = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['contract']['name']);
-
-//     // Attempt to move all files
-//     $result = true;
-//     $result = true;
-//     if (!empty($_FILES['license']['tmp_name'])) {
-//         $result = $result && move_uploaded_file(
-//             $_FILES['license']['tmp_name'],
-//             $upload_dirs['licenses'] . $l
-//         );
-//     }
-//     if (!empty($_FILES['yellow']['tmp_name'])) {
-//         $result = $result && move_uploaded_file(
-//             $_FILES['yellow']['tmp_name'],
-//             $upload_dirs['yellows'] . $n
-//         );
-//     }
-//     if (!empty($_FILES['income']['tmp_name'])) {
-//         $result = $result && move_uploaded_file(
-//             $_FILES['income']['tmp_name'],
-//             $upload_dirs['incomeproofs'] . $o
-//         );
-//     }
-//     if (!empty($_FILES['contract']['tmp_name'])) {
-//         $result = $result && move_uploaded_file(
-//             $_FILES['contract']['tmp_name'],
-//             $upload_dirs['contracts'] . $p
-//         );
-//     }
-
-//     $insertSql = "INSERT INTO clients(id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id) VALUES (NULL, '$a', '$b', '$c', '$d', '$e', '$f','$g', '$h', '$i', '$j','$k','$l', '$m', '$n', '$o', '$p', '$q', '$r' ,'$a', '$empId', $insurance)";
-
-//     $query = $mysqli->query("SELECT * FROM clients WHERE email='$d' OR phone='$j' OR ID_no='$e' OR bank_account='$k' ") or die($mysqli->error);
-
-//     if (mysqli_num_rows($query) > 0) {
-
-//         echo "<script type='text/javascript'>alert('Duplicate entry found');</script>";
-//     } else if (empty($insurance) || empty($a) || empty($b) || empty($c) || empty($d) || empty($e) || empty($f) || empty($g) || empty($h) || empty($i) || empty($j) || empty($k) || empty($o) || empty($p) || empty($q) || empty($r)) {
-
-//         echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
-//     } else if ($q < $today || $r < $q) {
-
-//         echo "<script type='text/javascript'>alert('Start date can't be in past and End date should be greater than start date ');</script>";
-//     } else if ($g > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
-
-//         echo "<script type='text/javascript'>alert('Only People above 18 years old are allowed to have vehicles');</script>";
-//     } else {
-
-//         // Move uploaded files 
-//         if ($result) {
-
-//             echo "The files " . htmlspecialchars($l) . "and" . htmlspecialchars($n) . " and " . htmlspecialchars($o) . "and" . htmlspecialchars($n) . " have been uploaded .";
-
-//             $insert = mysqli_query($mysqli, $insertSql) or die(mysqli_error($mysqli));
-
-//             if ($insert) {
-//                 $_SESSION['clientregistration'] = mysqli_insert_id($mysqli);
-//                 echo "<script type='text/javascript'>alert('Client have been successfully registerd and Insured!');
-
-//     		window.location='initsession.php?clid=" . mysqli_insert_id($mysqli) . "';
-//     		</script>";
-//             } else {
-//                 echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
-//             }
-//         } else {
-//             echo "<script type='text/javascript'>alert('Sorry, there was an error uploading your files');</script>";
-
-//         }
-//     }
-// }
 
 if (isset($_POST['save_client'])) {
     // Sanitize and validate input data
@@ -329,8 +229,8 @@ if (isset($_POST['save_client'])) {
         if ($insert) {
             $_SESSION['clientregistration'] = $mysqli->insert_id;
             echo "<script type='text/javascript'>alert('Client has been successfully registered and insured!');
-                  window.location='initsession.php?clid=" . $mysqli->insert_id . "';
                   </script>";
+            //   window.location='initsession.php?clid=" . $mysqli->insert_id . "';
         } else {
             echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
         }
@@ -487,7 +387,7 @@ if (isset($_POST['save_client'])) {
 
                     <div class="modal-footer">
                         <button class="btn btn-md btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <button type="submit" id="save_client" name="save_client" class="btn btn-md btn-primary">Create</button>
+                        <button type="submit" id="save_client" name="save_client" class="btn btn-md btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
