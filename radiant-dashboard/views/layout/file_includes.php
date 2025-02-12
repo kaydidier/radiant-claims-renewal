@@ -72,7 +72,7 @@
 
                     <div class="mb-3">
                         <label for="insurance" class="form-label">Insurance</label>
-                        <select class="form-control" id="insurancee" name="insurance" onchange="togglePlateNumber()">
+                        <select class="form-control" id="insurancee" name="insurance" onchange="toggleFieds()">
                             <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
                                 <option value="<?php echo $insuranceRow['insurance_id']; ?>">
                                     <?php echo $insuranceRow['insurance_name']; ?>
@@ -166,7 +166,7 @@ if (isset($_POST['save_client'])) {
     $plate = $mysqli->real_escape_string($_POST['plate']);
     $startDate = $mysqli->real_escape_string($_POST['startDate']);
     $endDate = $mysqli->real_escape_string($_POST['endDate']);
-    $today = new DateTime();
+    $house = $mysqli->real_escape_string($_POST['upi']);
 
     // Define upload directories
     $upload_dirs = [
@@ -193,23 +193,6 @@ if (isset($_POST['save_client'])) {
     $result = true;
     $uploadedFiles = [];
 
-    if (!empty($_FILES['license']['tmp_name'])) {
-        $result = $result && move_uploaded_file($_FILES['license']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
-        $uploadedFiles[] = $licenseFile;
-    }
-    if (!empty($_FILES['yellow']['tmp_name'])) {
-        $result = $result && move_uploaded_file($_FILES['yellow']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
-        $uploadedFiles[] = $yellowFile;
-    }
-    if (!empty($_FILES['income']['tmp_name'])) {
-        $result = $result && move_uploaded_file($_FILES['income']['tmp_name'], $upload_dirs['incomeproofs'] . $incomeFile);
-        $uploadedFiles[] = $incomeFile;
-    }
-    if (!empty($_FILES['contract']['tmp_name'])) {
-        $result = $result && move_uploaded_file($_FILES['contract']['tmp_name'], $upload_dirs['contracts'] . $contractFile);
-        $uploadedFiles[] = $contractFile;
-    }
-
     // Check for duplicate entries
     $query = $mysqli->query("SELECT * FROM clients WHERE email='$email' OR phone='$phone' OR ID_no='$idno' OR bank_account='$bankaccount'") or die($mysqli->error);
 
@@ -220,15 +203,34 @@ if (isset($_POST['save_client'])) {
     } elseif ($dob > date("Y-m-d", (time() - (18 * 365 * 24 * 60 * 60)))) {
         echo "<script type='text/javascript'>alert('Only people above 18 years old are allowed to have vehicles');</script>";
     } else {
+
+        // Move files to dirs
+        if (!empty($_FILES['license']['tmp_name'])) {
+            $result = $result && move_uploaded_file($_FILES['license']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
+            $uploadedFiles[] = $licenseFile;
+        }
+        if (!empty($_FILES['yellow']['tmp_name'])) {
+            $result = $result && move_uploaded_file($_FILES['yellow']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
+            $uploadedFiles[] = $yellowFile;
+        }
+        if (!empty($_FILES['income']['tmp_name'])) {
+            $result = $result && move_uploaded_file($_FILES['income']['tmp_name'], $upload_dirs['incomeproofs'] . $incomeFile);
+            $uploadedFiles[] = $incomeFile;
+        }
+        if (!empty($_FILES['contract']['tmp_name'])) {
+            $result = $result && move_uploaded_file($_FILES['contract']['tmp_name'], $upload_dirs['contracts'] . $contractFile);
+            $uploadedFiles[] = $contractFile;
+        }
+
         // Insert client data into the database
-        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id) 
-                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', $insurance)";
+        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, upi, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id) 
+                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', $insurance)";
 
         $insert = $mysqli->query($insertSql) or die($mysqli->error);
 
         if ($insert) {
             $_SESSION['clientregistration'] = $mysqli->insert_id;
-            echo "<script type='text/javascript'>alert('Client has been successfully registered and insured!');
+            echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
                   </script>";
             //   window.location='initsession.php?clid=" . $mysqli->insert_id . "';
         } else {
@@ -334,52 +336,59 @@ if (isset($_POST['save_client'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="insurance" class="form-label">Insurance</label>
-                                <select class="form-control" id="insurance" name="insurance" onchange="togglePlateNumber()">
+                                <select class="form-control" id="insurance" name="insurance" onchange="toggleFieds()">
                                     <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
                                         <option value="<?php echo $insuranceRow['insurance_id']; ?>">
-                                            <?php echo $insuranceRow['insurance_name']; ?>
+                                            <?php echo ucwords($insuranceRow['insurance_name']); ?>
                                         </option>
                                     <?php }
                                     $a++; ?>
                                 </select>
                             </div>
-                            <div class="mb-3">
-                                <label for="startDate" class="form-label">Issue Date</label>
-                                <input type="date" class="form-control" id="startDate" name="startDate" onchange="validateSDate()">
-                                <div class="invalid-feedback" id="sDateFeedback">Issue date can't be in the past.</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="endDate" class="form-label">Expiration Date</label>
-                                <input type="date" class="form-control" id="endDate" name="endDate" onchange="validateEDate()">
-                                <div class="invalid-feedback" id="eDateFeedback">Expiration date can't be in the past.</div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="bankaccount" class="form-label">Bank account</label>
-                                <input required type="text" class="form-control" id="bankaccount" name="bankaccount">
-                            </div>
 
-                            <div style="display: none;" id="motor">
+                            <div style="display: none;" id="motor" style="display: none;">
                                 <div class="mb-3">
-                                    <label for="license" class="form-label">Driving license</label>
+                                    <label for="license" class="form-label">Driving license <small>( Valid drivers license for the vihicle)</small> </label>
                                     <input type="file" class="form-control" id="license" name="license">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="plate" class="form-label">Plate Number</label>
+                                    <label for="plate" class="form-label">Plate Number <small>( Valid plate number for the vihicle)</small></label>
                                     <input type="text" class="form-control" id="plate" name="plate">
                                 </div>
                                 <div class="mb-3">
-                                    <label for="yellow" class="form-label">Yellow Paper</label>
+                                    <label for="yellow" class="form-label">Yellow Paper <small>( Valid yellow paper for the vihicle)</small></label>
                                     <input type="file" class="form-control" id="yellow" name="yellow">
                                 </div>
                             </div>
 
+                            <div class="mb-3" id="upi" style="display: none;">
+                                <label for="upi" class="form-label">UPI <small>(Unique Parcel Identifier )</small></label>
+                                <input type="text" class="form-control" id="upi" name="upi">
+                            </div>
+
                             <div class="mb-3">
-                                <label for="income" class="form-label">Proof of Income</label>
+                                <label for="startDate" class="form-label">Issue Date <small>( Start date of the insurance )</small></label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" onchange="validateSDate()">
+                                <div class="invalid-feedback" id="sDateFeedback">Issue date can't be in the past.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label">Expiration Date <small>( End date of the insurance )</small></label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" onchange="validateEDate()">
+                                <div class="invalid-feedback" id="eDateFeedback">Expiration date can't be in the past.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="bankaccount" class="form-label">Bank account <small>( Bank account different payments )</small></label>
+                                <input required type="text" class="form-control" id="bankaccount" name="bankaccount">
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="income" class="form-label">Proof of Income <small>( Preferably bank slip to support the insurance)</small></label>
                                 <input required type="file" class="form-control" id="income" name="income">
                             </div>
 
                             <div class="mb-3">
-                                <label for="contract" class="form-label">Contract</label>
+                                <label for="contract" class="form-label">Contract <small>( Signed agreements of involved parties )</small></label>
                                 <input required type="file" class="form-control" id="contract" name="contract">
                             </div>
                         </div>
@@ -456,15 +465,21 @@ if (isset($_POST['save_client'])) {
         }
     }
 
-    function togglePlateNumber() {
+    function toggleFieds() {
         const insuranceSelect = document.getElementById('insurance');
         const motorDiv = document.getElementById('motor');
+        const upiDiv = document.getElementById('upi');
         const selectedInsurance = insuranceSelect.options[insuranceSelect.selectedIndex].text;
 
         if (selectedInsurance.toLowerCase().includes('motor')) {
             motorDiv.style.display = 'block';
+            upiDiv.style.display = 'none';
+        } else if (selectedInsurance.toLowerCase().includes('house')) {
+            upiDiv.style.display = 'block';
+            motorDiv.style.display = 'none';
         } else {
             motorDiv.style.display = 'none';
+            upiDiv.style.display = 'none';
         }
     }
 </script>
