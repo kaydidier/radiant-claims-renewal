@@ -68,11 +68,14 @@ include "../views/layout/header.php";
                                         $allInsurances = "";
 
                                         if (isset($_SESSION['employeeid'])) {
-                                            $allInsurances = mysqli_query($mysqli, "SELECT clients.insurance_id, id_client, firstname, lastname, start_date, end_date, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id");
-                                        } else {
                                             $allInsurances = mysqli_query($mysqli, "SELECT * FROM renewals 
                                             LEFT JOIN clients ON renewals.id_client = clients.id_client 
                                             LEFT JOIN insurance ON renewals.insurance_id = insurance.insurance_id");
+                                        } else {
+                                            $allInsurances = mysqli_query($mysqli, "SELECT * FROM renewals 
+                                            LEFT JOIN clients ON renewals.id_client = clients.id_client 
+                                            LEFT JOIN insurance ON renewals.insurance_id = insurance.insurance_id
+                                            WHERE renewals.id_client = " . $_SESSION['clientid']);
                                         }
 
                                         $a = 1;
@@ -120,47 +123,50 @@ include "../views/layout/header.php";
 
                         <!-- Renew insurance Modal-->
                         <?php
+                        // Stricly for only clients
+                        if (isset($_SESSION['clientid'])) {
+                            $clientId = $_SESSION['clientid'];
 
-                        $clientId = $_SESSION['clientid'];
+                            $insurances = $mysqli->query("SELECT clients.insurance_id, id_client, firstname, start_date, end_date, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id WHERE id_client = " . $clientId);
 
-                        $insurances = $mysqli->query("SELECT clients.insurance_id, id_client, firstname, start_date, end_date, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id WHERE id_client = " . $clientId);
+                            // Renew Insurance Logic
+                            if (isset($_POST['renewInsurance'])) {
+                                $insuranceId = $mysqli->real_escape_string($_POST['insurance']);
+                                $newStartDate = $mysqli->real_escape_string($_POST['newStartDate']);
+                                $newEndDate = $mysqli->real_escape_string($_POST['newEndDate']);
+                                $today = date('Y-m-d');
 
-                        // Renew Insurance Logic
-                        if (isset($_POST['renewInsurance'])) {
-                            $insuranceId = $mysqli->real_escape_string($_POST['insurance']);
-                            $newStartDate = $mysqli->real_escape_string($_POST['newStartDate']);
-                            $newEndDate = $mysqli->real_escape_string($_POST['newEndDate']);
-                            $today = date('Y-m-d');
-
-                            // Validate dates
-                            if ($newStartDate < $today || $newEndDate < $newStartDate) {
-                                echo "<script type='text/javascript'>alert('Invalid dates. Start date cannot be in the past, and end date must be after the start date.');</script>";
-                            } else {
-                                // Handle file upload for proof of payment
-                                $proofFile = '';
-                                if (!empty($_FILES['proof']['tmp_name'])) {
-                                    $proofFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['proof']['name']);
-                                    $uploadDir = './../files/incomeproofs/';
-                                    if (!is_dir($uploadDir)) {
-                                        mkdir($uploadDir, 0755, true);
-                                    }
-                                }
-
-                                // Update insurance dates in the database
-                                $updateSql = "UPDATE clients SET start_date = '$newStartDate', end_date = '$newEndDate', proof_of_income='$proofFile' WHERE insurance_id = '$insuranceId' AND id_client = '$clientId'";
-
-                                $insertSql = "INSERT INTO renewals(id_client, insurance_id, status) VALUES($clientId, $insuranceId, 'requested')";
-
-                                if ($mysqli->query($updateSql) and $mysqli->query($insertSql)) {
-
-                                    move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFile);
-
-                                    echo "<script type='text/javascript'>alert('Insurance renewed successfully!'); window.location.href = window.location.href;</script>";
+                                // Validate dates
+                                if ($newStartDate < $today || $newEndDate < $newStartDate) {
+                                    echo "<script type='text/javascript'>alert('Invalid dates. Start date cannot be in the past, and end date must be after the start date.');</script>";
                                 } else {
-                                    echo "<script type='text/javascript'>alert('Failed to renew insurance. Please try again.');</script>";
+                                    // Handle file upload for proof of payment
+                                    $proofFile = '';
+                                    if (!empty($_FILES['proof']['tmp_name'])) {
+                                        $proofFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['proof']['name']);
+                                        $uploadDir = './../../files/incomeproofs/renewals/';
+                                        if (!is_dir($uploadDir)) {
+                                            mkdir($uploadDir, 0755, true);
+                                        }
+                                    }
+
+                                    // Update insurance dates in the database
+                                    $updateSql = "UPDATE clients SET start_date = '$newStartDate', end_date = '$newEndDate', proof_of_income='$proofFile' WHERE insurance_id = '$insuranceId' AND id_client = '$clientId'";
+
+                                    $insertSql = "INSERT INTO renewals(id_client, insurance_id, status) VALUES($clientId, $insuranceId, 'requested')";
+
+                                    if ($mysqli->query($updateSql) and $mysqli->query($insertSql)) {
+
+                                        move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFile);
+
+                                        echo "<script type='text/javascript'>alert('Insurance renewed successfully!'); window.location.href = window.location.href;</script>";
+                                    } else {
+                                        echo "<script type='text/javascript'>alert('Failed to renew insurance. Please try again.');</script>";
+                                    }
                                 }
                             }
                         }
+
                         ?>
                         <div class="modal fade" id="renewInsurance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
