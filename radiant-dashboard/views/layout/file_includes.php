@@ -231,6 +231,7 @@ if (isset($_POST['save_client'])) {
         if ($insert) {
             $_SESSION['clientregistration'] = $mysqli->insert_id;
             echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
+            window.location.href = window.location.href;
                   </script>";
             //   window.location='initsession.php?clid=" . $mysqli->insert_id . "';
         } else {

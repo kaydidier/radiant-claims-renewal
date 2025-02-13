@@ -93,22 +93,29 @@ include "../views/layout/header.php";
                                                 <td><?php echo ucwords($row['insurance_name']); ?></td>
                                                 <td><?php if (strtolower($row['status']) == "approved") {
                                                         echo "<p class='text-success'>Approved</p>";
-                                                    } else {
+                                                    } elseif (strtolower($row['status']) == "requested") {
                                                         echo "<p class='text-danger'>Requested</p>";
+                                                    } else {
+
+                                                        echo "<p class='text-danger'>Declined</p>";
                                                     }
                                                     ?></td>
                                                 <td><?php echo $days; ?></td>
                                                 <td><?php echo $row['start_date']; ?></td>
                                                 <td><?php echo $row['end_date']; ?></td>
 
-                                                <?php if (isset($_SESSION['employeeid'])) { ?>
+                                                <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) != "declined") { ?>
                                                     <td>
-                                                        <a href="#" class="btn btn-sm btn-warning btn-user" data-toggle="modal" data-target="#renewInsurance">
-                                                            Approve
-                                                        </a>
-                                                        <a href="#" class="btn btn-sm btn-danger btn-user" data-toggle="modal" data-target="#cancelInsurance">
+                                                        <?php if (strtolower($row['status']) != "approved") { ?>
+                                                            <a href="#" class="btn btn-sm btn-warning approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceModal" data-renewal-id="<?php echo $row['renewal_id']; ?>">
+                                                                Approve
+                                                            </a>
+                                                        <?php } ?>
+
+                                                        <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceModal" data-renewal-decline-id="<?php echo $row['renewal_id']; ?>">
                                                             Decline
                                                         </a>
+
                                                     </td>
                                                 <?php } ?>
                                             </tr>
@@ -131,7 +138,7 @@ include "../views/layout/header.php";
 
                             // Renew Insurance Logic
                             if (isset($_POST['renewInsurance'])) {
-                                $insuranceId = $mysqli->real_escape_string($_POST['insurance']);
+                                $insuranceId = $mysqli->real_escape_string($_POST['selectRenewInsurance']);
                                 $newStartDate = $mysqli->real_escape_string($_POST['newStartDate']);
                                 $newEndDate = $mysqli->real_escape_string($_POST['newEndDate']);
                                 $today = date('Y-m-d');
@@ -155,7 +162,7 @@ include "../views/layout/header.php";
 
                                     $insertSql = "INSERT INTO renewals(id_client, insurance_id, status) VALUES($clientId, $insuranceId, 'requested')";
 
-                                    if ($mysqli->query($updateSql) and $mysqli->query($insertSql)) {
+                                    if ($mysqli->query($updateSql) && $mysqli->query($insertSql)) {
 
                                         move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFile);
 
@@ -165,50 +172,87 @@ include "../views/layout/header.php";
                                     }
                                 }
                             }
-                        }
-
                         ?>
-                        <div class="modal fade" id="renewInsurance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal fade" id="renewInsurance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Renew insurance</h5>
+                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="POST" action="" enctype="multipart/form-data">
+
+                                                <div class="mb-3">
+                                                    <label for="selectRenewInsurance" class="form-label">Insurance</label>
+                                                    <select class="form-control" id="selectRenewInsurance" name="selectRenewInsurance">
+                                                        <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
+                                                            <option value="<?php echo $insuranceRow['insurance_id']; ?>">
+                                                                <?php echo ucwords($insuranceRow['insurance_name']); ?>
+                                                            </option>
+                                                        <?php }
+                                                        $a++; ?>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="newStartDate" class="form-label">New Issue Date <small>( Start date of the insurance )</small></label>
+                                                    <input type="date" class="form-control" id="newStartDate" name="newStartDate" required>
+                                                    <div class="invalid-feedback" id="sNdateFeedback">New issue date can't be in the past.</div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="newEndDate" class="form-label">New Expiration Date <small>(New end date of the insurance )</small></label>
+                                                    <input type="date" class="form-control" id="newEndDate" name="newEndDate" required>
+                                                    <div class="invalid-feedback" id="eNdateFeedback">Expiration date can't be in the past.</div>
+                                                </div>
+
+                                                <div class="mb-3 d-flex flex-column">
+                                                    <label for="proof" class="form-label">Proof of payment</label>
+                                                    <input class="form-control" type="file" id="proof" name="proof">
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                    <button class="btn btn-primary" type="submit" name="renewInsurance">Renew</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php
+                        }
+                        ?>
+
+                        <!-- Approve renwed insurance modal  -->
+                        <?php
+                        if (isset($_POST['confirmInsuranceRenewal'])) {
+                            $renewalId = $mysqli->real_escape_string($_POST['renewalId']);
+
+                            // Delete the insurance record
+                            $approveSql = "UPDATE renewals SET status='approved' WHERE renewal_id = '$renewalId'";
+                            if ($mysqli->query($approveSql)) {
+                                echo "<script type='text/javascript'>alert('Insurance renewal have been approved successfully!'); window.location.href = window.location.href;</script>";
+                            } else {
+                                echo "<script type='text/javascript'>alert('Failed to approve insurance renewal. Please try again.');</script>";
+                            }
+                        }
+                        ?>
+                        <div class="modal fade" id="approveInsuranceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Renew insurance</h5>
+                                        <h5 class="modal-title fs-6 fw-lighter" id="exampleModalLabel">Are you sure you want to approve this insurance renewal?</h5>
                                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <form method="POST" action="" enctype="multipart/form-data">
-
-                                            <div class="mb-3">
-                                                <label for="insurance" class="form-label">Insurance <small>( Select insurance for renewal )</small></label>
-                                                <select class="form-control" id="insurance" name="insurance">
-                                                    <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
-                                                        <option value="<?php echo $insuranceRow['insurance_id']; ?>">
-                                                            <?php echo ucwords($insuranceRow['insurance_name']); ?>
-                                                        </option>
-                                                    <?php }
-                                                    $a++; ?>
-                                                </select>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="newStartDate" class="form-label">New Issue Date <small>( Start date of the insurance )</small></label>
-                                                <input type="date" class="form-control" id="newStartDate" name="newStartDate" required>
-                                                <div class="invalid-feedback" id="sNdateFeedback">New issue date can't be in the past.</div>
-                                            </div>
-                                            <div class="mb-3">
-                                                <label for="newEndDate" class="form-label">New Expiration Date <small>(New end date of the insurance )</small></label>
-                                                <input type="date" class="form-control" id="newEndDate" name="newEndDate" required>
-                                                <div class="invalid-feedback" id="eNdateFeedback">Expiration date can't be in the past.</div>
-                                            </div>
-
-                                            <div class="mb-3 d-flex flex-column">
-                                                <label for="proof" class="form-label">Proof of payment</label>
-                                                <input class="form-control" type="file" id="proof" name="proof">
-                                            </div>
-                                            <div class="modal-footer">
+                                            <input type="hidden" name="renewalId" id="renewalIdInput">
+                                            <div style="display: flex; gap: 8px; justify-content: end;">
                                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                                <button class="btn btn-primary" type="submit" name="renewInsurance">Renew</button>
+                                                <button class="btn btn-primary" type="submit" name="confirmInsuranceRenewal">Confirm</button>
                                             </div>
                                         </form>
                                     </div>
@@ -216,47 +260,51 @@ include "../views/layout/header.php";
                             </div>
                         </div>
 
-                        <!-- Delete/Cancel insurance Modal-->
+                        <!-- Decline insurance Modal-->
                         <?php
-                        // Cancel Insurance Logic
+
                         if (isset($_POST['cancelInsurance'])) {
-                            $renewRetype = $mysqli->real_escape_string($_POST['renewRetype']);
-                            $insuranceId = $mysqli->real_escape_string($_POST['insuranceId']);
+                            $renewDeclineText = $mysqli->real_escape_string($_POST['renewDeclineText']);
+                            $renewDeclineReason = $mysqli->real_escape_string($_POST['renewDeclineReason']);
+                            $renewalId = $mysqli->real_escape_string($_POST['renewalDeclineId']);
 
                             // Validate user input
-                            if (strtolower($renewRetype) === 'cancel insurance') {
+                            if (strtolower($renewDeclineText) === 'decline insurance') {
                                 // Delete the insurance record
-                                $deleteSql = "DELETE FROM clients WHERE id_client = '$insuranceId'";
-                                if ($mysqli->query($deleteSql)) {
+                                $updateSql = "UPDATE renewals SET status='declined', reason='$renewDeclineReason' WHERE renewal_id = '$renewalId'";
+                                if ($mysqli->query($updateSql)) {
                                     echo "<script type='text/javascript'>alert('Insurance canceled successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
                                     echo "<script type='text/javascript'>alert('Failed to cancel insurance. Please try again.');</script>";
+                                    echo "Not a drill" . $renewalId;
                                 }
                             } else {
-                                // echo "<script type='text/javascript'>alert('Confirmation text is incorrect. Please type to proceed.');</script>";
-                                echo $insuranceId;
+                                echo "<script type='text/javascript'>alert('Please type correct confirmation to proceed.');</script>";
                             }
                         }
                         ?>
-                        <div class="modal fade" id="cancelInsurance" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="declineInsuranceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title text-danger fs-6 fw-lighter" id="exampleModalLabel">Ready to cancel this insurance?</h5>
+                                        <h5 class="modal-title text-danger fs-6 fw-lighter" id="exampleModalLabel">Ready to decline this insurance renewal?</h5>
                                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
                                     </div>
                                     <div class="modal-body">
                                         <form method="POST" action="" enctype="multipart/form-data">
-                                            <input type="hidden" id="insuranceId" name="insuranceId" value="<?php echo $row['insurance_id']; ?>">
+                                            <input type="hidden" name="renewalDeclineId" id="renewalDeclineIdInput">
                                             <div class="mb-3">
-                                                <label for="renewRetype" class="form-label">Write <strong>cancel insurance</strong> to proceed</label>
-                                                <input type="text" class="form-control" id="renewRetype" name="renewRetype" required>
+                                                <label for="renewDeclineText" class="form-label">Write <strong>decline insurance</strong> to proceed</label>
+                                                <input type="text" class="form-control" id="renewDeclineText" name="renewDeclineText" required>
+                                            </div>
+                                            <div class="form-floating">
+                                                <textarea class="form-control" placeholder="Leave a reason here" id="renewDeclineReason" name="renewDeclineReason" required></textarea>
                                             </div>
                                             <div class="modal-footer">
                                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                                <button class="btn btn-danger" type="submit" name="cancelInsurance">Submit</button>
+                                                <button class="btn btn-danger" type="submit" name="cancelInsurance">Decline</button>
                                             </div>
                                         </form>
                                     </div>
@@ -285,6 +333,21 @@ include "../views/layout/header.php";
     <?php
     include "../views/layout/file_includes.php";
     ?>
+
+    <!-- JavaScript to handle passing renewal_id to the modal -->
+    <script>
+        $(document).ready(function() {
+            $('.approve-renewal-btn').on('click', function() {
+                var renewalId = $(this).data('renewal-id');
+                $('#renewalIdInput').val(renewalId);
+            });
+
+            $('.decline-renewal-btn').on('click', function() {
+                var renewalId = $(this).data('renewal-decline-id');
+                $('#renewalDeclineIdInput').val(renewalId);
+            });
+        });
+    </script>
 
 </body>
 
