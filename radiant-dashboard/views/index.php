@@ -1,7 +1,7 @@
 <?php 
 include "../../includes/connection.php"; 
 
-if (!isset($_SESSION['employeeid'])) {
+if (!isset($_SESSION['employeeid']) && !isset($_SESSION['clientid'])) {
 	header("LOCATION: ../../index.php");
 } ?>
 <!DOCTYPE html>

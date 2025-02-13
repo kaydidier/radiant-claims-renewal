@@ -27,12 +27,16 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="clients.php">
-            <i class="fas fa-fw fa-address-book"></i>
-            <span>Clients</span>
-        </a>
-    </li>
+    <?php
+    if (isset($_SESSION['employeeid'])) {
+    ?>
+        <li class="nav-item">
+            <a class="nav-link" href="clients.php">
+                <i class="fas fa-fw fa-address-book"></i>
+                <span>Clients</span>
+            </a>
+        </li>
+    <?php } ?>
 
     <li class="nav-item">
         <a class="nav-link" href="claims.php">
@@ -41,12 +45,16 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="insurances.php">
-            <i class="fas fa-fw fa-layer-group"></i>
-            <span>Insurances</span>
-        </a>
-    </li>
+    <?php
+    if (isset($_SESSION['employeeid'])) {
+    ?>
+        <li class="nav-item">
+            <a class="nav-link" href="insurances.php">
+                <i class="fas fa-fw fa-layer-group"></i>
+                <span>Insurances</span>
+            </a>
+        </li>
+    <?php } ?>
 
     <li class="nav-item">
         <a class="nav-link" href="renewals.php">
