@@ -65,7 +65,7 @@ if (isset($_SESSION['clientid'])) {
         $comments = $mysqli->real_escape_string($_POST['claimComments']);
         $bId = $mysqli->real_escape_string($_POST['buildingClaimId']);
         $upi = $mysqli->real_escape_string($_POST['upiClaimInput']);
-    
+
         // Define upload directories
         $upload_dirs = [
             'licenses' => './../../files/licenses/' . $firstname . '/',
@@ -73,65 +73,67 @@ if (isset($_SESSION['clientid'])) {
             'police' => './../../files/police/' . $firstname . '/',
             'support' => './../../files/support/' . $firstname . '/'
         ];
-    
+
         // Create directories if they don't exist
         foreach ($upload_dirs as $dir) {
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
         }
-    
+
         // Sanitize filenames
         $licenseFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['driversLicenseFile']['name']);
         $yellowFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['yellowFile']['name']);
         $policeFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['policeFile']['name']);
         $supportFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['claimSupportFile']['name']);
-    
+
         // Move uploaded files
         $result = true;
         $uploadedFiles = [];
-    
-       if (empty($insurance) || empty($plate) || empty($nid) || empty($comments) || empty($bId) || empty($upi) || empty($supportFile)) {
+
+        if (empty($insurance) || empty($plate) || empty($nid) || empty($comments) || empty($bId) || empty($upi) || empty($supportFile)) {
             echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
         } else {
-    
-            // Move files to dirs
-            if (!empty($_FILES['claimSupportFile']['tmp_name'])) {
-                $result = $result && move_uploaded_file($_FILES['claimSupportFile']['tmp_name'], $upload_dirs['support'] . $licenseFile);
-                $uploadedFiles[] = $supportFile;
-            }
-            if (!empty($_FILES['yellowFile']['tmp_name'])) {
-                $result = $result && move_uploaded_file($_FILES['yellowFile']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
-                $uploadedFiles[] = $yellowFile;
-            }
-            if (!empty($_FILES['driversLicenseFile']['tmp_name'])) {
-                $result = $result && move_uploaded_file($_FILES['driversLicenseFile']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
-                $uploadedFiles[] = $licenseFile;
-            }
-            if (!empty($_FILES['policeFile']['tmp_name'])) {
-                $result = $result && move_uploaded_file($_FILES['policeFile']['tmp_name'], $upload_dirs['police'] . $policeFile);
-                $uploadedFiles[] = $policeFile;
-            }
-    
+
             // Insert client data into the database
-            $insertSql = "INSERT INTO claim(claim_time, id_client, claim_type, description, attachments, status) VALUES(time(), $clientId, '', $comments, '', 'pending') ";
-    
+            $insertSql = "INSERT INTO claim( id_client, insurance_id, claim_time, comments, police_file, support_file, status) VALUES( $clientId, $insurance, time(), $comments, $policeFile, $supportFile, 'pending') ";
+
+            $updateSql = "UPDATE clients SET driving_license='$licenseFile', yellow_paper='$yellowFile' WHERE insurance_id = '$insurance' AND id_client = '$clientId'";
+
             $insert = $mysqli->query($insertSql) or die($mysqli->error);
-    
-            if ($insert) {
-                $_SESSION['clientregistration'] = $mysqli->insert_id;
-                echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
+            $update = $mysqli->query($updateSql) or die($mysqli->error);
+
+            if ($insert && $update) {
+
+                // Move files to dirs
+                if (!empty($_FILES['claimSupportFile']['tmp_name'])) {
+                    $result = $result && move_uploaded_file($_FILES['claimSupportFile']['tmp_name'], $upload_dirs['support'] . $licenseFile);
+                    $uploadedFiles[] = $supportFile;
+                }
+                if (!empty($_FILES['yellowFile']['tmp_name'])) {
+                    $result = $result && move_uploaded_file($_FILES['yellowFile']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
+                    $uploadedFiles[] = $yellowFile;
+                }
+                if (!empty($_FILES['driversLicenseFile']['tmp_name'])) {
+                    $result = $result && move_uploaded_file($_FILES['driversLicenseFile']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
+                    $uploadedFiles[] = $licenseFile;
+                }
+                if (!empty($_FILES['policeFile']['tmp_name'])) {
+                    $result = $result && move_uploaded_file($_FILES['policeFile']['tmp_name'], $upload_dirs['police'] . $policeFile);
+                    $uploadedFiles[] = $policeFile;
+                }
+
+                echo "<script type='text/javascript'>alert('Claim has been sent successfully!');
                 window.location.href = window.location.href;
                       </script>";
-                //   window.location='initsession.php?clid=" . $mysqli->insert_id . "';
             } else {
-                echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
+                echo "<script type='text/javascript'>alert('Failed to send claim');</script>";
             }
         }
     }
 
 ?>
-    <div class="modal fade" id="createClaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    <div class="modal fade" id="addClaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
