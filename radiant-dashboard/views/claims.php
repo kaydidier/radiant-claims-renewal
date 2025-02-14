@@ -63,26 +63,53 @@ include "../views/layout/header.php";
                                             <th>Clients Names</th>
                                             <th>Description</th>
                                             <th>Date</th>
-                                            <th>Reply</th>
+                                            <th>Status</th>
                                             <?php if (isset($_SESSION['employeeid'])) { ?><th>Actions</th> <?php } ?>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $allInsurances = mysqli_query($mysqli, "SELECT * FROM insurance");
+                                        $allClaims = "";
+
+                                        if (isset($_SESSION['employeeid'])) {
+                                            $allClaims = mysqli_query($mysqli, "SELECT * FROM claim 
+                                           LEFT JOIN clients ON claim.id_client = clients.id_client 
+                                           LEFT JOIN insurance ON claim.insurance_id = insurance.insurance_id");
+                                        } else {
+                                            $allClaims = mysqli_query($mysqli, "SELECT * FROM claim 
+                                           LEFT JOIN clients ON claim.id_client = clients.id_client 
+                                           LEFT JOIN insurance ON claim.insurance_id = insurance.insurance_id
+                                           WHERE claim.id_client = " . $_SESSION['clientid']);
+                                        }
+
                                         $a = 1;
-                                        while ($row = mysqli_fetch_array($allInsurances)) {
+                                        while ($row = mysqli_fetch_array($allClaims)) {
+                                            $claimDateTime = new DateTime($row['claim_time']);
+                                            $claimDate = $claimDateTime->format('d-m-Y');
                                         ?>
                                             <tr>
                                                 <td><?php echo $a; ?></td>
-                                                <td>Placeholder</td>
-                                                <td>Placeholder</td>
-                                                <td>Placeholder</td>
-                                                <td>Placeholder</td>
-                                                <?php
-                                                if (isset($_SESSION['employeeid'])) { ?>
-                                                    <td><a href='#' class='btn btn-sm btn-warning btn-user'>" . "Reply" . "</a></td>
-                                                    <td><a href='#' class='btn btn-sm btn-warning btn-user'>" . "Download" . "</a></td>
+                                                <td><?php echo ucfirst($row['firstname']) . " " . ucfirst($row['lastname']); ?></td>
+                                                <td><?php echo $row['comments']; ?></td>
+                                                <td><?php echo $claimDate; ?></td>
+                                                <td><?php echo $row['status']; ?></td>
+                                                <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) != "declined") { ?>
+                                                    <td>
+                                                        <?php if (strtolower($row['status']) != "pending") { ?>
+                                                            <a href="#" class="btn btn-sm btn-warning approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceModal" data-renewal-id="<?php echo $row['claim_id']; ?>">
+                                                                Approve
+                                                            </a>
+                                                        <?php } ?>
+
+                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary view-renewal-btn" data-renewal-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
+                                                            View file
+                                                        </a>
+
+                                                        <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceModal" data-renewal-decline-id="<?php echo $row['claim_id']; ?>">
+                                                            Decline
+                                                        </a>
+
+                                                    </td>
                                                 <?php } ?>
                                             </tr>
                                         <?php $a++;
