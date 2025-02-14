@@ -57,14 +57,16 @@ if (isset($_SESSION['clientid'])) {
     $fetch = $userSql->fetch_array(MYSQLI_ASSOC);
     $firstname = $fetch['firstname'];
 
-    if (isset($_POST['save_client'])) {
+    if (isset($_POST['createClaim'])) {
         // Sanitize and validate input data
         $insurance = $mysqli->real_escape_string($_POST['insuranceClaims']);
         $plate = $mysqli->real_escape_string($_POST['plateClaim']);
-        $nid = $mysqli->real_escape_string($_POST['nidClaim']);
+        $nid = $fetch['ID_no'];
         $comments = $mysqli->real_escape_string($_POST['claimComments']);
         $bId = $mysqli->real_escape_string($_POST['buildingClaimId']);
         $upi = $mysqli->real_escape_string($_POST['upiClaimInput']);
+        $status = 'pending';
+        $claimTime = date('Y-m-d H:i', time());
 
         // Define upload directories
         $upload_dirs = [
@@ -91,14 +93,21 @@ if (isset($_SESSION['clientid'])) {
         $result = true;
         $uploadedFiles = [];
 
-        if (empty($insurance) || empty($plate) || empty($nid) || empty($comments) || empty($bId) || empty($upi) || empty($supportFile)) {
+        if (empty($insurance) || empty($nid) || empty($comments) || empty($bId) || empty($supportFile)) {
             echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
         } else {
-
             // Insert client data into the database
-            $insertSql = "INSERT INTO claim( id_client, insurance_id, claim_time, comments, police_file, support_file, status) VALUES( $clientId, $insurance, time(), $comments, $policeFile, $supportFile, 'pending') ";
+            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") .", '$supportFile', '$status') ";
 
-            $updateSql = "UPDATE clients SET driving_license='$licenseFile', yellow_paper='$yellowFile' WHERE insurance_id = '$insurance' AND id_client = '$clientId'";
+            $updateFields = array();
+            if (!empty($licenseFile)) $updateFields[] = "driving_license='$licenseFile'";
+            if (!empty($yellowFile)) $updateFields[] = "yellow_paper='$yellowFile'";
+            if (!empty($upi)) $updateFields[] = "upi='$upi'";
+            if (!empty($bId)) $updateFields[] = "building_number='$bId'";
+            if (!empty($plate)) $updateFields[] = "plate_number='$plate'";
+            if (!empty($nid)) $updateFields[] = "ID_no='$nid'";
+
+            $updateSql = "UPDATE clients SET " . implode(", ", $updateFields) . " WHERE insurance_id = '$insurance' AND id_client = '$clientId'";
 
             $insert = $mysqli->query($insertSql) or die($mysqli->error);
             $update = $mysqli->query($updateSql) or die($mysqli->error);
@@ -166,43 +175,43 @@ if (isset($_SESSION['clientid'])) {
 
                             <div class="mb-3 d-flex flex-column">
                                 <label for="policeFile" class="form-label">Police documents <small>Police Abstract Report </small></label>
-                                <input class="form-control" type="file" id="policeFile" name="policeFile">
+                                <input class="form-control" type="file" id="policeFile" name="policeFile" value="<?php echo $fetch['police_file'] ?>">
                             </div>
 
                             <div class="mb-3 d-flex flex-column">
                                 <label for="driversLicenseFile" class="form-label">Copy of the Driver’s Driving License </label>
-                                <input class="form-control" type="file" id="driversLicenseFile" name="driversLicenseFile">
+                                <input class="form-control" type="file" id="driversLicenseFile" name="driversLicenseFile" value="<?php echo $fetch['driving_license'] ?>">
                             </div>
 
                             <div class="mb-3 d-flex flex-column">
                                 <label for="yellowFile" class="form-label">Yellow paper</label>
-                                <input class="form-control" type="file" id="yellowFile" name="yellowFile">
+                                <input class="form-control" type="file" id="yellowFile" name="yellowFile" value="<?php echo $fetch['yellow_paper'] ?>">
                             </div>
 
 
                             <div class="mb-3">
                                 <label for="plateClaim" class="form-label">Plate number</label>
-                                <input type="text" class="form-control" id="plateClaim" name="plateClaim" rows="3" />
+                                <input type="text" class="form-control" id="plateClaim" name="plateClaim" rows="3" value="<?php echo $fetch['plate_number'] ?>" />
                             </div>
 
                         </div>
 
                         <div id="houseClaims" style="display: none;">
-                            <div class="mb-3">
-                                <label for="buildingClaimId" class="form-label">ID of the building</label>
-                                <input type="text" class="form-control" id="buildingClaimId" name="buildingClaimId">
-                            </div>
 
                             <div class="mb-3">
                                 <label for="upiClaimInput" class="form-label">UPI <small>(Unique Parcel Identifier )</small></label>
-                                <input type="text" class="form-control" id="upiClaimInput" name="upiClaimInput">
+                                <input type="text" class="form-control" id="upiClaimInput" name="upiClaimInput" value="<?php echo $fetch['upi'] ?>">
                             </div>
 
                         </div>
 
                         <div class="mb-3">
+                            <label for="buildingClaimId" class="form-label">ID of the building</label>
+                            <input type="text" class="form-control" id="buildingClaimId" name="buildingClaimId" value="<?php echo $fetch['building_number'] ?>">
+                        </div>
+                        <div class="mb-3">
                             <label for="nidClaim" class="form-label">NID number</label>
-                            <input type="text" class="form-control" id="nidClaim" name="nidClaim" rows="3" required />
+                            <input type="text" class="form-control" id="nidClaim" name="nidClaim" rows="3" value="<?php echo $fetch['ID_no'] ?>" disabled />
                         </div>
 
                         <div class="mb-3">
