@@ -44,62 +44,183 @@
 </div>
 
 <!-- Add claim Modal-->
-<div class="modal fade" id="addClaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <?php
-    $insurances = mysqli_query($mysqli, "SELECT * FROM insurance");
-    ?>
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Creat new claim</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form method="POST" action="" enctype="multipart/form-data">
+<?php
+if (isset($_SESSION['clientid'])) {
+    $clientId = $_SESSION['clientid'];
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Claim description</label>
-                        <textarea class="form-control" id="description" rows="3"></textarea>
-                    </div>
+    // Get logged in client insurances
+    $insurances = $mysqli->query("SELECT clients.insurance_id, id_client, firstname, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id WHERE id_client = " . $clientId);
 
-                    <div class="mb-3 d-flex flex-column">
-                        <label for="claimFile" class="form-label">Claim / Accident file</label>
-                        <input class="form-control" type="file" id="claimFile">
-                    </div>
+    // Get logged in client data
+    $userSql = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $clientId);
 
-                    <div class="mb-3">
-                        <label for="insurance" class="form-label">Insurance</label>
-                        <select class="form-control" id="insurancee" name="insurance" onchange="toggleFieds()">
-                            <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
-                                <option value="<?php echo $insuranceRow['insurance_id']; ?>">
-                                    <?php echo $insuranceRow['insurance_name']; ?>
-                                </option>
-                            <?php } ?>
-                        </select>
-                    </div>
+    $fetch = $userSql->fetch_array(MYSQLI_ASSOC);
+    $firstname = $fetch['firstname'];
 
-                    <div class="mb-3">
-                        <label for="property" class="form-label">Select you property</label>
-                        <select class="form-control" id="property" name="property">
-                            <option value="default property">
-                                Select your property
-                            </option>
-                        </select>
-                    </div>
+    if (isset($_POST['save_client'])) {
+        // Sanitize and validate input data
+        $insurance = $mysqli->real_escape_string($_POST['insuranceClaims']);
+        $plate = $mysqli->real_escape_string($_POST['plateClaim']);
+        $nid = $mysqli->real_escape_string($_POST['nidClaim']);
+        $comments = $mysqli->real_escape_string($_POST['claimComments']);
+        $bId = $mysqli->real_escape_string($_POST['buildingClaimId']);
+        $upi = $mysqli->real_escape_string($_POST['upiClaimInput']);
+    
+        // Define upload directories
+        $upload_dirs = [
+            'licenses' => './../../files/licenses/' . $firstname . '/',
+            'yellows' => './../../files/yellows/' . $firstname . '/',
+            'police' => './../../files/police/' . $firstname . '/',
+            'support' => './../../files/support/' . $firstname . '/'
+        ];
+    
+        // Create directories if they don't exist
+        foreach ($upload_dirs as $dir) {
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+        }
+    
+        // Sanitize filenames
+        $licenseFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['driversLicenseFile']['name']);
+        $yellowFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['yellowFile']['name']);
+        $policeFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['policeFile']['name']);
+        $supportFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['claimSupportFile']['name']);
+    
+        // Move uploaded files
+        $result = true;
+        $uploadedFiles = [];
+    
+       if (empty($insurance) || empty($plate) || empty($nid) || empty($comments) || empty($bId) || empty($upi) || empty($supportFile)) {
+            echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
+        } else {
+    
+            // Move files to dirs
+            if (!empty($_FILES['claimSupportFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['claimSupportFile']['tmp_name'], $upload_dirs['support'] . $licenseFile);
+                $uploadedFiles[] = $supportFile;
+            }
+            if (!empty($_FILES['yellowFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['yellowFile']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
+                $uploadedFiles[] = $yellowFile;
+            }
+            if (!empty($_FILES['driversLicenseFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['driversLicenseFile']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
+                $uploadedFiles[] = $licenseFile;
+            }
+            if (!empty($_FILES['policeFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['policeFile']['tmp_name'], $upload_dirs['police'] . $policeFile);
+                $uploadedFiles[] = $policeFile;
+            }
+    
+            // Insert client data into the database
+            $insertSql = "INSERT INTO claim(claim_time, id_client, claim_type, description, attachments, status) VALUES(time(), $clientId, '', $comments, '', 'pending') ";
+    
+            $insert = $mysqli->query($insertSql) or die($mysqli->error);
+    
+            if ($insert) {
+                $_SESSION['clientregistration'] = $mysqli->insert_id;
+                echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
+                window.location.href = window.location.href;
+                      </script>";
+                //   window.location='initsession.php?clid=" . $mysqli->insert_id . "';
+            } else {
+                echo "<script type='text/javascript'>alert('Failed to save client due to insert errors');</script>";
+            }
+        }
+    }
 
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <button class="btn btn-primary" type="submit" name="sendClaim">Send Claim</button>
-                        <!-- <input type="submit" value="submit" name="saveInsurance"> -->
-                    </div>
+?>
+    <div class="modal fade" id="createClaim" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create new claim <?php echo $firstname ?></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="" enctype="multipart/form-data">
+
+                        <div class="mb-3">
+                            <label for="insuranceClaims" class="form-label">Insurance</label>
+                            <select class="form-control" id="insuranceClaims" name="insuranceClaims" onchange="toggleClaimsFieds()" required>
+                                <?php while ($insuranceRow = mysqli_fetch_array($insurances)) { ?>
+                                    <option value="<?php echo $insuranceRow['insurance_id']; ?>">
+                                        <?php echo $insuranceRow['insurance_name']; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 d-flex flex-column">
+                            <label for="claimSupportFile" class="form-label">Supporting documents <small>Photos of the accident, Etc </small></label>
+                            <input class="form-control" type="file" id="claimSupportFile" name="claimSupportFile">
+                        </div>
+
+                        <div id="motorClaims" style="display: none;">
+
+                            <div class="mb-3 d-flex flex-column">
+                                <label for="policeFile" class="form-label">Police documents <small>Police Abstract Report </small></label>
+                                <input class="form-control" type="file" id="policeFile" name="policeFile">
+                            </div>
+
+                            <div class="mb-3 d-flex flex-column">
+                                <label for="driversLicenseFile" class="form-label">Copy of the Driver’s Driving License </label>
+                                <input class="form-control" type="file" id="driversLicenseFile" name="driversLicenseFile">
+                            </div>
+
+                            <div class="mb-3 d-flex flex-column">
+                                <label for="yellowFile" class="form-label">Yellow paper</label>
+                                <input class="form-control" type="file" id="yellowFile" name="yellowFile">
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="plateClaim" class="form-label">Plate number</label>
+                                <input type="text" class="form-control" id="plateClaim" name="plateClaim" rows="3" />
+                            </div>
+
+                        </div>
+
+                        <div id="houseClaims" style="display: none;">
+                            <div class="mb-3">
+                                <label for="buildingClaimId" class="form-label">ID of the building</label>
+                                <input type="text" class="form-control" id="buildingClaimId" name="buildingClaimId">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="upiClaimInput" class="form-label">UPI <small>(Unique Parcel Identifier )</small></label>
+                                <input type="text" class="form-control" id="upiClaimInput" name="upiClaimInput">
+                            </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nidClaim" class="form-label">NID number</label>
+                            <input type="text" class="form-control" id="nidClaim" name="nidClaim" rows="3" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="claimComments" class="form-label">Comments</label>
+                            <textarea class="form-control" id="claimComments" name="claimComments" rows="3" required></textarea>
+                        </div>
+                </div>
+
+
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="submit" name="createClaim">Send Claim</button>
+                </div>
                 </form>
             </div>
         </div>
     </div>
-</div>
+    </div>
+<?php  } ?>
 
 <!-- Add Insurance Modal-->
 <?php
@@ -347,7 +468,7 @@ if (isset($_POST['save_client'])) {
                                 </select>
                             </div>
 
-                            <div style="display: none;" id="motor" style="display: none;">
+                            <div style="display: none;" id="motor">
                                 <div class="mb-3">
                                     <label for="license" class="form-label">Driving license <small>( Valid drivers license for the vihicle)</small> </label>
                                     <input type="file" class="form-control" id="license" name="license">
@@ -362,7 +483,7 @@ if (isset($_POST['save_client'])) {
                                 </div>
                             </div>
 
-                            <div class="mb-3" id="upi" style="display: none;">
+                            <div class="mb-3" id="upiDiv" style="display: none;">
                                 <label for="upi" class="form-label">UPI <small>(Unique Parcel Identifier )</small></label>
                                 <input type="text" class="form-control" id="upi" name="upi">
                             </div>
@@ -469,7 +590,7 @@ if (isset($_POST['save_client'])) {
     function toggleFieds() {
         const insuranceSelect = document.getElementById('insurance');
         const motorDiv = document.getElementById('motor');
-        const upiDiv = document.getElementById('upi');
+        const upiDiv = document.getElementById('upiDiv');
         const selectedInsurance = insuranceSelect.options[insuranceSelect.selectedIndex].text;
 
         if (selectedInsurance.toLowerCase().includes('motor')) {
@@ -481,6 +602,26 @@ if (isset($_POST['save_client'])) {
         } else {
             motorDiv.style.display = 'none';
             upiDiv.style.display = 'none';
+        }
+    }
+
+    function toggleClaimsFieds() {
+
+        const insuranceClaimsSelect = document.getElementById('insuranceClaims');
+        const motorClaimsDiv = document.getElementById('motorClaims');
+        const upiClaimsDiv = document.getElementById('houseClaims');
+
+        const selectedInsurance = insuranceClaimsSelect.options[insuranceClaimsSelect.selectedIndex].text;
+
+        if (selectedInsurance.toLowerCase().includes('motor')) {
+            motorClaimsDiv.style.display = 'block';
+            upiClaimsDiv.style.display = 'none';
+        } else if (selectedInsurance.toLowerCase().includes('house')) {
+            motorClaimsDiv.style.display = 'none';
+            upiClaimsDiv.style.display = 'block';
+        } else {
+            motorClaimsDiv.style.display = 'none';
+            upiClaimsDiv.style.display = 'none';
         }
     }
 </script>

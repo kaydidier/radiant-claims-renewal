@@ -25,7 +25,7 @@ include "../views/layout/header.php";
                 <div class="container-fluid">
                     <h1 class="h3 mb-2 text-gray-800">Claims</h1>
                     <?php
-                    if ($_SESSION['employeeid']) {
+                    if (isset($_SESSION['employeeid'])) {
                         echo "<p class='mb-4'>View and Manage insurance claims with ease from this centralized interface.</p>";
                     } else {
                         echo "<p class='mb-4'>Create insurance claims with ease from this centralized interface.</p>";
@@ -37,12 +37,14 @@ include "../views/layout/header.php";
                         <div class="card-header py-3">
                             <div class="row justify-content-end">
                                 <div class="col-md-2 col-sm-12">
-                                    <h6 class="m-0 text-primary">All clients</h6>
+                                    <?php
+                                    if (isset($_SESSION['employeeid'])) { ?><h6 class="m-0 text-primary">All available claims</h6> <?php } else { ?>
+                                        <h6 class="m-0 text-primary">My claims</h6> <?php } ?>
                                 </div>
                                 <div class="col-md-8 col-sm-12"></div>
                                 <div class="col-md-2 col-sm-12">
                                     <?php
-                                    if ($_SESSION['employeeid']) {
+                                    if (isset($_SESSION['clientid'])) {
                                     ?>
                                         <a href="#" class="btn btn-md btn-outline-primary btn-user d-flex align-items-center" data-toggle="modal" data-target="#addClaim">
                                             <i class="fas fa-fw fa-plus-circle"></i>
@@ -62,10 +64,7 @@ include "../views/layout/header.php";
                                             <th>Description</th>
                                             <th>Date</th>
                                             <th>Reply</th>
-                                            <?php
-                                            if ($_SESSION['employeeid']) {
-                                                echo "<th>Actions</th>";
-                                            } ?>
+                                            <?php if (isset($_SESSION['employeeid'])) { ?><th>Actions</th> <?php } ?>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -81,16 +80,12 @@ include "../views/layout/header.php";
                                                 <td>Placeholder</td>
                                                 <td>Placeholder</td>
                                                 <?php
-                                                if ($_SESSION['employeeid']) {
-                                                    echo "<td><a href='#' class='btn btn-sm btn-warning btn-user'>" . "Reply" . "</a></td>";
-                                                } else {
-                                                    echo "<td><a href='#' class='btn btn-sm btn-warning btn-user'>" . "Download" . "</a></td>";
-                                                }
-                                                ?>
-
+                                                if (isset($_SESSION['employeeid'])) { ?>
+                                                    <td><a href='#' class='btn btn-sm btn-warning btn-user'>" . "Reply" . "</a></td>
+                                                    <td><a href='#' class='btn btn-sm btn-warning btn-user'>" . "Download" . "</a></td>
+                                                <?php } ?>
                                             </tr>
-                                        <?php
-                                            $a++;
+                                        <?php $a++;
                                         }
                                         ?>
                                     </tbody>

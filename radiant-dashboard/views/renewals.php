@@ -35,7 +35,14 @@ include "../views/layout/header.php";
                             <div class="card-header py-3">
                                 <div class="row justify-content-end">
                                     <div class="col-md-2 col-sm-12">
-                                        <h6 class="m-0 text-primary">All insurance renewals</h6>
+                                        <?php
+                                        if (isset($_SESSION['employeeid'])) {
+                                        ?><h6 class="m-0 text-primary">All insurance renewals</h6>
+                                        <?php } else {
+                                        ?>
+                                            <h6 class="m-0 text-primary">My renewals</h6>
+                                        <?php
+                                        } ?>
                                     </div>
                                     <div class="col-md-8 col-sm-12"></div>
                                     <div class="col-md-2 col-sm-12">
@@ -112,6 +119,10 @@ include "../views/layout/header.php";
                                                             </a>
                                                         <?php } ?>
 
+                                                        <a href="./../../files/incomeproofs/<?php echo $row['firstname'];?>/<?php echo $row['proof_of_income'];?>" class="btn btn-sm btn-primary view-renewal-btn" data-renewal-view-id="<?php echo $row['renewal_id']; ?>" target="_blank">
+                                                            View file
+                                                        </a>
+
                                                         <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceModal" data-renewal-decline-id="<?php echo $row['renewal_id']; ?>">
                                                             Decline
                                                         </a>
@@ -135,6 +146,8 @@ include "../views/layout/header.php";
                             $clientId = $_SESSION['clientid'];
 
                             $insurances = $mysqli->query("SELECT clients.insurance_id, id_client, firstname, start_date, end_date, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id WHERE id_client = " . $clientId);
+                            $fetch = $insurances -> fetch_array(MYSQLI_ASSOC);
+                            $firstname = $fetch['firstname'];
 
                             // Renew Insurance Logic
                             if (isset($_POST['renewInsurance'])) {
@@ -151,7 +164,7 @@ include "../views/layout/header.php";
                                     $proofFile = '';
                                     if (!empty($_FILES['proof']['tmp_name'])) {
                                         $proofFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['proof']['name']);
-                                        $uploadDir = './../../files/incomeproofs/renewals/';
+                                        $uploadDir = './../../files/incomeproofs/' . $firstname . '/';
                                         if (!is_dir($uploadDir)) {
                                             mkdir($uploadDir, 0755, true);
                                         }
