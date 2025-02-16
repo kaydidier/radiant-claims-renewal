@@ -289,7 +289,6 @@ include "../views/layout/header.php";
                                     echo "<script type='text/javascript'>alert('Insurance renewal declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
                                     echo "<script type='text/javascript'>alert('Failed to decline insurance renewal. Please try again.');</script>";
-                                    echo "Not a drill" . $renewalId;
                                 }
                             } else {
                                 echo "<script type='text/javascript'>alert('Please type correct confirmation to proceed.');</script>";

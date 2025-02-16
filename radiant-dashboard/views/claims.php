@@ -182,7 +182,6 @@ include "../views/layout/header.php";
                                     echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
                                     echo "<script type='text/javascript'>alert('Failed to decline insurance claim. Please try again.');</script>";
-                                    echo "Not a drill" . $claimId;
                                 }
                             } else {
                                 echo "<script type='text/javascript'>alert('Please type correct confirmation to proceed.');</script>";

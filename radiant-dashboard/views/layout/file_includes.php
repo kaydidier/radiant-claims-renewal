@@ -239,11 +239,20 @@ if (isset($_SESSION['clientid'])) {
 if (isset($_POST['saveInsurance'])) {
     $insuranceName = $mysqli->real_escape_string(strtolower($_POST['InsuranceName']));
 
+    // Check if insurance already exists
     $existingInsurance = $mysqli->query("SELECT * FROM insurance WHERE insurance_name='$insuranceName'");
-
-    $saveInsuranceQuery = $mysqli->query("INSERT INTO insurance VALUES (NULL, '$insuranceName')");
-
-    echo "<script type='text/javascript'>alert('New insurance created successfully');</script>";
+    
+    if ($existingInsurance->num_rows > 0) {
+        echo "<script type='text/javascript'>alert('Insurance with this name already exists!');</script>";
+    } else {
+        $saveInsuranceQuery = $mysqli->query("INSERT INTO insurance VALUES (NULL, '$insuranceName')");
+        
+        if ($saveInsuranceQuery) {
+            echo "<script type='text/javascript'>alert('New insurance created successfully'); window.location.href = window.location.href;</script>";
+        } else {
+            echo "<script type='text/javascript'>alert('Failed to create insurance. Please try again.');</script>";
+        }
+    }
 }
 
 ?>
@@ -251,7 +260,7 @@ if (isset($_POST['saveInsurance'])) {
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Creat new insurance</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Create new insurance</h5>
                 <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
@@ -260,7 +269,7 @@ if (isset($_POST['saveInsurance'])) {
                 <form method="POST" action="" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="InsuranceName" class="form-label">Insurance Name</label>
-                        <input type="text" class="form-control" id="InsuranceName" name="InsuranceName">
+                        <input type="text" class="form-control" id="InsuranceName" name="InsuranceName" required>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
@@ -270,7 +279,6 @@ if (isset($_POST['saveInsurance'])) {
             </div>
         </div>
     </div>
-</div>
 </div>
 
 <!-- Register client Modal-->
