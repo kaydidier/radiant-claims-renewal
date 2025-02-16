@@ -29,40 +29,37 @@ if (isset($_POST['login'])) {
 	$email = $mysqli->real_escape_string($_POST['email']);
 	$password = $mysqli->real_escape_string($_POST['password']);
 
-	$sql1 = $mysqli->query("SELECT * FROM admin where username='$email' and password='$password'") or die($mysqli->error);
-	$sql2 = $mysqli->query("SELECT * FROM employees  where username='$email' or email='$email'  and password='$password'") or die($mysqli->error);
-	$sql3 = $mysqli->query("SELECT * FROM clients where username='$email' or email='$email'  and password='$password'") or die($mysqli->error);
+	$queries = [
+		'admin' => "SELECT * FROM admin WHERE username='$email' AND password='$password'",
+		'employees' => "SELECT * FROM employees WHERE (username='$email' OR email='$email') AND password='$password'",
+		'clients' => "SELECT * FROM clients WHERE (username='$email' OR email='$email') AND password='$password'"
+	];
 
-	if ($sql1->num_rows > 0) {
-		$rowid = $sql1->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
-
-		$_SESSION['adminid'] = $rowid['ad_id'];
-		$sql1->free_result();
-
-		// header("Location: adminpage.php");
-		echo "<script>window.location.href = 'adminpage.php';</script>";
-		exit();
-	} elseif ($sql2->num_rows > 0) {
-		$rowid = $sql2->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
-
-		$_SESSION['employeeid'] = $rowid['emp_id'];
-		$sql2->free_result();
-		
-		// header("Location: emppage.php");
-		echo "<script>window.location.href = 'radiant-dashboard/views/index.view.php';</script>";
-		exit();
-	} elseif ($sql3->num_rows > 0) {
-		$rowid = $sql3->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
-
-		$_SESSION['clientid'] = $rowid['id_client'];
-		$sql3->free_result();
-
-		// header("Location: clientpage.php");
-		echo "<script>window.location.href = 'radiant-dashboard/views/index.view.php';</script>";
-		exit();
-	} else {
-		$msg = "Invalid username or password.";
-		header("Location: index.php?error=" . urlencode($msg));
-		exit();
+	foreach ($queries as $role => $query) {
+		$result = $mysqli->query($query) or die($mysqli->error);
+		if ($result->num_rows > 0) {
+			$row = $result->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
+			switch ($role) {
+				case 'admin':
+					$_SESSION['adminid'] = $row['ad_id'];
+					$redirectUrl = 'adminpage.php';
+					break;
+				case 'employees':
+					$_SESSION['employeeid'] = $row['emp_id'];
+					$redirectUrl = 'radiant-dashboard/views/index.view.php';
+					break;
+				case 'clients':
+					$_SESSION['clientid'] = $row['id_client'];
+					$redirectUrl = 'radiant-dashboard/views/index.view.php';
+					break;
+			}
+			$result->free_result();
+			echo "<script>window.location.href = '$redirectUrl';</script>";
+			exit();
+		}
 	}
+
+	$msg = "Invalid username or password.";
+	header("Location: login.view.php?error=" . urlencode($msg));
+	exit();
 }

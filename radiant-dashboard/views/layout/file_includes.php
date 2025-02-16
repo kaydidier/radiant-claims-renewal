@@ -1,5 +1,5 @@
 <?php
-include "../../includes/utils/sms.php";
+// include "../../includes/utils/sms.php";
 
 if (isset($_SESSION['clientid'])) {
     $clientQuery = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $_SESSION['clientid']);
@@ -61,10 +61,10 @@ if (isset($_SESSION['clientid'])) {
 
         // Define upload directories
         $upload_dirs = [
-            'licenses' => './../../files/licenses/' . $firstname . '/',
-            'yellows' => './../../files/yellows/' . $firstname . '/',
-            'police' => './../../files/police/' . $firstname . '/',
-            'support' => './../../files/support/' . $firstname . '/'
+            'licenses' => './../../files/licenses/' . strtolower($firstname) . '/',
+            'yellows' => './../../files/yellows/' . strtolower($firstname) . '/',
+            'police' => './../../files/police/' . strtolower($firstname) . '/',
+            'support' => './../../files/support/' . strtolower($firstname) . '/'
         ];
 
         // Create directories if they don't exist
@@ -84,7 +84,7 @@ if (isset($_SESSION['clientid'])) {
         $result = true;
         $uploadedFiles = [];
 
-        if (empty($insurance) || empty($nid) || empty($comments) || empty($bId) || empty($supportFile)) {
+        if (empty($insurance) || empty($nid) || empty($comments) || empty($supportFile)) {
             echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
         } else {
             // Insert client data into the database
@@ -199,12 +199,12 @@ if (isset($_SESSION['clientid'])) {
                                 <input type="text" class="form-control" id="upiClaimInput" name="upiClaimInput" value="<?php echo $fetch['upi'] ?>">
                             </div>
 
+                            <div class="mb-3">
+                                <label for="buildingClaimId" class="form-label">ID of the building</label>
+                                <input type="text" class="form-control" id="buildingClaimId" name="buildingClaimId" value="<?php echo $fetch['building_number'] ?>">
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="buildingClaimId" class="form-label">ID of the building</label>
-                            <input type="text" class="form-control" id="buildingClaimId" name="buildingClaimId" value="<?php echo $fetch['building_number'] ?>">
-                        </div>
                         <div class="mb-3">
                             <label for="nidClaim" class="form-label">NID number</label>
                             <input type="text" class="form-control" id="nidClaim" name="nidClaim" rows="3" value="<?php echo $fetch['ID_no'] ?>" disabled />

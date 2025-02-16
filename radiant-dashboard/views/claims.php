@@ -1,4 +1,5 @@
 <?php include "../../includes/connection.php";
+include "../../includes/utils/sms.php";
 
 if (!isset($_SESSION['employeeid']) && !isset($_SESSION['clientid'])) {
     header("LOCATION: ../../index.php");
@@ -15,16 +16,15 @@ include "../views/layout/header.php";
     <div id="wrapper">
         <?php
         include "../views/layout/sidebar.php";
-        // include "../../includes/utils/sms.php";
 
         if (isset($_SESSION['clientid'])) {
             $clientQuery = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $_SESSION['clientid']);
             $clientData = $clientQuery->fetch_array(MYSQLI_ASSOC);
-            $firstname = $clientData['firstname'];
-            $lastname = $clientData['lastname'];
-            $phone = $clientData['phone'];
+            $firstnameUser = $clientData['firstname'];
+            $lastnameUser = $clientData['lastname'];
+            $phoneUser = $clientData['phone'];
         }
-        
+
         ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -111,22 +111,23 @@ include "../views/layout/header.php";
                                                         echo "<p class='text-danger'>Declined</p>";
                                                     }
                                                     ?></td>
-                                                <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) !== "declined") { ?>
+                                                <?php if (isset($_SESSION['employeeid']) ) { ?>
                                                     <td>
-                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary view-claim-btn" data-claim-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
+                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary my-1 view-claim-btn" data-claim-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
                                                             View file
                                                         </a>
 
-                                                        <?php if (strtolower($row['status']) === "pending") { ?>
-                                                            <a href="#" class="btn btn-sm btn-warning approve-claim-btn" data-toggle="modal" data-target="#approveClaimModal" data-claim-id="<?php echo $row['claim_id']; ?>">
+                                                        <?php if (strtolower($row['status']) !== "approved") { ?>
+                                                            <a href="#" class="btn btn-sm btn-warning my-1 approve-claim-btn" data-toggle="modal" data-target="#approveClaimModal" data-claim-id="<?php echo $row['claim_id']; ?>">
                                                                 Approve
                                                             </a>
                                                         <?php } ?>
 
-
-                                                        <a href="#" class="btn btn-sm btn-danger decline-claim-btn" data-toggle="modal" data-target="#declineClaimModal" data-claim-decline-id="<?php echo $row['claim_id']; ?>">
-                                                            Decline
-                                                        </a>
+                                                        <?php if (strtolower($row['status']) !== "declined" && strtolower($row['status']) !== "approved"): ?>
+                                                            <a href="#" class="btn btn-sm btn-danger my-1 decline-claim-btn" data-toggle="modal" data-target="#declineClaimModal" data-claim-decline-id="<?php echo $row['claim_id']; ?>">
+                                                                Decline
+                                                            </a>
+                                                        <?php endif; ?>
 
                                                     </td>
                                                 <?php } ?>
@@ -152,8 +153,8 @@ include "../views/layout/header.php";
                             if ($mysqli->query($approveSql)) {
 
                                 $smsResult = sendSMS(
-                                    $phone,
-                                    "Hello, " . $firstname . " " . $lastname . " your insurance claim of " . $claimAmount . " RWF has been approved."
+                                    $phoneUser,
+                                    "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim of " . $claimAmount . " RWF has been approved."
                                 );
 
                                 echo "<script type='text/javascript'>alert('Insurance claim have been approved successfully!'); window.location.href = window.location.href;</script>";
@@ -204,8 +205,8 @@ include "../views/layout/header.php";
                                 if ($mysqli->query($updateSql)) {
 
                                     $smsResult = sendSMS(
-                                        $phone,
-                                        "Hello, " . $firstname . " " . $lastname . " your insurance claim has been declined with the reason: " . $claimDeclineReason
+                                            $phoneUser,
+                                        "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined with the reason: " . $claimDeclineReason
                                     );
 
                                     echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";

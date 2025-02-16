@@ -54,16 +54,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     $result = $mysqli->query("SELECT password FROM $table WHERE $idField = $userId");
     $row = $result->fetch_assoc();
 
-    if (!password_verify($currentPassword, $row['password'])) {
+    if ($currentPassword !== $row['password']) {
         echo "<script>alert('Current password is incorrect');</script>";
         return;
     }
 
-    $hashedNewPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-    $updateQuery = "UPDATE $table SET username='$newUsername', password='$hashedNewPassword' WHERE $idField = $userId";
+    $updateQuery = "UPDATE $table SET username='$newUsername', password='$newPassword' WHERE $idField = $userId";
 
     if ($mysqli->query($updateQuery)) {
-        echo "<script>alert('Profile updated successfully!');</script>";
+        session_unset();
+        session_destroy();
+        echo "<script>alert('Profile updated successfully. Please log in again.'); window.location.href = '../../login.view.php';</script>";
     } else {
         echo "<script>alert('Failed to update profile: " . $mysqli->error . "');</script>";
     }

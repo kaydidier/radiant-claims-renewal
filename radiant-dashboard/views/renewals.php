@@ -1,6 +1,6 @@
 <?php
 include "../../includes/connection.php";
-
+include "../../includes/utils/sms.php";
 if (!isset($_SESSION['employeeid']) && !isset($_SESSION['clientid'])) {
     header("LOCATION: ../../index.php");
 }
@@ -24,7 +24,6 @@ include "../views/layout/header.php";
             <div id="content">
                 <?php
                 include "../views/layout/top_bar.php";
-                // include "../../includes/utils/sms.php";
 
                 if (isset($_SESSION['clientid'])) {
                     $clientQuery = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $_SESSION['clientid']);
@@ -123,21 +122,23 @@ include "../views/layout/header.php";
                                                 <td><?php echo $days; ?></td>
                                                 <td><?php echo $row['date_filed']; ?></td>
 
-                                                <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) != "declined") { ?>
+                                                <?php if (isset($_SESSION['employeeid'])) { ?>
                                                     <td>
                                                         <?php if (strtolower($row['status']) != "approved") { ?>
-                                                            <a href="#" class="btn btn-sm btn-warning approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceRenewalModal" data-renewal-id="<?php echo $row['renewal_id']; ?>">
+                                                            <a href="#" class="btn btn-sm btn-warning my-1 approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceRenewalModal" data-renewal-id="<?php echo $row['renewal_id']; ?>">
                                                                 Approve
                                                             </a>
                                                         <?php } ?>
 
-                                                        <a href="./../../files/incomeproofs/<?php echo $row['firstname']; ?>/<?php echo $row['proof_of_income']; ?>" class="btn btn-sm btn-primary view-renewal-btn" data-renewal-view-id="<?php echo $row['renewal_id']; ?>" target="_blank">
+                                                        <a href="./../../files/incomeproofs/<?php echo $row['firstname']; ?>/<?php echo $row['proof_of_income']; ?>" class="btn btn-sm btn-primary my-1 view-renewal-btn" data-renewal-view-id="<?php echo $row['renewal_id']; ?>" target="_blank">
                                                             View file
                                                         </a>
 
-                                                        <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceRenewalModal" data-renewal-decline-id="<?php echo $row['renewal_id']; ?>">
-                                                            Decline
-                                                        </a>
+                                                        <?php if (strtolower($row['status']) !== "declined" && strtolower($row['status']) !== "approved"): ?>
+                                                            <a href="#" class="btn btn-sm btn-danger my-1 decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceRenewalModal" data-renewal-decline-id="<?php echo $row['renewal_id']; ?>">
+                                                                Decline
+                                                            </a>
+                                                        <?php endif; ?>
 
                                                     </td>
                                                 <?php } ?>
@@ -174,7 +175,7 @@ include "../views/layout/header.php";
                                     $proofFile = '';
                                     if (!empty($_FILES['proof']['tmp_name'])) {
                                         $proofFile = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['proof']['name']);
-                                        $uploadDir = './../../files/incomeproofs/' . $firstname . '/';
+                                        $uploadDir = './../../files/incomeproofs/' . strtolower($firstname) . '/';
                                         if (!is_dir($uploadDir)) {
                                             mkdir($uploadDir, 0755, true);
                                         }

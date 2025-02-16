@@ -241,7 +241,7 @@ if (isset($_SESSION['employeeid'])) {
     $renewals_status_query = "SELECT 
                                 SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved_renewals,
                                 SUM(CASE WHEN status = 'declined' THEN 1 ELSE 0 END) as declined_renewals,
-                                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_renewals
+                                SUM(CASE WHEN status = 'requested' THEN 1 ELSE 0 END) as pending_renewals
                             FROM renewals";
     $renewals_status_result = $mysqli->query($renewals_status_query);
     $renewals_status = $renewals_status_result->fetch_assoc();
@@ -260,7 +260,7 @@ if (isset($_SESSION['employeeid'])) {
     $renewals_status_query = "SELECT 
                                 SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved_renewals,
                                 SUM(CASE WHEN status = 'declined' THEN 1 ELSE 0 END) as declined_renewals,
-                                SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_renewals
+                                SUM(CASE WHEN status = 'requested' THEN 1 ELSE 0 END) as pending_renewals
                             FROM renewals
                             WHERE id_client = $client_id";
     $renewals_status_result = $mysqli->query($renewals_status_query);
