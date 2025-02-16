@@ -111,3 +111,6 @@
 
 </nav>
 <!-- End of Topbar -->
+ 
+<!-- Add Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
