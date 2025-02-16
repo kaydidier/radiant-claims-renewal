@@ -101,7 +101,7 @@ include "../views/layout/header.php";
                                                 <td><?php if (strtolower($row['status']) == "approved") {
                                                         echo "<p class='text-success'>Approved</p>";
                                                     } elseif (strtolower($row['status']) == "requested") {
-                                                        echo "<p class='text-danger'>Requested</p>";
+                                                        echo "<p class='text-warning'>Requested</p>";
                                                     } else {
 
                                                         echo "<p class='text-danger'>Declined</p>";
@@ -114,7 +114,7 @@ include "../views/layout/header.php";
                                                 <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) != "declined") { ?>
                                                     <td>
                                                         <?php if (strtolower($row['status']) != "approved") { ?>
-                                                            <a href="#" class="btn btn-sm btn-warning approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceModal" data-renewal-id="<?php echo $row['renewal_id']; ?>">
+                                                            <a href="#" class="btn btn-sm btn-warning approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceRenewalModal" data-renewal-id="<?php echo $row['renewal_id']; ?>">
                                                                 Approve
                                                             </a>
                                                         <?php } ?>
@@ -123,7 +123,7 @@ include "../views/layout/header.php";
                                                             View file
                                                         </a>
 
-                                                        <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceModal" data-renewal-decline-id="<?php echo $row['renewal_id']; ?>">
+                                                        <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceRenewalModal" data-renewal-decline-id="<?php echo $row['renewal_id']; ?>">
                                                             Decline
                                                         </a>
 
@@ -251,7 +251,7 @@ include "../views/layout/header.php";
                             }
                         }
                         ?>
-                        <div class="modal fade" id="approveInsuranceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="approveInsuranceRenewalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -276,19 +276,19 @@ include "../views/layout/header.php";
                         <!-- Decline insurance Modal-->
                         <?php
 
-                        if (isset($_POST['cancelInsurance'])) {
+                        if (isset($_POST['declineInsuranceRenewal'])) {
                             $renewDeclineText = $mysqli->real_escape_string($_POST['renewDeclineText']);
                             $renewDeclineReason = $mysqli->real_escape_string($_POST['renewDeclineReason']);
                             $renewalId = $mysqli->real_escape_string($_POST['renewalDeclineId']);
 
                             // Validate user input
-                            if (strtolower($renewDeclineText) === 'decline insurance') {
+                            if (strtolower($renewDeclineText) === 'decline insurance renewal') {
                                 // Delete the insurance record
                                 $updateSql = "UPDATE renewals SET status='declined', reason='$renewDeclineReason' WHERE renewal_id = '$renewalId'";
                                 if ($mysqli->query($updateSql)) {
-                                    echo "<script type='text/javascript'>alert('Insurance canceled successfully!'); window.location.href = window.location.href;</script>";
+                                    echo "<script type='text/javascript'>alert('Insurance renewal declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
-                                    echo "<script type='text/javascript'>alert('Failed to cancel insurance. Please try again.');</script>";
+                                    echo "<script type='text/javascript'>alert('Failed to decline insurance renewal. Please try again.');</script>";
                                     echo "Not a drill" . $renewalId;
                                 }
                             } else {
@@ -296,7 +296,7 @@ include "../views/layout/header.php";
                             }
                         }
                         ?>
-                        <div class="modal fade" id="declineInsuranceModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal fade" id="declineInsuranceRenewalModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -309,7 +309,7 @@ include "../views/layout/header.php";
                                         <form method="POST" action="" enctype="multipart/form-data">
                                             <input type="hidden" name="renewalDeclineId" id="renewalDeclineIdInput">
                                             <div class="mb-3">
-                                                <label for="renewDeclineText" class="form-label">Write <strong>decline insurance</strong> to proceed</label>
+                                                <label for="renewDeclineText" class="form-label">Write <strong>decline insurance renewal</strong> to proceed</label>
                                                 <input type="text" class="form-control" id="renewDeclineText" name="renewDeclineText" required>
                                             </div>
                                             <div class="form-floating">
@@ -317,7 +317,7 @@ include "../views/layout/header.php";
                                             </div>
                                             <div class="modal-footer">
                                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                                                <button class="btn btn-danger" type="submit" name="cancelInsurance">Decline</button>
+                                                <button class="btn btn-danger" type="submit" name="declineInsuranceRenewal">Decline</button>
                                             </div>
                                         </form>
                                     </div>

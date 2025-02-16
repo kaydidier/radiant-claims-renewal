@@ -89,26 +89,34 @@ include "../views/layout/header.php";
                                         ?>
                                             <tr>
                                                 <td><?php echo $a; ?></td>
-                                                <td><?php echo ucfirst($row['firstname']) . " " . ucfirst($row['lastname']); ?></td>
-                                                <td><?php echo $row['comments']; ?></td>
+                                                <td><?php echo ($row['firstname'] ? ucfirst($row['firstname']) : '') . " " . ($row['lastname'] ? ucfirst($row['lastname']) : ''); ?></td>
+                                                <td><?php echo ucfirst($row['comments']); ?></td>
                                                 <td><?php echo $claimDate; ?></td>
-                                                <td><?php echo $row['status']; ?></td>
-                                                <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) != "declined") { ?>
+                                                <td><?php if (strtolower($row['status']) == "approved") {
+                                                        echo "<p class='text-success'>Approved</p>";
+                                                    } elseif (strtolower($row['status']) == "pending") {
+                                                        echo "<p class='text-warning'>Pending</p>";
+                                                    } else {
+
+                                                        echo "<p class='text-danger'>Declined</p>";
+                                                    }
+                                                    ?></td>
+                                                <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) !== "declined") { ?>
                                                     <td>
-                                                        <?php if (strtolower($row['status']) != "pending") { ?>
-                                                            <a href="#" class="btn btn-sm btn-warning approve-renewal-btn" data-toggle="modal" data-target="#approveInsuranceModal" data-renewal-id="<?php echo $row['claim_id']; ?>">
+                                                        <?php if (strtolower($row['status']) === "pending") { ?>
+                                                            <a href="#" class="btn btn-sm btn-warning approve-claim-btn" data-toggle="modal" data-target="#approveClaimModal" data-claim-id="<?php echo $row['claim_id']; ?>">
                                                                 Approve
                                                             </a>
                                                         <?php } ?>
 
-                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary view-renewal-btn" data-renewal-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
-                                                            View file
-                                                        </a>
 
-                                                        <a href="#" class="btn btn-sm btn-danger decline-renewal-btn" data-toggle="modal" data-target="#declineInsuranceModal" data-renewal-decline-id="<?php echo $row['claim_id']; ?>">
+                                                        <a href="#" class="btn btn-sm btn-danger decline-claim-btn" data-toggle="modal" data-target="#declineClaimModal" data-claim-decline-id="<?php echo $row['claim_id']; ?>">
                                                             Decline
                                                         </a>
 
+                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary view-claim-btn" data-claim-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
+                                                            View file
+                                                        </a>
                                                     </td>
                                                 <?php } ?>
                                             </tr>
@@ -119,6 +127,97 @@ include "../views/layout/header.php";
                                 </table>
                             </div>
                         </div>
+
+                        <!-- Approve renwed insurance modal  -->
+                        <?php
+                        if (isset($_POST['confirmInsuranceClaim'])) {
+                            $claimId = $mysqli->real_escape_string($_POST['claimId']);
+
+                            // Delete the insurance record
+                            $approveSql = "UPDATE claim SET status='approved' WHERE claim_id = '$claimId'";
+
+                            if ($mysqli->query($approveSql)) {
+                                echo "<script type='text/javascript'>alert('Insurance claim have been approved successfully!'); window.location.href = window.location.href;</script>";
+                            } else {
+                                echo "<script type='text/javascript'>alert('Failed to approve insurance claim. Please try again.');</script>";
+                            }
+                        }
+                        ?>
+                        <div class="modal fade" id="approveClaimModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title fs-6 fw-lighter" id="exampleModalLabel">Are you sure you want to approve this insurance claim?</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="" enctype="multipart/form-data">
+                                            <input type="hidden" name="claimId" id="claimIdInput">
+                                            <div style="display: flex; gap: 8px; justify-content: end;">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                <button class="btn btn-primary" type="submit" name="confirmInsuranceClaim">Confirm</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Decline insurance Modal-->
+                        <?php
+
+                        if (isset($_POST['declineInsuranceClaim'])) {
+                            $claimDeclineText = $mysqli->real_escape_string($_POST['claimDeclineText']);
+                            $claimDeclineReason = $mysqli->real_escape_string($_POST['claimDeclineReason']);
+                            $claimId = $mysqli->real_escape_string($_POST['claimDeclineId']);
+
+                            // Validate user input
+                            if (strtolower($claimDeclineText) === 'decline insurance claim') {
+                                // Delete the insurance record
+                                $updateSql = "UPDATE claim SET status='declined', decline_reason='$claimDeclineReason' WHERE claim_id = '$claimId'";
+
+                                if ($mysqli->query($updateSql)) {
+                                    echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";
+                                } else {
+                                    echo "<script type='text/javascript'>alert('Failed to decline insurance claim. Please try again.');</script>";
+                                    echo "Not a drill" . $claimId;
+                                }
+                            } else {
+                                echo "<script type='text/javascript'>alert('Please type correct confirmation to proceed.');</script>";
+                            }
+                        }
+                        ?>
+                        <div class="modal fade" id="declineClaimModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title text-danger fs-6 fw-lighter" id="exampleModalLabel">Ready to decline this insurance renewal?</h5>
+                                        <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="" enctype="multipart/form-data">
+                                            <input type="hidden" name="claimDeclineId" id="claimDeclineIdInput">
+                                            <div class="mb-3">
+                                                <label for="claimDeclineText" class="form-label">Write <strong>decline insurance claim</strong> to proceed</label>
+                                                <input type="text" class="form-control" id="claimDeclineText" name="claimDeclineText" required>
+                                            </div>
+                                            <div class="form-floating">
+                                                <textarea class="form-control" placeholder="Leave a reason here" id="claimDeclineReason" name="claimDeclineReason" required></textarea>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                                                <button class="btn btn-danger" type="submit" name="declineInsuranceClaim">Decline</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
                 <!-- /.container-fluid -->
@@ -140,6 +239,22 @@ include "../views/layout/header.php";
     <?php
     include "../views/layout/file_includes.php";
     ?>
+
+    <!-- JavaScript to handle passing claim_id to the modal -->
+    <script>
+        $(document).ready(function() {
+            $('.approve-claim-btn').on('click', function() {
+                var claimId = $(this).data('claim-id');
+                $('#claimIdInput').val(claimId);
+            });
+
+            $('.decline-claim-btn').on('click', function() {
+                var claimId = $(this).data('claim-decline-id');
+                $('#claimDeclineIdInput').val(claimId);
+            });
+        });
+    </script>
+
 
 </body>
 
