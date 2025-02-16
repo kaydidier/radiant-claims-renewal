@@ -348,104 +348,6 @@ if (isset($_SESSION['employeeid'])) {
         </div>
     </div>
 </div>
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof Chart !== 'undefined') {
-            const chartConfig = (ctx, data, label) => {
-                return new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ["Approved", "Rejected", "Pending"],
-                        datasets: [{
-                            label: label,
-                            data: data,
-                            backgroundColor: ['#1cc88a', '#e74a3b', '#f6c23e'],
-                            hoverBackgroundColor: ['#17a673', '#e02d1b', '#f4b619'],
-                            borderColor: "#4e73df",
-                        }],
-                    },
-                    options: {
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: {
-                                left: 10,
-                                right: 25,
-                                top: 25,
-                                bottom: 0
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: {
-                                    display: false,
-                                    drawBorder: false
-                                },
-                                ticks: {
-                                    maxTicksLimit: 6
-                                },
-                                maxBarThickness: 25,
-                            },
-                            y: {
-                                ticks: {
-                                    min: 0,
-                                    max: 100,
-                                    maxTicksLimit: 5,
-                                    padding: 10,
-                                    callback: function(value) {
-                                        return number_format(value);
-                                    }
-                                },
-                                grid: {
-                                    color: "rgb(234, 236, 244)",
-                                    zeroLineColor: "rgb(234, 236, 244)",
-                                    drawBorder: false,
-                                    borderDash: [2],
-                                    zeroLineBorderDash: [2]
-                                }
-                            },
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                titleMarginBottom: 10,
-                                titleColor: '#6e707e',
-                                titleFont: {
-                                    size: 14
-                                },
-                                backgroundColor: "rgb(255,255,255)",
-                                bodyColor: "#858796",
-                                borderColor: '#dddfeb',
-                                borderWidth: 1,
-                                padding: 15,
-                                displayColors: false,
-                                caretPadding: 10,
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        var datasetLabel = tooltipItem.dataset.label || '';
-                                        return datasetLabel + ': ' + number_format(tooltipItem.raw);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            };
-
-            const claimsData = [<?php echo $approved_claims['total_approved_claims']; ?>, <?php echo $rejected_claims['total_rejected_claims']; ?>, <?php echo $pending_claims['total_pending_claims']; ?>];
-            const renewalsData = [<?php echo $approved_renewals['total_approved_renewals']; ?>, <?php echo $rejected_renewals['total_rejected_renewals']; ?>, <?php echo $pending_renewals['total_pending_renewals']; ?>];
-
-            const claimsCtx = document.getElementById("claimsStatusChart").getContext('2d');
-            chartConfig(claimsCtx, claimsData, "Claims");
-
-            const renewalsCtx = document.getElementById("renewalsStatusChart").getContext('2d');
-            chartConfig(renewalsCtx, renewalsData, "Renewals");
-        } else {
-            console.error("Chart.js library is not loaded.");
-        }
-    });
-</script> -->
 
 <script>
   const ctx = document.getElementById('claimsStatusChart');
@@ -476,6 +378,7 @@ if (isset($_SESSION['employeeid'])) {
   };
 
   const chartOptions = {
+    maintainAspectRatio: false,
     scales: {
       y: {
         beginAtZero: true,
@@ -495,7 +398,7 @@ if (isset($_SESSION['employeeid'])) {
   });
 
   new Chart(ctx2, {
-    type: 'bar',
+    type: 'doughnut',
     data: renewalsChartData,
     options: chartOptions
   });
