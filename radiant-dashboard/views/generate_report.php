@@ -82,7 +82,7 @@ if (!isset($_SESSION['employeeid'])) {
                                                     <th>Claim ID</th>
                                                     <th>Client Name</th>
                                                     <th>Date Filed</th>
-                                                    <th>Amount</th>
+                                                    <th>Claim Amount</th>
                                                     <th>Status</th>
                                                 </tr>
                                             </thead>
@@ -92,7 +92,7 @@ if (!isset($_SESSION['employeeid'])) {
                                                         <td><?php echo $row['claim_id']; ?></td>
                                                         <td><?php echo ucfirst($row['firstname']) . ' ' . ucfirst($row['lastname']); ?></td>
                                                         <td><?php echo $row['date_filed']; ?></td>
-                                                        <td>Rwf <?php echo number_format($row['claim_amount'], 2); ?></td>
+                                                        <td>Rwf <?php echo 'Rwf' . ($row['claim_amount'] !== null ? " " . number_format($row['claim_amount'], 2) : "0.00"); ?></td>
                                                         <td><?php echo ucfirst($row['status']); ?></td>
                                                     </tr>
                                                 <?php endwhile; ?>
@@ -104,7 +104,7 @@ if (!isset($_SESSION['employeeid'])) {
                                                     <th>Renewal ID</th>
                                                     <th>Client Name</th>
                                                     <th>Renewal Date</th>
-                                                    <th>Premium</th>
+                                                    <th>RenewalAmount</th>
                                                     <th>Status</th>
                                                 </tr>
                                             </thead>
@@ -114,7 +114,7 @@ if (!isset($_SESSION['employeeid'])) {
                                                         <td><?php echo $row['renewal_id']; ?></td>
                                                         <td><?php echo ucfirst($row['firstname']) . ' ' . ucfirst($row['lastname']); ?></td>
                                                         <td><?php echo $row['date_filed']; ?></td>
-                                                        <td>Rwf <?php echo " " . number_format($row['renewal_amount'], 2); ?></td>
+                                                        <td>Rwf <?php echo 'Rwf' . ($row['renewal_amount'] !== null ? " " . number_format($row['renewal_amount'], 2) : "0.00"); ?></td>
                                                         <td><?php echo ucfirst($row['status']); ?></td>
                                                     </tr>
                                                 <?php endwhile; ?>
@@ -132,7 +132,7 @@ if (!isset($_SESSION['employeeid'])) {
                                                 <?php while ($row = $result->fetch_assoc()): ?>
                                                     <tr>
                                                         <td><?php echo $row['month']; ?></td>
-                                                        <td>Rwf <?php echo " " . number_format($row['total_compensation'], 2); ?></td>
+                                                        <td>Rwf <?php echo 'Rwf' . ($row['total_compensation'] !== null ? " " . number_format($row['total_compensation'], 2) : "0.00"); ?></td>
                                                         <td><?php echo $row['claim_count']; ?></td>
                                                     </tr>
                                                 <?php endwhile; ?>

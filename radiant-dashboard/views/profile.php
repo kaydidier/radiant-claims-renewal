@@ -24,14 +24,14 @@ if (isset($_SESSION['clientid'])):
 endif;
 
 if (isset($_SESSION['employeeid'])):
-    $employeeQuery = $mysqli->query("SELECT * FROM employees WHERE id_employee = " . $_SESSION['employeeid']);
+    $employeeQuery = $mysqli->query("SELECT * FROM employees WHERE emp_id = " . $_SESSION['employeeid']);
     $employeeData = $employeeQuery->fetch_array(MYSQLI_ASSOC);
     $firstname = $employeeData['firstname'];
     $lastname = $employeeData['lastname'];
     $phone = $employeeData['phonenumber'];
     $email = $employeeData['email'];
     $dateOfBirth = $employeeData['date_of_birth'];
-    $gender = $employeeData['gender'];
+    $gender = $employeeData['sex'];
     $username = $employeeData['username'];
 endif;
 

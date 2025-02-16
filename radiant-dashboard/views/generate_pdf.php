@@ -96,12 +96,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $pdf->Cell($w[0], 6, $row['claim_id'], 1);
                     $pdf->Cell($w[1], 6, ucfirst($row['firstname']) . ' ' . ucfirst($row['lastname']), 1);
                     $pdf->Cell($w[2], 6, $row['date_filed'], 1);
-                    $pdf->Cell($w[3], 6, 'Rwf ' . number_format($row['claim_amount'], 2), 1);
+                    $pdf->Cell($w[3], 6, 'Rwf ' . ($row['claim_amount'] !== null ? number_format($row['claim_amount'], 2) : '0.00'), 1);
+                    $pdf->Cell($w[4], 6, ucfirst($row['status']), 1);
+                    $pdf->Ln();
+                }
+            } elseif ($reportType === 'renewals') {
+                $header = ['Renewal ID', 'Client Name', 'Renewal Date', 'Renewal Amount', 'Status'];
+                $pdf->SetFont('helvetica', 'B', 11);
+                $w = [30, 50, 35, 35, 30];
+
+                // Header
+                foreach ($header as $i => $col) {
+                    $pdf->Cell($w[$i], 7, $col, 1, 0, 'C');
+                }
+                $pdf->Ln();
+
+                // Data 
+                $pdf->SetFont('helvetica', '', 10);
+                while ($row = $result->fetch_assoc()) {
+                    $pdf->Cell($w[0], 6, $row['renewal_id'], 1);
+                    $pdf->Cell($w[1], 6, ucfirst($row['firstname']) . ' ' . ucfirst($row['lastname']), 1);
+                    $pdf->Cell($w[2], 6, $row['date_filed'], 1);
+                    $pdf->Cell($w[3], 6, 'Rwf ' . ($row['renewal_amount'] !== null ? number_format($row['renewal_amount'], 2) : '0.00'), 1);
                     $pdf->Cell($w[4], 6, ucfirst($row['status']), 1);
                     $pdf->Ln();
                 }
             }
-            // ... Add similar blocks for other report types ...
 
             $stmt->close();
         }
