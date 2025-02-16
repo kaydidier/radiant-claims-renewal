@@ -1,3 +1,14 @@
+<?php
+include "../../includes/utils/sms.php";
+
+if (isset($_SESSION['clientid'])) {
+    $clientQuery = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $_SESSION['clientid']);
+    $clientData = $clientQuery->fetch_array(MYSQLI_ASSOC);
+    $firstnameUser = $clientData['firstname'];
+    $lastnameUser = $clientData['lastname'];
+    $phoneUser = $clientData['phone'];
+}
+?>
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
@@ -77,7 +88,7 @@ if (isset($_SESSION['clientid'])) {
             echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
         } else {
             // Insert client data into the database
-            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") . ", '$supportFile', '$status') ";
+            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status, date_filed) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") . ", '$supportFile', '$status', NOW()) ";
 
             $updateFields = array();
             if (!empty($licenseFile)) $updateFields[] = "driving_license='$licenseFile'";
@@ -111,6 +122,11 @@ if (isset($_SESSION['clientid'])) {
                     $result = $result && move_uploaded_file($_FILES['policeFile']['tmp_name'], $upload_dirs['police'] . $policeFile);
                     $uploadedFiles[] = $policeFile;
                 }
+
+                $smsResult = sendSMS(
+                    $phoneUser,
+                    "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been sent."
+                );
 
                 echo "<script type='text/javascript'>alert('Claim has been sent successfully!');
                 window.location.href = window.location.href;
@@ -344,12 +360,16 @@ if (isset($_POST['save_client'])) {
 
         // Insert client data into the database
         $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, upi, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id, created_at) 
-                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', $insurance, NOW())";
+                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', '$insurance', NOW())";
 
         $insert = $mysqli->query($insertSql) or die($mysqli->error);
 
         if ($insert) {
-            $_SESSION['clientregistration'] = $mysqli->insert_id;
+
+            $smsResult = sendSMS(
+                $phone,
+                "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance policies."
+            );
             echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
             window.location.href = window.location.href;
                   </script>";

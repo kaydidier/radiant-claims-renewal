@@ -228,6 +228,12 @@ include "../views/layout/header.php";
                                 $updateSql = "UPDATE clients SET " . implode(", ", $updateFields) . " WHERE id_client='$clientId'";
 
                                 if ($mysqli->query($updateSql)) {
+
+                                    $smsResult = sendSMS(
+                                        $phone,
+                                        "Hello, " . $firstname . " " . $lastname . " Your details have been updated."
+                                    );
+
                                     echo "<script type='text/javascript'>alert('Client updated successfully!');
                                     window.location.href = window.location.href;</script>";
                                 } else {
@@ -441,6 +447,7 @@ include "../views/layout/header.php";
                                 $deleteSql = "DELETE FROM clients WHERE id_client = '$clientId'";
 
                                 if ($mysqli->query($deleteSql)) {
+
                                     echo "<script type='text/javascript'>alert('Client deleted successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
                                     echo "<script type='text/javascript'>alert('Failed to delete client. Please try again.');</script>";

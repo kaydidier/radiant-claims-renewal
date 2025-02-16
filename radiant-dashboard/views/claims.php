@@ -15,6 +15,16 @@ include "../views/layout/header.php";
     <div id="wrapper">
         <?php
         include "../views/layout/sidebar.php";
+        // include "../../includes/utils/sms.php";
+
+        if (isset($_SESSION['clientid'])) {
+            $clientQuery = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $_SESSION['clientid']);
+            $clientData = $clientQuery->fetch_array(MYSQLI_ASSOC);
+            $firstname = $clientData['firstname'];
+            $lastname = $clientData['lastname'];
+            $phone = $clientData['phone'];
+        }
+        
         ?>
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -63,7 +73,7 @@ include "../views/layout/header.php";
                                             <th>Clients Names</th>
                                             <th>Description</th>
                                             <th>Amount <small class="text-muted">(RWF)</small></th>
-                                            <th>Date</th>
+                                            <th>Date Filed</th>
                                             <th>Status</th>
                                             <?php if (isset($_SESSION['employeeid'])) { ?><th>Actions</th> <?php } ?>
                                         </tr>
@@ -85,15 +95,13 @@ include "../views/layout/header.php";
 
                                         $a = 1;
                                         while ($row = mysqli_fetch_array($allClaims)) {
-                                            $claimDateTime = new DateTime($row['claim_time']);
-                                            $claimDate = $claimDateTime->format('d-m-Y');
                                         ?>
                                             <tr>
                                                 <td><?php echo $a; ?></td>
                                                 <td><?php echo ($row['firstname'] ? ucfirst($row['firstname']) : '') . " " . ($row['lastname'] ? ucfirst($row['lastname']) : ''); ?></td>
                                                 <td><?php echo ucfirst($row['comments']); ?></td>
                                                 <td><?php echo $row['claim_amount'] ? number_format($row['claim_amount'], 0, ',', ' ') : '0'; ?></td>
-                                                <td><?php echo $claimDate; ?></td>
+                                                <td><?php echo $row['date_filed']; ?></td>
                                                 <td><?php if (strtolower($row['status']) == "approved") {
                                                         echo "<p class='text-success'>Approved</p>";
                                                     } elseif (strtolower($row['status']) == "pending") {
@@ -105,6 +113,10 @@ include "../views/layout/header.php";
                                                     ?></td>
                                                 <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) !== "declined") { ?>
                                                     <td>
+                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary view-claim-btn" data-claim-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
+                                                            View file
+                                                        </a>
+
                                                         <?php if (strtolower($row['status']) === "pending") { ?>
                                                             <a href="#" class="btn btn-sm btn-warning approve-claim-btn" data-toggle="modal" data-target="#approveClaimModal" data-claim-id="<?php echo $row['claim_id']; ?>">
                                                                 Approve
@@ -116,9 +128,6 @@ include "../views/layout/header.php";
                                                             Decline
                                                         </a>
 
-                                                        <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary view-claim-btn" data-claim-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
-                                                            View file
-                                                        </a>
                                                     </td>
                                                 <?php } ?>
                                             </tr>
@@ -134,13 +143,19 @@ include "../views/layout/header.php";
                         <?php
                         if (isset($_POST['confirmInsuranceClaim'])) {
                             $claimId = $mysqli->real_escape_string($_POST['claimId']);
-                            $claimAmount = $mysqli-> real_escape_string($_POST['claimAmount']);
+                            $claimAmount = $mysqli->real_escape_string($_POST['claimAmount']);
                             $status = "approved";
 
                             // Delete the insurance record
                             $approveSql = "UPDATE claim SET status='$status', claim_amount = '$claimAmount' WHERE claim_id = '$claimId'";
 
                             if ($mysqli->query($approveSql)) {
+
+                                $smsResult = sendSMS(
+                                    $phone,
+                                    "Hello, " . $firstname . " " . $lastname . " your insurance claim of " . $claimAmount . " RWF has been approved."
+                                );
+
                                 echo "<script type='text/javascript'>alert('Insurance claim have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
                                 echo "<script type='text/javascript'>alert('Failed to approve insurance claim. Please try again.');</script>";
@@ -187,6 +202,12 @@ include "../views/layout/header.php";
                                 $updateSql = "UPDATE claim SET status='declined', decline_reason='$claimDeclineReason' WHERE claim_id = '$claimId'";
 
                                 if ($mysqli->query($updateSql)) {
+
+                                    $smsResult = sendSMS(
+                                        $phone,
+                                        "Hello, " . $firstname . " " . $lastname . " your insurance claim has been declined with the reason: " . $claimDeclineReason
+                                    );
+
                                     echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
                                     echo "<script type='text/javascript'>alert('Failed to decline insurance claim. Please try again.');</script>";

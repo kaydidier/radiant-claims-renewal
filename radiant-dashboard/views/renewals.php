@@ -24,6 +24,16 @@ include "../views/layout/header.php";
             <div id="content">
                 <?php
                 include "../views/layout/top_bar.php";
+                // include "../../includes/utils/sms.php";
+
+                if (isset($_SESSION['clientid'])) {
+                    $clientQuery = $mysqli->query("SELECT * FROM clients WHERE id_client = " . $_SESSION['clientid']);
+                    $clientData = $clientQuery->fetch_array(MYSQLI_ASSOC);
+                    $firstname = $clientData['firstname'];
+                    $lastname = $clientData['lastname'];
+                    $phone = $clientData['phone'];
+                }
+
                 ?>
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
@@ -66,8 +76,7 @@ include "../views/layout/header.php";
                                             <th>Renew Status</th>
                                             <th>Renewal Amount</th>
                                             <th>Remaining <small>( days )</small></th>
-                                            <th>Issued Date</th>
-                                            <th>Expiration Date</th>
+                                            <th>Date Filed</th>
                                             <?php if (isset($_SESSION['employeeid'])) { ?><th>Actions</th> <?php } ?>
                                         </tr>
                                     </thead>
@@ -112,8 +121,7 @@ include "../views/layout/header.php";
                                                 </td>
                                                 <td><?php echo $row['renewal_amount'] ? number_format($row['renewal_amount'], 0, ',', ' ') : '0'; ?></td>
                                                 <td><?php echo $days; ?></td>
-                                                <td><?php echo $row['start_date']; ?></td>
-                                                <td><?php echo $row['end_date']; ?></td>
+                                                <td><?php echo $row['date_filed']; ?></td>
 
                                                 <?php if (isset($_SESSION['employeeid']) && strtolower($row['status']) != "declined") { ?>
                                                     <td>
@@ -145,13 +153,11 @@ include "../views/layout/header.php";
 
                         <!-- Renew insurance Modal-->
                         <?php
-                        // Stricly for only clients
+                        // Strictly for only clients
                         if (isset($_SESSION['clientid'])) {
                             $clientId = $_SESSION['clientid'];
 
                             $insurances = $mysqli->query("SELECT clients.insurance_id, id_client, firstname, start_date, end_date, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id WHERE id_client = " . $clientId);
-                            $fetch = $insurances->fetch_array(MYSQLI_ASSOC);
-                            $firstname = $fetch['firstname'];
 
                             // Renew Insurance Logic
                             if (isset($_POST['renewInsurance'])) {
@@ -177,13 +183,18 @@ include "../views/layout/header.php";
                                     // Update insurance dates in the database
                                     $updateSql = "UPDATE clients SET start_date = '$newStartDate', end_date = '$newEndDate', proof_of_income='$proofFile' WHERE insurance_id = '$insuranceId' AND id_client = '$clientId'";
 
-                                    $insertSql = "INSERT INTO renewals(id_client, insurance_id, status) VALUES($clientId, $insuranceId, 'requested')";
+                                    $insertSql = "INSERT INTO renewals(id_client, insurance_id, status, date_filed) VALUES($clientId, $insuranceId, 'requested', NOW())";
 
                                     if ($mysqli->query($updateSql) && $mysqli->query($insertSql)) {
 
                                         move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFile);
 
-                                        echo "<script type='text/javascript'>alert('Insurance renewed successfully!'); window.location.href = window.location.href;</script>";
+                                        $smsResult = sendSMS(
+                                            $phone,
+                                            "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been received and is being processed."
+                                        );
+
+                                        echo "<script type='text/javascript'>alert('Your insurance renewal request has been received and is being processed.'); window.location.href = window.location.href;</script>";
                                     } else {
                                         echo "<script type='text/javascript'>alert('Failed to renew insurance. Please try again.');</script>";
                                     }
@@ -251,6 +262,12 @@ include "../views/layout/header.php";
                             // Delete the insurance record
                             $approveSql = "UPDATE renewals SET status='$status', renewal_amount = '$renewalAmount' WHERE renewal_id = '$renewalId'";
                             if ($mysqli->query($approveSql)) {
+
+                                $smsResult = sendSMS(
+                                    $phone,
+                                    "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been approved."
+                                );
+
                                 echo "<script type='text/javascript'>alert('Insurance renewal have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
                                 echo "<script type='text/javascript'>alert('Failed to approve insurance renewal. Please try again.');</script>";
@@ -296,6 +313,12 @@ include "../views/layout/header.php";
                                 // Delete the insurance record
                                 $updateSql = "UPDATE renewals SET status='declined', reason='$renewDeclineReason' WHERE renewal_id = '$renewalId'";
                                 if ($mysqli->query($updateSql)) {
+
+                                    $smsResult = sendSMS(
+                                        $phone,
+                                        "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined with the reason: " . $renewDeclineReason
+                                    );
+
                                     echo "<script type='text/javascript'>alert('Insurance renewal declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
                                     echo "<script type='text/javascript'>alert('Failed to decline insurance renewal. Please try again.');</script>";

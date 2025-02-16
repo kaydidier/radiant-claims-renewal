@@ -27,16 +27,23 @@
         </a>
     </li>
 
-    <?php
-    if (isset($_SESSION['employeeid'])) {
-    ?>
+
+    <?php if (isset($_SESSION['employeeid'])): ?>
         <li class="nav-item">
             <a class="nav-link" href="clients.php">
                 <i class="fas fa-fw fa-address-book"></i>
                 <span>Clients</span>
             </a>
         </li>
-    <?php } ?>
+
+        <li class="nav-item">
+            <a class="nav-link" href="insurances.php">
+                <i class="fas fa-fw fa-layer-group"></i>
+                <span>Insurances</span>
+            </a>
+        </li>
+
+    <?php endif; ?>
 
     <li class="nav-item">
         <a class="nav-link" href="claims.php">
@@ -45,16 +52,6 @@
         </a>
     </li>
 
-    <?php
-    if (isset($_SESSION['employeeid'])) {
-    ?>
-        <li class="nav-item">
-            <a class="nav-link" href="insurances.php">
-                <i class="fas fa-fw fa-layer-group"></i>
-                <span>Insurances</span>
-            </a>
-        </li>
-    <?php } ?>
 
     <li class="nav-item">
         <a class="nav-link" href="renewals.php">
@@ -63,13 +60,16 @@
         </a>
     </li>
 
-    <?php if($_SESSION['employeeid']): ?>
-    <li class="nav-item">
-        <a class="nav-link" href="reports.php">
-            <i class="fas fa-fw fa-file-alt"></i>
-            <span>Reports</span>
-        </a>
+
+    <?php if (isset($_SESSION['employeeid'])): ?>
+
+        <li class="nav-item">
+            <a class="nav-link" href="reports.php">
+                <i class="fas fa-fw fa-file-alt"></i>
+                <span>Reports</span>
+            </a>
         </li>
+
     <?php endif; ?>
 
     <!-- Divider -->
