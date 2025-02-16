@@ -85,14 +85,19 @@ include "../views/layout/header.php";
 
                         <!-- Edit insurance modal -->
                         <?php
+
                         if (isset($_POST['editInsurance'])) {
                             $editInsuranceName = $mysqli->real_escape_string($_POST['editInsuranceName']);
                             $editInsuranceId = $mysqli->real_escape_string($_POST['editInsuranceId']);
 
+                            // Get the insurance details
+                            $insuranceSql = $mysqli->query("SELECT * FROM insurance WHERE insurance_id = '$editInsuranceId'") or die($mysqli->error);
+                            $insurance = mysqli_fetch_array($insuranceSql);
+
                             // Add validation to check if insurance name already exists
                             $checkSql = "SELECT * FROM insurance WHERE insurance_name = '$editInsuranceName' AND insurance_id != '$editInsuranceId'";
                             $result = $mysqli->query($checkSql);
-                            
+
                             if ($result->num_rows > 0) {
                                 echo "<script type='text/javascript'>alert('Insurance name already exists. Please use a different name.');</script>";
                             } else {
@@ -119,8 +124,8 @@ include "../views/layout/header.php";
                                         <form method="POST" action="">
                                             <input type="hidden" name="editInsuranceId" id="editInsuranceIdInput">
                                             <div class="form-group">
-                                                <label for="editInsuranceName">Insurance Name</label>
-                                                <input type="text" class="form-control" id="editInsuranceName" name="editInsuranceName" required>
+                                                <label for="editInsuranceName">Insurance Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="editInsuranceName" name="editInsuranceName" value="<?php echo isset($insurance['insurance_name']) ? $insurance['insurance_name'] : ''; ?>" required>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
