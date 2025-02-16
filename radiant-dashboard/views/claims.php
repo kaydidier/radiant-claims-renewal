@@ -62,6 +62,7 @@ include "../views/layout/header.php";
                                             <th>Id</th>
                                             <th>Clients Names</th>
                                             <th>Description</th>
+                                            <th>Amount <small class="text-muted">(RWF)</small></th>
                                             <th>Date</th>
                                             <th>Status</th>
                                             <?php if (isset($_SESSION['employeeid'])) { ?><th>Actions</th> <?php } ?>
@@ -91,6 +92,7 @@ include "../views/layout/header.php";
                                                 <td><?php echo $a; ?></td>
                                                 <td><?php echo ($row['firstname'] ? ucfirst($row['firstname']) : '') . " " . ($row['lastname'] ? ucfirst($row['lastname']) : ''); ?></td>
                                                 <td><?php echo ucfirst($row['comments']); ?></td>
+                                                <td><?php echo $row['claim_amount'] ? number_format($row['claim_amount'], 0, ',', ' ') : '0'; ?></td>
                                                 <td><?php echo $claimDate; ?></td>
                                                 <td><?php if (strtolower($row['status']) == "approved") {
                                                         echo "<p class='text-success'>Approved</p>";
@@ -132,9 +134,11 @@ include "../views/layout/header.php";
                         <?php
                         if (isset($_POST['confirmInsuranceClaim'])) {
                             $claimId = $mysqli->real_escape_string($_POST['claimId']);
+                            $claimAmount = $mysqli-> real_escape_string($_POST['claimAmount']);
+                            $status = "approved";
 
                             // Delete the insurance record
-                            $approveSql = "UPDATE claim SET status='approved' WHERE claim_id = '$claimId'";
+                            $approveSql = "UPDATE claim SET status='$status', claim_amount = '$claimAmount' WHERE claim_id = '$claimId'";
 
                             if ($mysqli->query($approveSql)) {
                                 echo "<script type='text/javascript'>alert('Insurance claim have been approved successfully!'); window.location.href = window.location.href;</script>";
@@ -155,6 +159,10 @@ include "../views/layout/header.php";
                                     <div class="modal-body">
                                         <form method="POST" action="" enctype="multipart/form-data">
                                             <input type="hidden" name="claimId" id="claimIdInput">
+                                            <div class="form-group">
+                                                <label for="claimAmountInput">Claim Amount</label>
+                                                <input type="text" name="claimAmount" id="claimAmountInput" class="form-control">
+                                            </div>
                                             <div style="display: flex; gap: 8px; justify-content: end;">
                                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                                 <button class="btn btn-primary" type="submit" name="confirmInsuranceClaim">Confirm</button>

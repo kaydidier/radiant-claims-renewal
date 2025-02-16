@@ -63,6 +63,15 @@
         </a>
     </li>
 
+    <?php if($_SESSION['employeeid']): ?>
+    <li class="nav-item">
+        <a class="nav-link" href="reports.php">
+            <i class="fas fa-fw fa-file-alt"></i>
+            <span>Reports</span>
+        </a>
+        </li>
+    <?php endif; ?>
+
     <!-- Divider -->
     <hr class="sidebar-divider">
 

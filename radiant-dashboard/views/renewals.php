@@ -64,6 +64,7 @@ include "../views/layout/header.php";
                                             <th>Name</th>
                                             <th>Insurance</th>
                                             <th>Renew Status</th>
+                                            <th>Renewal Amount</th>
                                             <th>Remaining <small>( days )</small></th>
                                             <th>Issued Date</th>
                                             <th>Expiration Date</th>
@@ -98,7 +99,8 @@ include "../views/layout/header.php";
                                                 <td><?php echo $row['id_client']; ?></td>
                                                 <td><?php echo ucfirst($row['firstname']) . " " . ucfirst($row['lastname']); ?></td>
                                                 <td><?php echo ucwords($row['insurance_name']); ?></td>
-                                                <td><?php if (strtolower($row['status']) == "approved") {
+                                                <td>
+                                                    <?php if (strtolower($row['status']) == "approved") {
                                                         echo "<p class='text-success'>Approved</p>";
                                                     } elseif (strtolower($row['status']) == "requested") {
                                                         echo "<p class='text-warning'>Requested</p>";
@@ -106,7 +108,9 @@ include "../views/layout/header.php";
 
                                                         echo "<p class='text-danger'>Declined</p>";
                                                     }
-                                                    ?></td>
+                                                    ?>
+                                                </td>
+                                                <td><?php echo $row['renewal_amount'] ? number_format($row['renewal_amount'], 0, ',', ' ') : '0'; ?></td>
                                                 <td><?php echo $days; ?></td>
                                                 <td><?php echo $row['start_date']; ?></td>
                                                 <td><?php echo $row['end_date']; ?></td>
@@ -119,7 +123,7 @@ include "../views/layout/header.php";
                                                             </a>
                                                         <?php } ?>
 
-                                                        <a href="./../../files/incomeproofs/<?php echo $row['firstname'];?>/<?php echo $row['proof_of_income'];?>" class="btn btn-sm btn-primary view-renewal-btn" data-renewal-view-id="<?php echo $row['renewal_id']; ?>" target="_blank">
+                                                        <a href="./../../files/incomeproofs/<?php echo $row['firstname']; ?>/<?php echo $row['proof_of_income']; ?>" class="btn btn-sm btn-primary view-renewal-btn" data-renewal-view-id="<?php echo $row['renewal_id']; ?>" target="_blank">
                                                             View file
                                                         </a>
 
@@ -146,7 +150,7 @@ include "../views/layout/header.php";
                             $clientId = $_SESSION['clientid'];
 
                             $insurances = $mysqli->query("SELECT clients.insurance_id, id_client, firstname, start_date, end_date, insurance_name FROM clients LEFT JOIN insurance ON clients.insurance_id = insurance.insurance_id WHERE id_client = " . $clientId);
-                            $fetch = $insurances -> fetch_array(MYSQLI_ASSOC);
+                            $fetch = $insurances->fetch_array(MYSQLI_ASSOC);
                             $firstname = $fetch['firstname'];
 
                             // Renew Insurance Logic
@@ -241,9 +245,11 @@ include "../views/layout/header.php";
                         <?php
                         if (isset($_POST['confirmInsuranceRenewal'])) {
                             $renewalId = $mysqli->real_escape_string($_POST['renewalId']);
+                            $renewalAmount = $mysqli->real_escape_string($_POST['renewalAmount']);
+                            $status = "approved";
 
                             // Delete the insurance record
-                            $approveSql = "UPDATE renewals SET status='approved' WHERE renewal_id = '$renewalId'";
+                            $approveSql = "UPDATE renewals SET status='$status', renewal_amount = '$renewalAmount' WHERE renewal_id = '$renewalId'";
                             if ($mysqli->query($approveSql)) {
                                 echo "<script type='text/javascript'>alert('Insurance renewal have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
@@ -263,6 +269,10 @@ include "../views/layout/header.php";
                                     <div class="modal-body">
                                         <form method="POST" action="" enctype="multipart/form-data">
                                             <input type="hidden" name="renewalId" id="renewalIdInput">
+                                            <div class="form-group">
+                                                <label for="renewalAmountInput">Renewal Amount</label>
+                                                <input type="text" name="renewalAmount" id="renewalAmountInput" class="form-control">
+                                            </div>
                                             <div style="display: flex; gap: 8px; justify-content: end;">
                                                 <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
                                                 <button class="btn btn-primary" type="submit" name="confirmInsuranceRenewal">Confirm</button>

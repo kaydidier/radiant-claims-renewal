@@ -343,8 +343,8 @@ if (isset($_POST['save_client'])) {
         }
 
         // Insert client data into the database
-        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, upi, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id) 
-                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', $insurance)";
+        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, upi, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id, created_at) 
+                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', $insurance, NOW())";
 
         $insert = $mysqli->query($insertSql) or die($mysqli->error);
 
