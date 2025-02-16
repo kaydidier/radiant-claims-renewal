@@ -23,26 +23,6 @@
     </div>
 </div>
 
-<!-- Delete Client Modal-->
-<div class="modal fade" id="deleteClient" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Are you sure you want to remove this client?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Confirm" below if you are ready to perform action.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="../../delete.php">Confirm</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Add claim Modal-->
 <?php
 if (isset($_SESSION['clientid'])) {
@@ -97,7 +77,7 @@ if (isset($_SESSION['clientid'])) {
             echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
         } else {
             // Insert client data into the database
-            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") .", '$supportFile', '$status') ";
+            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") . ", '$supportFile', '$status') ";
 
             $updateFields = array();
             if (!empty($licenseFile)) $updateFields[] = "driving_license='$licenseFile'";
@@ -241,12 +221,12 @@ if (isset($_POST['saveInsurance'])) {
 
     // Check if insurance already exists
     $existingInsurance = $mysqli->query("SELECT * FROM insurance WHERE insurance_name='$insuranceName'");
-    
+
     if ($existingInsurance->num_rows > 0) {
         echo "<script type='text/javascript'>alert('Insurance with this name already exists!');</script>";
     } else {
         $saveInsuranceQuery = $mysqli->query("INSERT INTO insurance VALUES (NULL, '$insuranceName')");
-        
+
         if ($saveInsuranceQuery) {
             echo "<script type='text/javascript'>alert('New insurance created successfully'); window.location.href = window.location.href;</script>";
         } else {
@@ -310,10 +290,10 @@ if (isset($_POST['save_client'])) {
 
     // Define upload directories
     $upload_dirs = [
-        'licenses' => './../../files/licenses/' . $firstname . '/',
-        'yellows' => './../../files/yellows/' . $firstname . '/',
-        'incomeproofs' => './../../files/incomeproofs/' . $firstname . '/',
-        'contracts' => './../../files/contracts/' . $firstname . '/'
+        'licenses' => './../../files/licenses/' . strtolower($firstname) . '/',
+        'yellows' => './../../files/yellows/' . strtolower($firstname) . '/',
+        'incomeproofs' => './../../files/incomeproofs/' . strtolower($firstname) . '/',
+        'contracts' => './../../files/contracts/' . strtolower($firstname) . '/'
     ];
 
     // Create directories if they don't exist
