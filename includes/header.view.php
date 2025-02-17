@@ -30,7 +30,7 @@
 
         <div>
             <p class="text-wrap fs-4">
-                <a href="../index.php" class="text-white text-decoration-none">
+                <a href="./index.php" class="text-white text-decoration-none">
                     Radiant Claims and Renewal System
                 </a>
             </p>
