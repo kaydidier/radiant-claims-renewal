@@ -1,7 +1,7 @@
 <footer class="mt-auto">
     <p class="text-center fw-bold fs-5">Contact Us</p>
 
-    <div id="footer" class="d-flex flex-column py-4">
+    <div class="d-flex flex-column py-4 d-flex align-items-center justify-content-center" style="background-color: #0F75BD; width: 100%; color: white; height: fit-content;">
         <div>
             <p class="fw-lighter fs-6">
                 <span class="mx-3">
