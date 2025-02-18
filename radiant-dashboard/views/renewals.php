@@ -317,7 +317,7 @@ include "../views/layout/header.php";
 
                                     $smsResult = sendSMS(
                                         $phone,
-                                        "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined with the reason: " . $renewDeclineReason
+                                        "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum."
                                     );
 
                                     echo "<script type='text/javascript'>alert('Insurance renewal declined successfully!'); window.location.href = window.location.href;</script>";

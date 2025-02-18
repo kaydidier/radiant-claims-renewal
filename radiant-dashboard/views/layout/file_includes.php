@@ -299,6 +299,7 @@ if (isset($_POST['save_client'])) {
     $province = $mysqli->real_escape_string($_POST['province']);
     $phone = $mysqli->real_escape_string($_POST['phone']);
     $bankaccount = $mysqli->real_escape_string($_POST['bankaccount']);
+    $bankname = $mysqli->real_escape_string($_POST['bankname']);
     $plate = $mysqli->real_escape_string($_POST['plate']);
     $startDate = $mysqli->real_escape_string($_POST['startDate']);
     $endDate = $mysqli->real_escape_string($_POST['endDate']);
@@ -359,8 +360,8 @@ if (isset($_POST['save_client'])) {
         }
 
         // Insert client data into the database
-        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, driving_license, yellow_paper, plate_number, upi, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id, created_at) 
-                      VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', '$insurance', NOW())";
+        $insertSql = "INSERT INTO clients (id_client, firstname, lastname, password, email, ID_no, sex, dob, district, province, phone, bank_account, bank_name, driving_license, yellow_paper, plate_number, upi, proof_of_income, contract, start_date, end_date, username, emp_id, insurance_id, created_at) 
+                        VALUES (NULL, '$firstname', '$lastname', '$password', '$email', '$idno', '$gender', '$dob', '$district', '$province', '$phone', '$bankaccount', '$bankname', '$licenseFile', '$yellowFile', '$plate', '$house', '$incomeFile', '$contractFile', '$startDate', '$endDate', '$firstname', '$empId', '$insurance', NOW())";
 
         $insert = $mysqli->query($insertSql) or die($mysqli->error);
 
@@ -368,7 +369,7 @@ if (isset($_POST['save_client'])) {
 
             $smsResult = sendSMS(
                 $phone,
-                "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance policies."
+                "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals."
             );
             echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
             window.location.href = window.location.href;
@@ -417,7 +418,7 @@ if (isset($_POST['save_client'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="idno" class="form-label">ID number</label>
-                                <input type="text" class="form-control" id="idno" name="idno">
+                                <input type="text" class="form-control" id="idno" name="idno" maxlength="16">
                             </div>
                             <div class="mb-3">
                                 <label for="email" class="form-label">Email address</label>
@@ -517,11 +518,16 @@ if (isset($_POST['save_client'])) {
                                 <input type="date" class="form-control" id="endDate" name="endDate" onchange="validateEDate()">
                                 <div class="invalid-feedback" id="eDateFeedback">Expiration date can't be in the past.</div>
                             </div>
+
+                            <div class="mb-3">
+                                <label for="bankname" class="form-label">Bank name</label>
+                                <input required type="text" class="form-control" id="bankname" name="bankname">
+                            </div>
+
                             <div class="mb-3">
                                 <label for="bankaccount" class="form-label">Bank account <small>( Bank account different payments )</small></label>
                                 <input required type="text" class="form-control" id="bankaccount" name="bankaccount">
                             </div>
-
 
                             <div class="mb-3">
                                 <label for="income" class="form-label">Proof of Income <small>( Preferably bank slip to support the insurance)</small></label>

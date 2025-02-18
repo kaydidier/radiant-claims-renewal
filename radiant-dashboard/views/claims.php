@@ -58,7 +58,7 @@ include "../views/layout/header.php";
                                     ?>
                                         <a href="#" class="btn btn-md btn-outline-primary btn-user d-flex align-items-center" data-toggle="modal" data-target="#addClaim">
                                             <i class="fas fa-fw fa-plus-circle"></i>
-                                            <span class="ml-2">Add Claims</span>
+                                            <span class="ml-2">Make Claims</span>
                                         </a>
                                     <?php } ?>
                                 </div>
@@ -206,7 +206,7 @@ include "../views/layout/header.php";
 
                                     $smsResult = sendSMS(
                                             $phoneUser,
-                                        "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined with the reason: " . $claimDeclineReason
+                                        "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum."
                                     );
 
                                     echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";

@@ -144,6 +144,7 @@ include "../views/layout/header.php";
                             $province = $mysqli->real_escape_string($_POST['province']);
                             $phone = $mysqli->real_escape_string($_POST['phone']);
                             $bankaccount = $mysqli->real_escape_string($_POST['bankaccount']);
+                            $bankname = $mysqli->real_escape_string($_POST['bankname']);
                             $plate = $mysqli->real_escape_string($_POST['plate']);
                             $startDate = $mysqli->real_escape_string($_POST['startDate']);
                             $endDate = $mysqli->real_escape_string($_POST['endDate']);
@@ -215,6 +216,7 @@ include "../views/layout/header.php";
                                 $updateFields[] = "province='$province'";
                                 $updateFields[] = "phone='$phone'";
                                 $updateFields[] = "bank_account='$bankaccount'";
+                                $updateFields[] = "bank_name='$bankname'";
                                 $updateFields[] = "insurance_id='$insurance'";
                                 if (!empty($plate)) $updateFields[] = "plate_number='$plate'";
                                 if (!empty($house)) $updateFields[] = "upi='$house'";
@@ -392,6 +394,12 @@ include "../views/layout/header.php";
                                                         <input type="date" class="form-control" id="edit_endDate" name="endDate" onchange="validateEDate()" value="<?php echo isset($client['end_date']) ? $client['end_date'] : ''; ?>">
                                                         <div class="invalid-feedback" id="edit_eDateFeedback">Expiration date can't be in the past.</div>
                                                     </div>
+
+                                                    <div class="mb-3">
+                                                        <label for="edit_bankname" class="form-label">Bank name</label>
+                                                        <input required type="text" class="form-control" id="edit_bankname" name="bankname" value="<?php echo isset($client['bank_name']) ? $client['bank_name'] : ''; ?>">
+                                                    </div>
+
                                                     <div class="mb-3">
                                                         <label for="edit_bankaccount" class="form-label">Bank account <small>( Bank account different payments )</small></label>
                                                         <input required type="text" class="form-control" id="edit_bankaccount" name="bankaccount" value="<?php echo isset($client['bank_account']) ? $client['bank_account'] : ''; ?>">
