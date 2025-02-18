@@ -2,7 +2,6 @@
 include "../../includes/connection.php";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $profile_image = $mysqli->real_escape_string($_POST['profile_image']);
     $firstname = $mysqli->real_escape_string($_POST['firstname']);
     $lastname = $mysqli->real_escape_string($_POST['lastname']);
     $phone = $mysqli->real_escape_string($_POST['phone']);
@@ -46,11 +45,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateFields[] = "email = '$email'";
     $updateFields[] = "$dateOfBirth_column = '$dateOfBirth'";
     $updateFields[] = "sex = '$gender'";
-    $updateFields[] = "profile_image = '$profile_image'";
+    $updateFields[] = "profile_image = '$profile_picture'";
 
     $query = "UPDATE $table SET " . implode(", ", $updateFields) . " WHERE $id_column   = $id";
     if ($mysqli->query($query)) {
-        echo "<script>alert('Profile updated successfully. Please log in again.');</script>";
+        header("Location: profile.php");
+        exit();
     } else {
         echo "<script>alert('Failed to update profile: " . $mysqli->error . "');</script>";
     }
