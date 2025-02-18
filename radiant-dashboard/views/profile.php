@@ -21,6 +21,7 @@ if (isset($_SESSION['clientid'])):
     $dateOfBirth = $clientData['dob'];
     $gender = $clientData['sex'];
     $username = $clientData['username'];
+    $profile_image = $clientData['profile_image'];
 endif;
 
 if (isset($_SESSION['employeeid'])):
@@ -33,9 +34,10 @@ if (isset($_SESSION['employeeid'])):
     $dateOfBirth = $employeeData['date_of_birth'];
     $gender = $employeeData['sex'];
     $username = $employeeData['username'];
+    $profile_image = $employeeData['profile_image'];
 endif;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
     $newUsername = $mysqli->real_escape_string($_POST['new_username']);
     $currentPassword = $mysqli->real_escape_string($_POST['current_password']);
     $newPassword = $mysqli->real_escape_string($_POST['new_password']);
@@ -97,14 +99,75 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Personal Information</h5>
                                     <div class="text-center mb-3">
-                                        <img src="https://picsum.photos/150" alt="Profile Picture" class="rounded-circle">
+                                        <img src="<?php echo $profile_image; ?>" alt="Profile Picture" class="rounded-circle">
                                     </div>
-                                    <p class="card-text text-center"><strong>Name:</strong> <?php echo ucwords($firstname) . " " . ucwords($lastname); ?></p>
-                                    <p class="card-text text-center"><strong>Phone:</strong> <?php echo $phone; ?></p>
-                                    <p class="card-text text-center"><strong>Email:</strong> <?php echo $email; ?></p>
-                                    <p class="card-text text-center"><strong>Date of Birth:</strong> <?php echo $dateOfBirth; ?></p>
-                                    <p class="card-text text-center"><strong>Gender:</strong> <?php echo $gender; ?></p>
-                                    <p class="card-text text-center"><strong>Username:</strong> <?php echo $username; ?></p>
+                                    <div class="profile-info">
+                                        <form id="profileForm" method="POST" action="update_profile.php" class="d-none">
+                                            <div class="form-group mb-2">
+                                                <label>Profile Picture:</label>
+                                                <input type="file" class="form-control" name="profile_image" accept="image/*" onchange="previewImage(event)" id="profile_image" value="<?php echo $profile_image; ?>">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>First Name:</label>
+                                                <input type="text" class="form-control" name="firstname" value="<?php echo $firstname; ?>">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>Last Name:</label>
+                                                <input type="text" class="form-control" name="lastname" value="<?php echo $lastname; ?>">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>Phone:</label>
+                                                <input type="tel" class="form-control" name="phone" value="<?php echo $phone; ?>">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>Email:</label>
+                                                <input type="email" class="form-control" name="email" value="<?php echo $email; ?>">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>Date of Birth:</label>
+                                                <input type="date" class="form-control" name="dateOfBirth" value="<?php echo $dateOfBirth; ?>">
+                                            </div>
+                                            <div class="form-group mb-2">
+                                                <label>Gender:</label>
+                                                <select class="form-control" name="gender">
+                                                    <option value="Male" <?php echo ($gender == 'Male') ? 'selected' : ''; ?>>Male</option>
+                                                    <option value="Female" <?php echo ($gender == 'Female') ? 'selected' : ''; ?>>Female</option>
+                                                    <option value="Other" <?php echo ($gender == 'Other') ? 'selected' : ''; ?>>Other</option>
+                                                </select>
+                                            </div>
+                                            <div class="text-center mt-3">
+                                                <button type="submit" class="btn btn-primary" name="update_profile">Save Changes</button>
+                                                <button type="button" class="btn btn-secondary" onclick="toggleEdit()">Cancel</button>
+                                            </div>
+                                        </form>
+
+                                        <div id="profileInfo">
+                                            <p class="card-text text-center"><strong>Name:</strong> <?php echo ucwords($firstname) . " " . ucwords($lastname); ?></p>
+                                            <p class="card-text text-center"><strong>Phone:</strong> <?php echo $phone; ?></p>
+                                            <p class="card-text text-center"><strong>Email:</strong> <?php echo $email; ?></p>
+                                            <p class="card-text text-center"><strong>Date of Birth:</strong> <?php echo $dateOfBirth; ?></p>
+                                            <p class="card-text text-center"><strong>Gender:</strong> <?php echo $gender; ?></p>
+                                            <p class="card-text text-center"><strong>Username:</strong> <?php echo $username; ?></p>
+                                            <div class="text-center mt-3">
+                                                <button class="btn btn-primary" onclick="toggleEdit()">Edit Profile</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <script>
+                                        function toggleEdit() {
+                                            const form = document.getElementById('profileForm');
+                                            const info = document.getElementById('profileInfo');
+                                            form.classList.toggle('d-none');
+                                            info.classList.toggle('d-none');
+                                        }
+
+                                        function previewImage(event) {
+                                            const preview = document.getElementById('profile_picture');
+                                            preview.src = URL.createObjectURL(event.target.files[0]);
+                                            preview.style.display = 'block';
+                                        }
+                                    </script>
                                 </div>
                             </div>
                         </div>
@@ -129,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
                                             <label for="confirm_password" class="form-label">Confirm New Password</label>
                                             <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                                         </div>
-                                        <button type="submit" name="update_profile" class="btn btn-primary">Update</button>
+                                        <button type="submit" name="update_password" class="btn btn-primary">Update</button>
                                     </form>
                                 </div>
                             </div>
