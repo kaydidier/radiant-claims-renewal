@@ -659,14 +659,16 @@ if (isset($_POST['save_client'])) {
 <script src="../vendor/jquery-easing/jquery.easing.min.js"></script>
 
 <script>
-    $(document).ready(function() {
-        $('select[name="province"]').change(function() {
-            var province = $(this).val();
+    $(document).ready(function () {
+    $('select[name="province"]').change(function () {
+        var province = $(this).val();
 
-            $("#district").load("../../../ajax/loadprovince.php?province=" + province);
+        $.get("/radiant-claims-renewal/ajax/loadprovince.php", { province: province }, function (data) {
+            $("#district").html(data);
         });
-
     });
+});
+
 </script>
 
 <!-- Page level plugins -->
