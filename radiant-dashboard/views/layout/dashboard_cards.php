@@ -234,7 +234,7 @@ $approved_renewals = $approved_renewals_result->fetch_assoc();
 
 <?php
 if (isset($_SESSION['employeeid'])) {
-    // Fetch data for employees
+    // Fetch data for admin
     $claims_status_query = "SELECT 
                                 SUM(CASE WHEN status = 'approved' THEN 1 ELSE 0 END) as approved_claims,
                                 SUM(CASE WHEN status = 'declined' THEN 1 ELSE 0 END) as declined_claims,

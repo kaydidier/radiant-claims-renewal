@@ -30,7 +30,7 @@ if (isset($_POST['login'])) {
 	$password = $mysqli->real_escape_string($_POST['password']);
 
 	$queries = [
-		'employees' => "SELECT * FROM employees WHERE (username='$email' OR email='$email') AND password='$password'",
+		'admin' => "SELECT * FROM admin WHERE (username='$email' OR email='$email') AND password='$password'",
 		'clients' => "SELECT * FROM clients WHERE (username='$email' OR email='$email') AND password='$password'"
 	];
 
@@ -39,7 +39,7 @@ if (isset($_POST['login'])) {
 		if ($result->num_rows > 0) {
 			$row = $result->fetch_array(MYSQLI_ASSOC) or die($mysqli->error);
 			switch ($role) {
-				case 'employees':
+				case 'admin':
 					$_SESSION['employeeid'] = $row['emp_id'];
 					$redirectUrl = './radiant-dashboard/views/index.php';
 					break;

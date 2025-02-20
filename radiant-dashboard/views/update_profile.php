@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      $profile_picture = !empty($_FILES['profile_picture']['name']) ? time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['profile_picture']['name']) : '';
 
     $id = isset($_SESSION['clientid']) ? $_SESSION['clientid'] : $_SESSION['employeeid']; 
-    $table = isset($_SESSION['clientid']) ? 'clients' : 'employees';
+    $table = isset($_SESSION['clientid']) ? 'clients' : 'admin';
     $result = true;
     $uploadedFiles = [];
 

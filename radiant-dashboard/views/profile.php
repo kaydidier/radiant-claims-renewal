@@ -25,7 +25,7 @@ if (isset($_SESSION['clientid'])):
 endif;
 
 if (isset($_SESSION['employeeid'])):
-    $employeeQuery = $mysqli->query("SELECT * FROM employees WHERE emp_id = " . $_SESSION['employeeid']);
+    $employeeQuery = $mysqli->query("SELECT * FROM admin WHERE emp_id = " . $_SESSION['employeeid']);
     $employeeData = $employeeQuery->fetch_array(MYSQLI_ASSOC);
     $firstname = $employeeData['firstname'];
     $lastname = $employeeData['lastname'];
@@ -48,9 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
         return;
     }
 
-    $userType = isset($_SESSION['clientid']) ? 'client' : 'employee';
+    $userType = isset($_SESSION['clientid']) ? 'client' : 'admin';
     $userId = $_SESSION[$userType . 'id'];
-    $table = $userType . 's';
+    $table = isset($_SESSION['clientid']) ? 'clients' : 'admin';
     $idField = isset($_SESSION['clientid']) ? 'id_client' : 'emp_id';
 
     $result = $mysqli->query("SELECT password FROM $table WHERE $idField = $userId");

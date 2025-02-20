@@ -73,7 +73,7 @@
         $user = "";
         if (isset($_SESSION['employeeid'])) {
             $id = $_SESSION['employeeid'];
-            $userSql = $mysqli->query("SELECT firstname, lastname FROM employees WHERE emp_id='$id'");
+            $userSql = $mysqli->query("SELECT firstname, lastname FROM admin WHERE emp_id='$id'");
             $user = $userSql->fetch_array(MYSQLI_ASSOC);
         } else {
             $id =  $_SESSION['clientid'];
