@@ -37,13 +37,13 @@
         </div>
         <ul class="nav nav-pills d-flex align-items-center">
             <li class="nav-item">
-                <a class="nav-link text-white" aria-current="page" href="/#services">Services</a>
+                <a class="nav-link text-white" aria-current="page" href="./index.php/#services">Services</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="/#about">About Us</a>
+                <a class="nav-link text-white" href="./index.php/#about">About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="/#contact">Contact us</a>
+                <a class="nav-link text-white" href="./index.php/#contact">Contact us</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-white" href="./login.view.php">Login</a>

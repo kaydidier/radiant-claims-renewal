@@ -63,6 +63,13 @@
         </a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="claims.php">
+            <i class="fas fa-fw fa-chess"></i>
+            <span>Claims</span>
+        </a>
+    </li>
+
 
     <?php if (isset($_SESSION['employeeid'])): ?>
 
