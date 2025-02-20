@@ -530,7 +530,7 @@ if (isset($_POST['save_client'])) {
                             </div>
 
                             <div class="mb-3">
-                                <label for="income" class="form-label">Proof of Income <small>( Preferably bank slip to support the insurance)</small></label>
+                                <label for="income" class="form-label">Proof of payment <small>( Preferably bank slip to support the insurance)</small></label>
                                 <input required type="file" class="form-control" id="income" name="income">
                             </div>
 

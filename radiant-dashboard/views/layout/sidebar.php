@@ -45,13 +45,16 @@
 
     <?php endif; ?>
 
-    <li class="nav-item">
-        <a class="nav-link" href="claims.php">
-            <i class="fas fa-fw fa-building"></i>
-            <span>Claims</span>
-        </a>
-    </li>
+    <?php if (isset($_SESSION['clientid'])): ?>
 
+        <li class="nav-item">
+            <a class="nav-link" href="client_insurance.php">
+            <i class="fas fa-fw fa-building"></i>
+                <span>My Insurances</span>
+            </a>
+        </li>
+
+    <?php endif; ?>
 
     <li class="nav-item">
         <a class="nav-link" href="renewals.php">

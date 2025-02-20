@@ -57,16 +57,16 @@ include "../views/layout/header.php";
                                             <th>Id</th>
                                             <th>Names</th>
                                             <th>Phone Number</th>
-                                            <th>Email</th>
+                                            <th>Insurance</th>
                                             <th>ID Number</th>
-                                            <th>Proof of Income</th>
+                                            <th>Proof of Payment</th>
                                             <th>Contract</th>
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $allClients = mysqli_query($mysqli, "SELECT * FROM clients");
+                                        $allClients = mysqli_query($mysqli, "SELECT * FROM clients INNER JOIN insurance ON clients.insurance_id = insurance.insurance_id");
                                         $a = 1;
                                         while ($row = mysqli_fetch_array($allClients)) {
                                         ?>
@@ -74,7 +74,7 @@ include "../views/layout/header.php";
                                                 <td><?php echo $a; ?></td>
                                                 <td><?php echo ucfirst($row['firstname']) . " " . ucfirst($row['lastname']); ?></td>
                                                 <td><?php echo $row['phone']; ?></td>
-                                                <td><?php echo $row['email']; ?></td>
+                                                <td><?php echo ucwords($row['insurance_name']); ?></td>
                                                 <td><?php echo $row['ID_no']; ?></td>
                                                 <?php
                                                 $incomeFilePath = './../../files/incomeproofs/' . strtolower($row['firstname']) . '/' . $row['proof_of_income'];
@@ -82,7 +82,7 @@ include "../views/layout/header.php";
                                                 ?>
                                                 <td>
                                                     <?php if (file_exists($incomeFilePath)) { ?>
-                                                        <a href="<?php echo $incomeFilePath; ?>" target="_blank">View Proof of Income</a>
+                                                        <a href="<?php echo $incomeFilePath; ?>" target="_blank">View Proof of Payment</a>
                                                     <?php } else { ?>
                                                         <span class="text-danger">File not found</span>
                                                     <?php } ?>
@@ -406,7 +406,7 @@ include "../views/layout/header.php";
                                                     </div>
 
                                                     <div class="mb-3">
-                                                        <label for="edit_income" class="form-label">Proof of Income <small>( Preferably bank slip to support the insurance)</small></label>
+                                                        <label for="edit_income" class="form-label">Proof of payment <small>( Preferably bank slip to support the insurance)</small></label>
                                                         <input type="file" class="form-control" id="edit_income" name="income">
                                                         <?php if (isset($client['proof_of_income']) && !empty($client['proof_of_income'])) {
                                                             $incomeFilePath = './../../files/incomeproofs/' . $client['firstname'] . '/' . $client['proof_of_income'];
