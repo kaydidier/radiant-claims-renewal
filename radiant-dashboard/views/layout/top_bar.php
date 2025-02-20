@@ -73,11 +73,11 @@
         $user = "";
         if (isset($_SESSION['employeeid'])) {
             $id = $_SESSION['employeeid'];
-            $userSql = $mysqli->query("SELECT firstname, lastname FROM admin WHERE emp_id='$id'");
+            $userSql = $mysqli->query("SELECT firstname, lastname, profile_image FROM admin WHERE emp_id='$id'");
             $user = $userSql->fetch_array(MYSQLI_ASSOC);
         } else {
             $id =  $_SESSION['clientid'];
-            $userSql = $mysqli->query("SELECT firstname, lastname FROM clients WHERE id_client='$id'");
+            $userSql = $mysqli->query("SELECT firstname, lastname, profile_image FROM clients WHERE id_client='$id'");
             $user = $userSql->fetch_array(MYSQLI_ASSOC);
         }
         ?>
@@ -87,7 +87,7 @@
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600"><?php echo ucfirst($user['firstname']) . " " . ucfirst($user['lastname']); ?></span>
                 <img class="img-profile rounded-circle"
-                    src="../img/undraw_profile.svg" alt="">
+                    src="<?php echo $user['profile_image'] ? "./../../files/profile_pictures/" . strtolower($user['firstname']) . "/" . $user['profile_image'] : "../img/undraw_profile.svg"; ?>" alt="">
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
