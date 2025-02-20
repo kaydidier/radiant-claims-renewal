@@ -21,7 +21,7 @@ if (isset($_SESSION['clientid'])):
     $dateOfBirth = $clientData['dob'];
     $gender = $clientData['sex'];
     $username = $clientData['username'];
-    $profile_image = $clientData['profile_image'];
+    $profile_picture = $clientData['profile_image'];
 endif;
 
 if (isset($_SESSION['employeeid'])):
@@ -34,7 +34,7 @@ if (isset($_SESSION['employeeid'])):
     $dateOfBirth = $employeeData['date_of_birth'];
     $gender = $employeeData['sex'];
     $username = $employeeData['username'];
-    $profile_image = $employeeData['profile_image'];
+    $profile_picture = $employeeData['profile_image'];
 endif;
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
@@ -99,13 +99,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Personal Information</h5>
                                     <div class="text-center mb-3">
-                                        <img src="<?php echo $profile_image; ?>" alt="Profile Picture" class="rounded-circle">
+                                        <img src="<?php echo $profile_picture; ?>" alt="Profile Picture" class="rounded-circle">
                                     </div>
                                     <div class="profile-info">
                                         <form id="profileForm" method="POST" action="update_profile.php" class="d-none">
                                             <div class="form-group mb-2">
                                                 <label>Profile Picture:</label>
-                                                <input type="file" class="form-control" name="profile_image" accept="image/*" onchange="previewImage(event)" id="profile_image" value="<?php echo $profile_image; ?>">
+                                                <input type="file" class="form-control" name="profile_picture" accept="image/*" onchange="previewImage(event)" id="profile_picture" value="<?php echo $profile_picture; ?>">
                                             </div>
                                             <div class="form-group mb-2">
                                                 <label>First Name:</label>
@@ -178,19 +178,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
                                     <form method="POST" action="">
                                         <div class="mb-3">
                                             <label for="new_username" class="form-label">New Username</label>
-                                            <input type="text" class="form-control" id="new_username" name="new_username" required>
+                                            <input type="text" class="form-control" id="new_username" name="new_username" autocomplete="off" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="current_password" class="form-label">Current Password</label>
-                                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                            <input type="password" class="form-control" id="current_password" name="current_password" autocomplete="off" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="new_password" class="form-label">New Password</label>
-                                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                            <input type="password" class="form-control" id="new_password" name="new_password" autocomplete="off" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="confirm_password" class="form-label">Confirm New Password</label>
-                                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" autocomplete="off" required>
                                         </div>
                                         <button type="submit" name="update_password" class="btn btn-primary">Update</button>
                                     </form>

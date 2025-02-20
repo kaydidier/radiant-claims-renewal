@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone_column = isset($_SESSION['clientid']) ? 'phone' : 'phonenumber';
     $dateOfBirth_column = isset($_SESSION['clientid']) ? 'dob' : 'date_of_birth';
 
-    $upload_dir = [
+    $upload_dirs = [
         'profile_pictures' => './../../files/profile_pictures/' . strtolower($firstname) . '/',
     ];
 
-    foreach ($upload_dir as $dir) {
+    foreach ($upload_dirs as $dir) {
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
@@ -29,13 +29,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = true;
     $uploadedFiles = [];
 
+    if (!empty($_FILES['profile_picture']['tmp_name'])) {
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $upload_dirs['profile_pictures'] . $profile_picture)) {
+            $uploadedFiles[] = $profile_picture;
+        } else {
+            $result = false;
+        }
+    }
+    
     $eighteenYearsAgo = date("Y-m-d", strtotime("-18 years"));
     if ($dateOfBirth > $eighteenYearsAgo) {
         echo "<script type='text/javascript'>alert('Only people above 18 years old are allowed to have vehicles');</script>";
-    }
-    if (!empty($_FILES['profile_picture']['tmp_name'])) {
-        $result = $result && move_uploaded_file($_FILES['profile_picture']['tmp_name'], $upload_dir['profile_pictures'] . $profile_picture);
-        $uploadedFiles[] = $profile_picture;
     }
     
     $updateFields = array();
@@ -44,11 +48,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateFields[] = "$phone_column = '$phone'";
     $updateFields[] = "email = '$email'";
     $updateFields[] = "$dateOfBirth_column = '$dateOfBirth'";
-    $updateFields[] = "sex = '$gender'";
-    $updateFields[] = "profile_image = '$profile_picture'";
+    $updateFields[] = "sex='$gender'";
+    if(!empty($profile_picture)) $updateFields[] = "profile_image='$profile_picture'";
 
     $query = "UPDATE $table SET " . implode(", ", $updateFields) . " WHERE $id_column   = $id";
     if ($mysqli->query($query)) {
+        echo "<script>alert('Failed to update profile: " . $profile_picture . "');</script>";
         header("Location: profile.php");
         exit();
     } else {
