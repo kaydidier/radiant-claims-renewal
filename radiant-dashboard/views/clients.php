@@ -218,7 +218,7 @@ include "../views/layout/header.php";
                                 $updateFields[] = "province='$province'";
                                 $updateFields[] = "phone='$phone'";
                                 $updateFields[] = "bank_account='$bankaccount'";
-                                $updateFields[] = "bank_name='$bankname'";
+                                $updateFields[] = "bankname='$bankname'";
                                 $updateFields[] = "insurance_id='$insurance'";
                                 if (!empty($plate)) $updateFields[] = "plate_number='$plate'";
                                 if (!empty($house)) $updateFields[] = "upi='$house'";
