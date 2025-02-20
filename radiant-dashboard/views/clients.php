@@ -58,6 +58,7 @@ include "../views/layout/header.php";
                                             <th>Names</th>
                                             <th>Phone Number</th>
                                             <th>Insurance</th>
+                                            <th>Validity</th>
                                             <th>ID Number</th>
                                             <th>Proof of Payment</th>
                                             <th>Contract</th>
@@ -75,6 +76,7 @@ include "../views/layout/header.php";
                                                 <td><?php echo ucfirst($row['firstname']) . " " . ucfirst($row['lastname']); ?></td>
                                                 <td><?php echo $row['phone']; ?></td>
                                                 <td><?php echo ucwords($row['insurance_name']); ?></td>
+                                                <td><?php echo $row['start_date'] . " - " . $row['end_date']; ?></td>
                                                 <td><?php echo $row['ID_no']; ?></td>
                                                 <?php
                                                 $incomeFilePath = './../../files/incomeproofs/' . strtolower($row['firstname']) . '/' . $row['proof_of_income'];

@@ -71,6 +71,83 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
         echo "<script>alert('Failed to update profile: " . $mysqli->error . "');</script>";
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
+    $firstname = $mysqli->real_escape_string($_POST['firstname']);
+    $lastname = $mysqli->real_escape_string($_POST['lastname']);
+    $phone = $mysqli->real_escape_string($_POST['phone']);
+    $email = $mysqli->real_escape_string($_POST['email']);
+    $dateOfBirth = $mysqli->real_escape_string($_POST['dateOfBirth']);
+    $gender = $mysqli->real_escape_string($_POST['gender']);
+    $id_column = isset($_SESSION['clientid']) ? 'id_client' : 'emp_id';
+    $phone_column = isset($_SESSION['clientid']) ? 'phone' : 'phonenumber';
+    $dateOfBirth_column = isset($_SESSION['clientid']) ? 'dob' : 'date_of_birth';
+
+    $upload_dir = [
+        'profile_picture' => './../../files/profile_pictures/' . strtolower($firstname) . '/',
+    ];
+
+    foreach ($upload_dir as $dir) {
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+    }
+
+    // Initialize profile_picture variable
+    $profile_picture = '';
+
+    // Only process profile picture if a file was uploaded
+    if (isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === UPLOAD_ERR_OK) {
+        $profile_picture = time() . '_' . preg_replace('/[^A-Za-z0-9\-._]/', '', $_FILES['profile_picture']['name']);
+        $target_path = $upload_dir['profile_picture'] . $profile_picture;
+        
+        // Delete existing profile picture if it exists
+        if (!empty($clientData['profile_image']) || !empty($employeeData['profile_image'])) {
+            $old_picture = $upload_dir['profile_picture'] . ($clientData['profile_image'] ?? $employeeData['profile_image']);
+            if (file_exists($old_picture)) {
+                unlink($old_picture);
+            }
+        }
+
+        if (!move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_path)) {
+            echo "<script>alert('Failed to upload profile picture');</script>";
+            exit();
+        }
+    }
+
+    $id = isset($_SESSION['clientid']) ? $_SESSION['clientid'] : $_SESSION['employeeid'];
+    $table = isset($_SESSION['clientid']) ? 'clients' : 'admin';
+    $result = true;
+    $uploadedFiles = [];
+
+    $eighteenYearsAgo = date("Y-m-d", strtotime("-18 years"));
+    if ($dateOfBirth > $eighteenYearsAgo) {
+        echo "<script type='text/javascript'>alert('Only people above 18 years old are allowed to have vehicles');</script>";
+    }
+
+    // Remove the duplicate profile_image field and the debug code
+    $updateFields = array();
+    $updateFields[] = "firstname = '$firstname'";
+    $updateFields[] = "lastname = '$lastname'";
+    $updateFields[] = "$phone_column = '$phone'";
+    $updateFields[] = "email = '$email'";
+    $updateFields[] = "$dateOfBirth_column = '$dateOfBirth'";
+    $updateFields[] = "sex='$gender'";
+    if (!empty($profile_picture)) {
+        $updateFields[] = "profile_image='$profile_picture'";
+    }
+
+    $query = "UPDATE $table SET " . implode(", ", $updateFields) . " WHERE $id_column = $id";
+
+    // Remove the print_r and die statements
+    if ($mysqli->query($query)) {
+        echo "<script>alert('Profile updated successfully');</script>";
+        header("Location: profile.php");
+        exit();
+    } else {
+        echo "<script>alert('Failed to update profile: " . $mysqli->error . "');</script>";
+    }
+}
 ?>
 
 <body id="page-top">
@@ -99,10 +176,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
                                 <div class="card-body">
                                     <h5 class="card-title text-center">Personal Information</h5>
                                     <div class="text-center mb-3">
-                                        <img src="<?php echo $profile_picture; ?>" alt="Profile Picture" class="rounded-circle">
+                                        <img src="<?php echo "./../../files/profile_pictures/" . strtolower($firstname) . "/" . $profile_picture; ?>" alt="Profile Picture" class="rounded-circle h-50 w-50">
                                     </div>
                                     <div class="profile-info">
-                                        <form id="profileForm" method="POST" action="update_profile.php" class="d-none">
+                                        <form id="profileForm" method="POST" action="" enctype="multipart/form-data" class="d-none">
                                             <div class="form-group mb-2">
                                                 <label>Profile Picture:</label>
                                                 <input type="file" class="form-control" name="profile_picture" accept="image/*" id="profile_picture" required>
