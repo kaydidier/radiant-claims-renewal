@@ -40,7 +40,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Renewals
+                                <a href="../views/renewals.php" class="text-success">Total Renewals</a>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $total_renewals['total_renewals']; ?></div>
                         </div>
@@ -66,7 +66,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                Total Claims
+                                <a href="../views/claims.php" class="text-info">Total Claims</a>
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
@@ -102,7 +102,7 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Renewals
+                                <a href="../views/renewals.php" class="text-warning">Pending Renewals</a>
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800"><?php echo $active_renewals['total_active_renewals']; ?></div>
                         </div>

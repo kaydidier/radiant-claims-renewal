@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
                                         <form id="profileForm" method="POST" action="update_profile.php" class="d-none">
                                             <div class="form-group mb-2">
                                                 <label>Profile Picture:</label>
-                                                <input type="file" class="form-control" name="profile_picture" accept="image/*" onchange="previewImage(event)" id="profile_picture" value="<?php echo $profile_picture; ?>">
+                                                <input type="file" class="form-control" name="profile_picture" accept="image/*" id="profile_picture" required>
                                             </div>
                                             <div class="form-group mb-2">
                                                 <label>First Name:</label>
@@ -160,12 +160,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_password'])) {
                                             const info = document.getElementById('profileInfo');
                                             form.classList.toggle('d-none');
                                             info.classList.toggle('d-none');
-                                        }
-
-                                        function previewImage(event) {
-                                            const preview = document.getElementById('profile_picture');
-                                            preview.src = URL.createObjectURL(event.target.files[0]);
-                                            preview.style.display = 'block';
                                         }
                                     </script>
                                 </div>

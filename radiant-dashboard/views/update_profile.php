@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $phone_column = isset($_SESSION['clientid']) ? 'phone' : 'phonenumber';
     $dateOfBirth_column = isset($_SESSION['clientid']) ? 'dob' : 'date_of_birth';
 
-    $upload_dirs = [
-        'profile_pictures' => './../../files/profile_pictures/' . strtolower($firstname) . '/',
+    $upload_dir = [
+        'profile_picture' => './../../files/profile_pictures/' . strtolower($firstname) . '/',
     ];
 
-    foreach ($upload_dirs as $dir) {
+    foreach ($upload_dir as $dir) {
         if (!is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $uploadedFiles = [];
 
     if (!empty($_FILES['profile_picture']['tmp_name'])) {
-        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $upload_dirs['profile_pictures'] . $profile_picture)) {
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $upload_dir['profile_picture'] . $profile_picture)) {
             $uploadedFiles[] = $profile_picture;
         } else {
             $result = false;
@@ -49,9 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateFields[] = "email = '$email'";
     $updateFields[] = "$dateOfBirth_column = '$dateOfBirth'";
     $updateFields[] = "sex='$gender'";
+    $updateFields[] = "profile_image='$profile_picture'";
+
     if(!empty($profile_picture)) $updateFields[] = "profile_image='$profile_picture'";
 
     $query = "UPDATE $table SET " . implode(", ", $updateFields) . " WHERE $id_column   = $id";
+
+    print_r($_FILES['profile_picture']['name']);
+    die();
+
     if ($mysqli->query($query)) {
         echo "<script>alert('Failed to update profile: " . $profile_picture . "');</script>";
         header("Location: profile.php");
