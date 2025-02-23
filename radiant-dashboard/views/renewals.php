@@ -118,7 +118,7 @@ include "../views/layout/header.php";
                                                     }
                                                     ?>
                                                 </td>
-                                                <td><?php echo $row['renewal_amount'] ? number_format($row['renewal_amount'], 0, ',', ' ') : '0'; ?></td>
+                                                <td><?php echo $row['renewal_amount'] ? number_format($row['renewal_amount'], 2) : '0.00'; ?></td>
                                                 <td><?php echo $days; ?></td>
                                                 <td><?php echo $row['date_filed']; ?></td>
 
