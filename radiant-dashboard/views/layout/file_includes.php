@@ -87,8 +87,23 @@ if (isset($_SESSION['clientid'])) {
         if (empty($insurance) || empty($nid) || empty($comments) || empty($supportFile)) {
             echo "<script type='text/javascript'>alert('Please fill in required fields');</script>";
         } else {
-            // Insert client data into the database
-            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status, date_filed) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") . ", '$supportFile', '$status', NOW()) ";
+            // Move files to dirs
+            if (!empty($_FILES['claimSupportFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['claimSupportFile']['tmp_name'], $upload_dirs['support'] . $supportFile);
+                $uploadedFiles[] = $supportFile;
+            }
+            if (!empty($_FILES['yellowFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['yellowFile']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
+                $uploadedFiles[] = $yellowFile;
+            }
+            if (!empty($_FILES['driversLicenseFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['driversLicenseFile']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
+                $uploadedFiles[] = $licenseFile;
+            }
+            if (!empty($_FILES['policeFile']['tmp_name'])) {
+                $result = $result && move_uploaded_file($_FILES['policeFile']['tmp_name'], $upload_dirs['police'] . $policeFile);
+                $uploadedFiles[] = $policeFile;
+            }
 
             $updateFields = array();
             if (!empty($licenseFile)) $updateFields[] = "driving_license='$licenseFile'";
@@ -98,30 +113,15 @@ if (isset($_SESSION['clientid'])) {
             if (!empty($plate)) $updateFields[] = "plate_number='$plate'";
             if (!empty($nid)) $updateFields[] = "ID_no='$nid'";
 
+            // Insert client data into the database
+            $insertSql = "INSERT INTO claim (id_client, insurance_id, claim_time, comments, police_file, support_file, status, date_filed) VALUES( '$clientId', '$insurance', '$claimTime', '$comments', " . ($policeFile ? "'$policeFile'" : "NULL") . ", '$supportFile', '$status', NOW()) ";
+            
             $updateSql = "UPDATE clients SET " . implode(", ", $updateFields) . " WHERE insurance_id = '$insurance' AND id_client = '$clientId'";
 
             $insert = $mysqli->query($insertSql) or die($mysqli->error);
             $update = $mysqli->query($updateSql) or die($mysqli->error);
 
             if ($insert && $update) {
-
-                // Move files to dirs
-                if (!empty($_FILES['claimSupportFile']['tmp_name'])) {
-                    $result = $result && move_uploaded_file($_FILES['claimSupportFile']['tmp_name'], $upload_dirs['support'] . $licenseFile);
-                    $uploadedFiles[] = $supportFile;
-                }
-                if (!empty($_FILES['yellowFile']['tmp_name'])) {
-                    $result = $result && move_uploaded_file($_FILES['yellowFile']['tmp_name'], $upload_dirs['yellows'] . $yellowFile);
-                    $uploadedFiles[] = $yellowFile;
-                }
-                if (!empty($_FILES['driversLicenseFile']['tmp_name'])) {
-                    $result = $result && move_uploaded_file($_FILES['driversLicenseFile']['tmp_name'], $upload_dirs['licenses'] . $licenseFile);
-                    $uploadedFiles[] = $licenseFile;
-                }
-                if (!empty($_FILES['policeFile']['tmp_name'])) {
-                    $result = $result && move_uploaded_file($_FILES['policeFile']['tmp_name'], $upload_dirs['police'] . $policeFile);
-                    $uploadedFiles[] = $policeFile;
-                }
 
                 $smsResult = sendSMS(
                     $phoneUser,
