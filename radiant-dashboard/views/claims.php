@@ -100,7 +100,13 @@ include "../views/layout/header.php";
                                                 <td><?php echo $a; ?></td>
                                                 <td><?php echo ($row['firstname'] ? ucfirst($row['firstname']) : '') . " " . ($row['lastname'] ? ucfirst($row['lastname']) : ''); ?></td>
                                                 <td><?php echo ucfirst($row['comments']); ?></td>
-                                                <td><?php echo $row['claim_amount'] ? number_format($row['claim_amount'], 2) : '0'; ?></td>
+                                                <td><?php 
+    $claimAmount = isset($row['claim_amount']) && is_numeric(str_replace(',', '', $row['claim_amount'])) 
+        ? (float) str_replace(',', '', $row['claim_amount']) 
+        : 0;
+    echo number_format($claimAmount, 2); 
+?></td>
+
                                                 <td><?php echo $row['date_filed']; ?></td>
                                                 <td><?php if (strtolower($row['status']) == "approved") {
                                                         echo "<p class='text-success'>Approved</p>";

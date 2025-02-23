@@ -118,7 +118,13 @@ include "../views/layout/header.php";
                                                     }
                                                     ?>
                                                 </td>
-                                                <td><?php echo $row['renewal_amount'] ? number_format($row['renewal_amount'], 2) : '0.00'; ?></td>
+                                                <td><?php 
+    $renewalAmount = isset($row['renewal_amount']) && is_numeric(str_replace(',', '', $row['renewal_amount'])) 
+        ? (float) str_replace(',', '', $row['renewal_amount']) 
+        : 0;
+    echo number_format($renewalAmount, 2); 
+?></td>
+
                                                 <td><?php echo $days; ?></td>
                                                 <td><?php echo $row['date_filed']; ?></td>
 
