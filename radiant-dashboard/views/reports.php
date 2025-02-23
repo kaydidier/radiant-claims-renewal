@@ -39,20 +39,20 @@ include "../views/layout/header.php";
                                 <form method="POST" action="generate_report.php">
                                     <div class="form-group">
                                         <label for="reportType">Select Report Type</label>
-                                        <select class="form-control" id="reportType" name="reportType" required>
+                                        <select class="form-control" id="reportType" name="reportType" onchange="toggleFields()" required>
                                             <option value="claims">Claims (Per dates)</option>
                                             <option value="renewals">Renewals (Per dates)</option>
                                             <option value="compensation_3_months">Amount of money compensated to the clients (Per 3 months)</option>
                                             <option value="compensation_6_months">Amount of money compensated to the clients (Per 6 months)</option>
                                         </select>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" id="stDateDiv">
                                         <label for="startDate">Start Date</label>
-                                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                                        <input type="date" class="form-control" id="startDate" name="startDate">
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" id="edDateDiv">
                                         <label for="endDate">End Date</label>
-                                        <input type="date" class="form-control" id="endDate" name="endDate" required>
+                                        <input type="date" class="form-control" id="endDate" name="endDate">
                                     </div>
                                     <button type="submit" class="btn btn-primary">Generate Report</button>
                                 </form>
@@ -81,6 +81,46 @@ include "../views/layout/header.php";
     <?php
     include "../views/layout/file_includes.php";
     ?>
+
+<script>
+
+function toggleFields() {
+const reportTypeSelect = document.getElementById('reportType');
+const endDateDiv = document.getElementById('stDateDiv');
+const startDateDiv = document.getElementById('edDateDiv');
+const startDtinput = document.getElementById('startDate');
+const endDtinput = document.getElementById('endDate');
+
+const selectedReport = reportTypeSelect.options[reportTypeSelect.selectedIndex].text;
+
+if (selectedReport.toLowerCase().trim().includes('months')) {
+    endDateDiv.style.display = 'none';
+    startDateDiv.style.display = 'none';
+
+    if (selectedReport.toLowerCase().trim().includes('3months')) {
+    startDtinput.value = formatDate(new Date()); // Set today as start date
+    endDtinput.value = formatDate(addMonths(new Date(), 3)); // Add 3 months
+} else {
+    startDtinput.value = formatDate(new Date()); // Set today as start date
+    endDtinput.value = formatDate(addMonths(new Date(), 6)); // Add 6 months
+}
+} else {
+    endDateDiv.style.display = 'block';
+    startDateDiv.style.display = 'block';
+}
+}
+// Function to add months to a date
+function addMonths(date, months) {
+    let newDate = new Date(date);
+    newDate.setMonth(newDate.getMonth() + months);
+    return newDate;
+}
+
+// Function to format date as YYYY-MM-DD for input[type="date"]
+function formatDate(date) {
+    return date.toISOString().split('T')[0];
+}
+</script>
 
 </body>
 
