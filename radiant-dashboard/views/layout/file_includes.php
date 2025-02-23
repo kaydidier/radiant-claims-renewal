@@ -407,7 +407,7 @@ if (isset($_POST['save_client'])) {
                             </div>
                             <div class="mb-3">
                                 <label for="phone" class="form-label">Phone number</label>
-                                <input type="phone" class="form-control" id="phone" name="phone">
+                                <input type="phone" class="form-control" id="phone" name="phone" maxlength="10">
                             </div>
                             <div class="mb-3">
                                 <label for="gender" class="form-label">Gender</label>
@@ -510,12 +510,12 @@ if (isset($_POST['save_client'])) {
 
                             <div class="mb-3">
                                 <label for="startDate" class="form-label">Issue Date <small>( Start date of the insurance )</small></label>
-                                <input type="date" class="form-control" id="startDate" name="startDate" onchange="validateSDate()">
+                                <input type="date" class="form-control" id="startDate" name="startDate">
                                 <div class="invalid-feedback" id="sDateFeedback">Issue date can't be in the past.</div>
                             </div>
                             <div class="mb-3">
                                 <label for="endDate" class="form-label">Expiration Date <small>( End date of the insurance )</small></label>
-                                <input type="date" class="form-control" id="endDate" name="endDate" onchange="validateEDate()">
+                                <input type="date" class="form-control" id="endDate" name="endDate">
                                 <div class="invalid-feedback" id="eDateFeedback">Expiration date can't be in the past.</div>
                             </div>
 
@@ -552,41 +552,31 @@ if (isset($_POST['save_client'])) {
 </div>
 
 <script>
-    function validateSDate() {
-        const sDateInput = document.getElementById('startDate');
-        const sDateFeedback = document.getElementById('sDateFeedback');
-        const submitBtn = document.getElementById('save_client');
-        var today = new Date();
-        const sDateValue = new Date(sDateInput.value);
-        var monthDifference = sDateValue.getMonth() - today.getMonth() +
-            (12 * (sDateValue.getFullYear() - today.getFullYear()));
+    const eDateInput = document.getElementById('endDate');
+const sDateInput = document.getElementById('startDate');
+const eDateFeedback = document.getElementById('eDateFeedback');
+const submitBtn = document.getElementById('save_client');
 
-        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < sDateValue.getDate())) {
-            sDateInput.classList.remove('is-invalid');
-            sDateFeedback.style.display = 'none';
-        } else {
-            sDateInput.classList.add('is-invalid');
-            sDateFeedback.style.display = 'block';
-        }
+sDateInput.addEventListener('change', validateDates);
+eDateInput.addEventListener('change', validateDates);
+
+
+    function validateDates() {
+    const sDateValue = new Date(sDateInput.value);
+    const eDateValue = new Date(eDateInput.value);
+
+    if (eDateValue > sDateValue) {
+        eDateInput.classList.remove('is-invalid');
+        eDateFeedback.style.display = 'none';
+        submitBtn.disabled = false; // Enable the submit button
+    } else {
+        eDateInput.classList.add('is-invalid');
+        eDateFeedback.style.display = 'block';
+        eDateFeedback.innerText = 'End date must be after the start date.';
+        submitBtn.disabled = true; // Disable the submit button
     }
+}
 
-    function validateEDate() {
-        const eDateInput = document.getElementById('endDate');
-        const eDateFeedback = document.getElementById('eDateFeedback');
-        const submitBtn = document.getElementById('save_client');
-        const eDateValue = new Date(eDateInput.value);
-        var today = new Date();
-        var monthDifference = eDateValue.getMonth() - today.getMonth() +
-            (12 * (eDateValue.getFullYear() - today.getFullYear()));
-
-        if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < eDateValue.getDate())) {
-            eDateInput.classList.remove('is-invalid');
-            eDateFeedback.style.display = 'none';
-        } else {
-            eDateInput.classList.add('is-invalid');
-            eDateFeedback.style.display = 'block';
-        }
-    }
     // Validating date of birth when registering a client 
     function validateDOB() {
         const dobInput = document.getElementById('dob');
