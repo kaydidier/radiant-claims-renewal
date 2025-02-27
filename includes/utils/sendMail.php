@@ -34,4 +34,5 @@ $mail = new PHPMailer(true);
     echo "Error: {$mail->ErrorInfo}";
 }
 }
+// sendMail("waka.florien45@gmail.com", 'Test', 'Test message');
 ?>
