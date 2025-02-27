@@ -6,7 +6,7 @@
             <p class="fw-lighter fs-6">
                 <span class="mx-3">
                     <i class="fas fa-location me-2"></i>
-                    Nyamirambo
+                    Muhanga
                 </span>
                 <span>
                     <i class="fas fa-envelope me-2"></i>
@@ -27,11 +27,11 @@
             <p class="fw-lighter fs-6">
                 <span class="mx-3">
                     <i class="fab fa-linkedin me-2"></i>
-                    <a href="https://www.linkedin.com/in/kundwadidier/" class="text-white text-decoration-none">kundwadidier</a>
+                    <a href="https://www.linkedin.com/company/radiant-insurance-compnay/?originalSubdomain=rw/" class="text-white text-decoration-none">Radiant Insurance Company</a>
                 </span>
                 <span>
                     <i class="fab fa-twitter me-2"></i>
-                    <a href="https://www.linkedin.com/in/kundwadidier/" class="text-white text-decoration-none">kundwadidier</a>
+                    <a href="https://x.com/radiant_rw/" class="text-white text-decoration-none">Radiant Insurance Company</a>
                 </span>
             </p>
         </div>
