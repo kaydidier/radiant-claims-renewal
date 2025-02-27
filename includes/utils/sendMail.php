@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php'; // Load PHPMailer
+require __DIR__ . '/../../vendor/autoload.php';
 
 
 function sendMail($to, $subject, $message){
