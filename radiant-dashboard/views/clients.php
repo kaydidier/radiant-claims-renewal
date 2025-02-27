@@ -1,6 +1,7 @@
 <?php
 include "../../includes/connection.php";
 include "../../includes/utils/sms.php";
+include "../../includes/utils/sendMail.php";
 if (!isset($_SESSION['employeeid'])) {
     header("LOCATION: ../../index.php");
 } ?>
@@ -233,10 +234,11 @@ include "../views/layout/header.php";
 
                                 if ($mysqli->query($updateSql)) {
 
-                                    $smsResult = sendSMS(
-                                        $phone,
-                                        "Hello, " . $firstname . " " . $lastname . " Your details have been updated."
-                                    );
+                                    // $smsResult = sendSMS(
+                                    //     $phone,
+                                    //     "Hello, " . $firstname . " " . $lastname . " Your details have been updated."
+                                    // );
+                                    sendMail($email, "Client Details Updated", "Hello, " . $firstname . " " . $lastname . " Your details have been updated.");
 
                                     echo "<script type='text/javascript'>alert('Client updated successfully!');
                                     window.location.href = window.location.href;</script>";

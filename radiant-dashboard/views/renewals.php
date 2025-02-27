@@ -1,6 +1,7 @@
 <?php
 include "../../includes/connection.php";
 include "../../includes/utils/sms.php";
+include "../../includes/utils/sendMail.php";
 if (!isset($_SESSION['employeeid']) && !isset($_SESSION['clientid'])) {
     header("LOCATION: ../../index.php");
 }
@@ -31,6 +32,7 @@ include "../views/layout/header.php";
                     $firstname = $clientData['firstname'];
                     $lastname = $clientData['lastname'];
                     $phone = $clientData['phone'];
+                    $email = $clientData['email'];
                 }
 
                 ?>
@@ -196,10 +198,11 @@ include "../views/layout/header.php";
 
                                         move_uploaded_file($_FILES['proof']['tmp_name'], $uploadDir . $proofFile);
 
-                                        $smsResult = sendSMS(
-                                            $phone,
-                                            "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been received and is being processed."
-                                        );
+                                        // $smsResult = sendSMS(
+                                        //     $phone,
+                                        //     "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been received and is being processed."
+                                        // );
+                                        sendMail($email, "Insurance Renewal Request Received", "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been received and is being processed.");
 
                                         echo "<script type='text/javascript'>alert('Your insurance renewal request has been received and is being processed.'); window.location.href = window.location.href;</script>";
                                     } else {
@@ -270,10 +273,11 @@ include "../views/layout/header.php";
                             $approveSql = "UPDATE renewals SET status='$status', renewal_amount = '$renewalAmount' WHERE renewal_id = '$renewalId'";
                             if ($mysqli->query($approveSql)) {
 
-                                $smsResult = sendSMS(
-                                    $phone,
-                                    "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been approved."
-                                );
+                                // $smsResult = sendSMS(
+                                //     $phone,
+                                //     "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been approved."
+                                // );
+                                sendMail($email, "Insurance Renewal Approved", "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been approved.");
 
                                 echo "<script type='text/javascript'>alert('Insurance renewal have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
@@ -321,10 +325,11 @@ include "../views/layout/header.php";
                                 $updateSql = "UPDATE renewals SET status='declined', reason='$renewDeclineReason' WHERE renewal_id = '$renewalId'";
                                 if ($mysqli->query($updateSql)) {
 
-                                    $smsResult = sendSMS(
-                                        $phone,
-                                        "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum."
-                                    );
+                                    // $smsResult = sendSMS(
+                                    //     $phone,
+                                    //     "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum."
+                                    // );
+                                    sendMail($email, "Insurance Renewal Declined", "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum.");
 
                                     echo "<script type='text/javascript'>alert('Insurance renewal declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {

@@ -7,6 +7,7 @@ if (isset($_SESSION['clientid'])) {
     $firstnameUser = $clientData['firstname'];
     $lastnameUser = $clientData['lastname'];
     $phoneUser = $clientData['phone'];
+    $emailUser = $clientData['email'];
 }
 ?>
 <!-- Scroll to Top Button-->
@@ -123,10 +124,11 @@ if (isset($_SESSION['clientid'])) {
 
             if ($insert && $update) {
 
-                $smsResult = sendSMS(
-                    $phoneUser,
-                    "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been sent."
-                );
+                // $smsResult = sendSMS(
+                //     $phoneUser,
+                //     "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been sent."
+                // );
+                sendMail($emailUser, "Insurance Claim Sent", "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been sent.");
 
                 echo "<script type='text/javascript'>alert('Claim has been sent successfully!');
                 window.location.href = window.location.href;
@@ -367,10 +369,11 @@ if (isset($_POST['save_client'])) {
 
         if ($insert) {
 
-            $smsResult = sendSMS(
-                $phone,
-                "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals."
-            );
+            // $smsResult = sendSMS(
+            //     $phone,
+            //     "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals."
+            // );
+            sendMail($email, "Client Registration Successful", "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals.");
             echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');
             window.location.href = window.location.href;
                   </script>";

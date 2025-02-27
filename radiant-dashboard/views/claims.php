@@ -1,5 +1,6 @@
 <?php include "../../includes/connection.php";
 include "../../includes/utils/sms.php";
+include "../../includes/utils/sendMail.php";
 
 if (!isset($_SESSION['employeeid']) && !isset($_SESSION['clientid'])) {
     header("LOCATION: ../../index.php");
@@ -22,6 +23,7 @@ include "../views/layout/header.php";
             $clientData = $clientQuery->fetch_array(MYSQLI_ASSOC);
             $firstnameUser = $clientData['firstname'];
             $lastnameUser = $clientData['lastname'];
+            $emailUser = $clientData['email'];
             $phoneUser = $clientData['phone'];
         }
 
@@ -158,10 +160,11 @@ include "../views/layout/header.php";
 
                             if ($mysqli->query($approveSql)) {
 
-                                $smsResult = sendSMS(
-                                    $phoneUser,
-                                    "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim of " . $claimAmount . " RWF has been approved."
-                                );
+                                // $smsResult = sendSMS(
+                                //     $phoneUser,
+                                //     "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim of " . $claimAmount . " RWF has been approved."
+                                // );
+                                sendMail($row['email'], "Insurance Claim Approved", "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim of " . $claimAmount . " RWF has been approved.");
 
                                 echo "<script type='text/javascript'>alert('Insurance claim have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
@@ -210,10 +213,11 @@ include "../views/layout/header.php";
 
                                 if ($mysqli->query($updateSql)) {
 
-                                    $smsResult = sendSMS(
-                                            $phoneUser,
-                                        "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum."
-                                    );
+                                    // $smsResult = sendSMS(
+                                    //         $phoneUser,
+                                    //     "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum."
+                                    // );
+                                    sendMail($emailUser, "Insurance Claim Declined", "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum.");
 
                                     echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {

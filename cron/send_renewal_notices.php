@@ -1,6 +1,7 @@
 <?php
 include "../includes/connection.php";
 include "../includes/utils/sms.php";
+include "../includes/utils/sendMail.php";
 
 // Get all active insurances that are nearing expiration (30 days before expiry)
 $today = date('Y-m-d');
@@ -24,7 +25,8 @@ while ($row = $result->fetch_assoc()) {
     $message = "Hello {$row['firstname']} {$row['lastname']}, your {$row['insurance_name']} insurance will expire in {$daysRemaining} days. Please login to your account to renew it.";
     
     // Send SMS
-    $smsResult = sendSMS($row['phone'], $message);
+    // $smsResult = sendSMS($row['phone'], $message);
+    sendMail($row['email'], "Ensurance Renewal Notice", $message);
     
     // Log the notification (optional)
     $logQuery = "INSERT INTO notification_logs (client_phone, message, sent_date) 
