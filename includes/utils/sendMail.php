@@ -1,11 +1,37 @@
 <?php
-function sendMail($to, $subject, $message)
-{
-    $headers = "From: kundwadidier@gmail.com" . "\r\n" .
-        "CC: florienwaka@gmail.com";
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+require 'vendor/autoload.php'; // Load PHPMailer
 
-    mail($to, $subject, $message, $headers);
+
+function sendMail($to, $subject, $message){
+try {
+     // SMTP Configuration
+$mail = new PHPMailer(true);
+
+     $mail->isSMTP();
+     $mail->Host       = 'smtp.gmail.com';
+     $mail->SMTPAuth   = true;
+     $mail->Username   = 'kundwadidier@gmail.com'; // Replace with your Gmail
+     $mail->Password   = 'uzuw hbdy xmwd bsso';   // Replace with your App Password
+     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+     $mail->Port       = 587;
+ 
+     // Email Headers
+     $mail->setFrom('kundwadidier@gmail.com', 'Kundwa Didier');
+     $mail->addAddress($to, 'Client');
+     $mail->Subject = $subject;
+     $mail->Body    = $message;
+ 
+     // Send Email
+     if ($mail->send()) {
+         echo 'Email sent successfully!';
+     } else {
+         echo 'Failed to send email.';
+     }
+} catch (\Throwable $th) {
+    echo "Error: {$mail->ErrorInfo}";
 }
+}
+?>
