@@ -1,0 +1,61 @@
+##### Windows
+
+# Ignore all files in the uploads directory
+uploads/*
+
+# Ignore all files in the files directory
+files/*
+
+# Windows thumbnail cache files
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+
+# Dump file
+*.stackdump
+
+# Folder config file
+[Dd]esktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+##### Backup
+*.bak
+*.gho
+*.ori
+*.orig
+*.tmp
+*.tmp.*
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.bz2
+*.wim
+*.sql
+
+# Ignore composer.lock
+composer.lock
+
+# Ignore vendor directory
+vendor/*
+
+# Ignore node_modules directory
+node_modules/*
+
+# Ignore package-lock.json
+package-lock.json
+
