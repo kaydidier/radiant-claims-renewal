@@ -276,7 +276,7 @@ include "../views/layout/header.php";
                             SELECT clients.* 
                             FROM clients 
                             JOIN renewals ON clients.id_client = renewals.id_client 
-                            WHERE renewals.claim_id = '$renewalId'
+                            WHERE renewals.renewal_id = '$renewalId'
                         ");
                         
                                                         $userRecord = $userQuery->fetch_assoc();
@@ -337,7 +337,7 @@ include "../views/layout/header.php";
                                 SELECT clients.* 
                                 FROM clients 
                                 JOIN renewals ON clients.id_client = renewals.id_client 
-                                WHERE renewals.claim_id = '$renewalId'
+                                WHERE renewals.renewal_id = '$renewalId'
                             ");
                             
                                                             $userRecord = $userQuery->fetch_assoc();

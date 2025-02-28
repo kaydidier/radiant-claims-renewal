@@ -61,10 +61,10 @@ package-lock.json
 
 # IDE files
 .idea/*
-.vscode/*
-.env
-.env.local
-.env.development
-.env.production
-.env.test
 .env.test.local
+config.bat
+node_modules
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+branch_structure.json
