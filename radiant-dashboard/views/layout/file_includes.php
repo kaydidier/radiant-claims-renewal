@@ -371,7 +371,7 @@ if (isset($_POST['save_client'])) {
 
             // $smsResult = sendSMS(
             //     $phone,
-            //     "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals."
+            //     "Hello .""., " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals."
             // );
             sendMail($email, "Client Registration Successful", "Hello, " . $firstname . " " . $lastname . "Welcome to Radiant Insurance. Your account has been created successfully. You can now login to your account using Username: " . $firstname . " and Password: " . $password . " to manage your insurance claims and renewals.");
             echo "<script type='text/javascript'>alert('Client has been registered and insured successfully!');

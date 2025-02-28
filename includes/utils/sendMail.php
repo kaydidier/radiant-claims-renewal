@@ -19,14 +19,14 @@ $mail = new PHPMailer(true);
      $mail->Port       = 587;
  
      // Email Headers
-     $mail->setFrom('kundwadidier@gmail.com', 'Kundwa Didier');
+     $mail->setFrom('kundwadidier@gmail.com', 'Radiant Insurance Company');
      $mail->addAddress($to, 'Client');
      $mail->Subject = $subject;
      $mail->Body    = $message;
  
      // Send Email
-     if ($mail->send()) {
-         echo 'Email sent successfully!';
+     if ($mail->send()) {   
+         echo 'Email sent successfully!'. $to. "====> ". $subject. "====>" . $message;
      } else {
          echo 'Failed to send email.';
      }
@@ -34,5 +34,4 @@ $mail = new PHPMailer(true);
     echo "Error: {$mail->ErrorInfo}";
 }
 }
-// sendMail("waka.florien45@gmail.com", 'Test', 'Test message');
 ?>

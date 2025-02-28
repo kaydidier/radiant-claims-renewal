@@ -102,12 +102,12 @@ include "../views/layout/header.php";
                                                 <td><?php echo $a; ?></td>
                                                 <td><?php echo ($row['firstname'] ? ucfirst($row['firstname']) : '') . " " . ($row['lastname'] ? ucfirst($row['lastname']) : ''); ?></td>
                                                 <td><?php echo ucfirst($row['comments']); ?></td>
-                                                <td><?php 
-    $claimAmount = isset($row['claim_amount']) && is_numeric(str_replace(',', '', $row['claim_amount'])) 
-        ? (float) str_replace(',', '', $row['claim_amount']) 
-        : 0;
-    echo number_format($claimAmount, 2); 
-?></td>
+                                                <td><?php
+                                                    $claimAmount = isset($row['claim_amount']) && is_numeric(str_replace(',', '', $row['claim_amount']))
+                                                        ? (float) str_replace(',', '', $row['claim_amount'])
+                                                        : 0;
+                                                    echo number_format($claimAmount, 2);
+                                                    ?></td>
 
                                                 <td><?php echo $row['date_filed']; ?></td>
                                                 <td><?php if (strtolower($row['status']) == "approved") {
@@ -119,7 +119,7 @@ include "../views/layout/header.php";
                                                         echo "<p class='text-danger'>Declined</p>";
                                                     }
                                                     ?></td>
-                                                <?php if (isset($_SESSION['employeeid']) ) { ?>
+                                                <?php if (isset($_SESSION['employeeid'])) { ?>
                                                     <td>
                                                         <a href="./../../files/support/<?php echo $row['firstname']; ?>/<?php echo $row['support_file']; ?>" class="btn btn-sm btn-primary my-1 view-claim-btn" data-claim-view-id="<?php echo $row['claim_id']; ?>" target="_blank">
                                                             View file
@@ -158,13 +158,25 @@ include "../views/layout/header.php";
                             // Delete the insurance record
                             $approveSql = "UPDATE claim SET status='$status', claim_amount = '$claimAmount' WHERE claim_id = '$claimId'";
 
+                            $userQuery = $mysqli->query("
+    SELECT clients.* 
+    FROM clients 
+    JOIN claim ON clients.id_client = claim.id_client 
+    WHERE claim.claim_id = '$claimId'
+");
+
+$userRecord = $userQuery->fetch_assoc();
+
                             if ($mysqli->query($approveSql)) {
 
                                 // $smsResult = sendSMS(
                                 //     $phoneUser,
                                 //     "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim of " . $claimAmount . " RWF has been approved."
                                 // );
-                                sendMail($row['email'], "Insurance Claim Approved", "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim of " . $claimAmount . " RWF has been approved.");
+
+                                var_dump("Sending approval claim mail", $row);
+
+                                sendMail($userRecord['email'], "Insurance Claim Approved", "Hello, " . $userRecord['firstname'] . " " . $userRecord['lastname'] . " your insurance claim of " . $claimAmount . " RWF has been approved.");
 
                                 echo "<script type='text/javascript'>alert('Insurance claim have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
@@ -210,6 +222,15 @@ include "../views/layout/header.php";
                             if (strtolower($claimDeclineText) === 'decline insurance claim') {
                                 // Delete the insurance record
                                 $updateSql = "UPDATE claim SET status='declined', decline_reason='$claimDeclineReason' WHERE claim_id = '$claimId'";
+                                $userQuery = $mysqli->query("
+    SELECT clients.* 
+    FROM clients 
+    JOIN claim ON clients.id_client = claim.id_client 
+    WHERE claim.claim_id = '$claimId'
+");
+
+                                $userRecord = $userQuery->fetch_assoc();
+
 
                                 if ($mysqli->query($updateSql)) {
 
@@ -217,7 +238,7 @@ include "../views/layout/header.php";
                                     //         $phoneUser,
                                     //     "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum."
                                     // );
-                                    sendMail($emailUser, "Insurance Claim Declined", "Hello, " . $firstnameUser . " " . $lastnameUser . " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum.");
+                                    sendMail( $userRecord['email'], "Insurance Claim Declined", "Hello, " . $userRecord['firstname'] . " " .  $userRecord['lastname']. " your insurance claim has been declined because of: " . $claimDeclineReason . " and should be processed within 5 working days maximum.");
 
                                     echo "<script type='text/javascript'>alert('Insurance claim declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
@@ -232,7 +253,7 @@ include "../views/layout/header.php";
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title text-danger fs-6 fw-lighter" id="exampleModalLabel">Ready to decline this insurance renewal?</h5>
+                                        <h5 class="modal-title text-danger fs-6 fw-lighter" id="exampleModalLabel">Ready to decline this insurance claim?</h5>
                                         <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>

@@ -271,13 +271,22 @@ include "../views/layout/header.php";
 
                             // Delete the insurance record
                             $approveSql = "UPDATE renewals SET status='$status', renewal_amount = '$renewalAmount' WHERE renewal_id = '$renewalId'";
+
+                            $userQuery = $mysqli->query("
+                            SELECT clients.* 
+                            FROM clients 
+                            JOIN renewals ON clients.id_client = renewals.id_client 
+                            WHERE renewals.claim_id = '$renewalId'
+                        ");
+                        
+                                                        $userRecord = $userQuery->fetch_assoc();
                             if ($mysqli->query($approveSql)) {
 
                                 // $smsResult = sendSMS(
                                 //     $phone,
                                 //     "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been approved."
                                 // );
-                                sendMail($email, "Insurance Renewal Approved", "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been approved.");
+                                sendMail($userRecord['email'], "Insurance Renewal Approved", "Hello, " . $userRecord['firstname'] . " " . $userRecord['lastname'] . " your insurance renewal request has been approved.");
 
                                 echo "<script type='text/javascript'>alert('Insurance renewal have been approved successfully!'); window.location.href = window.location.href;</script>";
                             } else {
@@ -323,13 +332,23 @@ include "../views/layout/header.php";
                             if (strtolower($renewDeclineText) === 'decline insurance renewal') {
                                 // Delete the insurance record
                                 $updateSql = "UPDATE renewals SET status='declined', reason='$renewDeclineReason' WHERE renewal_id = '$renewalId'";
+
+                                $userQuery = $mysqli->query("
+                                SELECT clients.* 
+                                FROM clients 
+                                JOIN renewals ON clients.id_client = renewals.id_client 
+                                WHERE renewals.claim_id = '$renewalId'
+                            ");
+                            
+                                                            $userRecord = $userQuery->fetch_assoc();
+
                                 if ($mysqli->query($updateSql)) {
 
                                     // $smsResult = sendSMS(
                                     //     $phone,
                                     //     "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum."
                                     // );
-                                    sendMail($email, "Insurance Renewal Declined", "Hello, " . $firstname . " " . $lastname . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum.");
+                                    sendMail($userRecord['email'], "Insurance Renewal Declined", "Hello, " . $userRecord['firstname'] . " " . $userRecord['lastname'] . " your insurance renewal request has been declined because of: " . $renewDeclineReason . " and should be processed within 3 working days maximum.");
 
                                     echo "<script type='text/javascript'>alert('Insurance renewal declined successfully!'); window.location.href = window.location.href;</script>";
                                 } else {
