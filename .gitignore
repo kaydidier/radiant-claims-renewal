@@ -62,3 +62,9 @@ package-lock.json
 # IDE files
 .idea/*
 .vscode/*
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.test.local
