@@ -11,15 +11,15 @@ try {
 $mail = new PHPMailer(true);
 
      $mail->isSMTP();
-     $mail->Host       = 'smtp.gmail.com';
+     $mail->Host       = $_ENV['MAIL_HOST'];
      $mail->SMTPAuth   = true;
-     $mail->Username   = 'kundwadidier@gmail.com'; // Replace with your Gmail
-     $mail->Password   = 'uzuw hbdy xmwd bsso';   // Replace with your App Password
+     $mail->Username   = $_ENV['MAIL_USERNAME']; // Replace with your Gmail
+     $mail->Password   = $_ENV['MAIL_PASSWORD'];   // Replace with your App Password
      $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
      $mail->Port       = 587;
  
      // Email Headers
-     $mail->setFrom('kundwadidier@gmail.com', 'Radiant Insurance Company');
+     $mail->setFrom($_ENV['MAIL_FROM_ADDRESS'], $_ENV['MAIL_FROM_NAME']);
      $mail->addAddress($to, 'Client');
      $mail->Subject = $subject;
      $mail->Body    = $message;

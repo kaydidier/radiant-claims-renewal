@@ -27,29 +27,29 @@
 <body>
 
     <nav class="d-flex justify-content-between p-4 text-white sticky-top" style="background-color: #0F75BD;">
-
         <div>
             <p class="text-wrap fs-4">
-                <a href="./index.php" class="text-white text-decoration-none">
+                <a href="index.php" class="text-white text-decoration-none">
                     Radiant Claims and Renewal System
                 </a>
             </p>
         </div>
         <ul class="nav nav-pills d-flex align-items-center">
             <li class="nav-item">
-                <a class="nav-link text-white" aria-current="page" href="./index.php/#services">Services</a>
+                <a class="nav-link text-white" aria-current="page" href="index.php#services">Services</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="./index.php/#about">About Us</a>
+                <a class="nav-link text-white" href="index.php#about">About Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="./index.php/#contact">Contact us</a>
+                <a class="nav-link text-white" href="index.php#contact">Contact Us</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link text-white" href="./login.view.php">Login</a>
+                <a class="nav-link text-white" href="login.view.php">Login</a>
             </li>
         </ul>
     </nav>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
